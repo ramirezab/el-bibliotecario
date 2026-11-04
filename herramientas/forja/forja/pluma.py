@@ -673,8 +673,14 @@ class _Proyector:
         ys = np.array([a[0] for a in aros])
         rx = np.interp(L[:, 1], ys, [a[1] for a in aros])
         rz = np.interp(L[:, 1], ys, [a[2] for a in aros])
-        return ((L[:, 1] >= ys[0] - 1) & (L[:, 1] <= ys[-1] + 4)
-                & ((L[:, 0] / rx) ** 2 + (L[:, 2] / rz) ** 2 < 1.0))
+        dentro = ((L[:, 1] >= ys[0] - 1) & (L[:, 1] <= ys[-1] + 4)
+                  & ((L[:, 0] / rx) ** 2 + (L[:, 2] / rz) ** 2 < 1.0))
+        abertura = cap['p'].get('abertura', 0)
+        if abertura:
+            # lo que queda en la abertura de adelante se ve aunque esté dentro de la campana
+            ang = np.degrees(np.arctan2(L[:, 0], L[:, 2]))
+            dentro &= ~((np.abs(ang) < abertura / 2) & (L[:, 2] > 0))
+        return dentro
 
     # -- formas
     def _elipsoide(self, pz):
@@ -760,7 +766,10 @@ class _Proyector:
 
     def _campana(self, pz):
         """Capa o falda acampanada: aros de arriba abajo ([y, rx, rz]); el último es el ruedo, que se ondula en
-        `ondas` paños que cuelgan `caida` en su centro. Con `pliegues: true` dibuja un pliegue en cada entrada."""
+        `ondas` paños que cuelgan `caida` en su centro. Con `pliegues: true` dibuja un pliegue en cada entrada.
+
+        `abertura` (grados) deja abierta la parte de adelante. Los paños de atrás se dibujan aparte, detrás del
+        cuerpo (`capa_atras`) y con el material `reverso`: por la abertura se ve el forro, no la cara de afuera."""
         p = pz['p']
         aros = p['aros']
         n = p.get('ondas', 8)
@@ -771,9 +780,13 @@ class _Proyector:
         M = self.matriz(pz)
         prof = float(self.v.prof(M[:3, 3])[0])
         miembros = []
+        abertura = p.get('abertura', 0)
+        reverso = self.dib.materiales.get(p.get('reverso'))
         for i in range(n):
             a0, a1 = angs[i], angs[i + 1]
             am = (a0 + a1) / 2
+            if abertura and abs((math.degrees(am) + 180) % 360 - 180) < abertura / 2:
+                continue
             esf = [[rx * math.sin(a), y, rz * math.cos(a), r] for y, rx, rz in aros[:-1] for a in (a0, am, a1)]
             y, rx, rz = aros[-1]
             if 'caidas' in p:
@@ -787,6 +800,12 @@ class _Proyector:
                         for a, dy in ((a0, 0.0), (am, caida), (a1, 0.0))]
             m = self._esferas_y_discos(pz, esf, None)
             m['prof'] = prof
+            if abertura or reverso:
+                n_loc = np.array([math.sin(am), 0, math.cos(am)]) * (REFLEJO if pz['lado'] == 'd' else 1)
+                if float(self.v.de_frente(M[:3, :3] @ n_loc)[0]) < 0:
+                    m['atras'] = True
+                    if reverso:
+                        m['mat'] = reverso
             miembros.append(m)
         rayas = []
         if p.get('pliegues'):
@@ -809,7 +828,8 @@ class _Proyector:
                 C = self.v.pant(P3 @ M[:3, :3].T + M[:3, 3])
                 w = _perfil(p.get('ancho_pliegue', [0.7, 0.4, 0.0]), len(C)) * self.v.esc
                 rayas.append(dict(camino=_camino(_tira2d(C, w)), tono='linea', opacidad=0.9))
-        miembros[0]['trazos'] = rayas + self._trazos(pz)
+        delante = [m for m in miembros if not m.get('atras')] or miembros
+        delante[0]['trazos'] = rayas + self._trazos(pz)
         return miembros
 
     def _caja(self, pz):
@@ -1089,7 +1109,7 @@ def _armar(dib, yaw, pitch, anim, cuadro, pose, zoom, cara):
         items.append(it)
         if delante and atras:
             principal = max(delante, key=lambda m: m['r_ef'])
-            items.append(item(g + '_atras', atras, prof=principal['prof'] - 2.0))
+            items.append(item(g + '_atras', atras, prof=principal['prof'] + atras[0]['pieza']['p'].get('capa_atras', -2.0)))
         for m in ms:
             por_pieza.setdefault(m['pieza']['nombre'], it)
     for h in hijos:
