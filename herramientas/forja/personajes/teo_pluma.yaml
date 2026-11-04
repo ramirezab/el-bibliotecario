@@ -1,0 +1,606 @@
+# Teo, el Bibliotecario, en el estilo ilustrado (tinta y color plano, sin pixeles).
+# Unidades del modelo: 1 = 4 px a escala normal. +X es el lado izquierdo de Teo; mira hacia +Z.
+nombre: Teo_pluma
+estilo: pluma
+lienzo: [900, 780]
+origen: [440, 744]
+escala: 4
+camara: {yaw: 30, pitch: 6}
+luz: [-0.55, 0.62, 0.56]
+tinta: '#141235'
+grosor: 0.5
+grosor_silueta: 1.0
+sombra_proyectada: 1.4
+degradado: ['#ffffff', '#d8d6ec']
+contraluz: ['#a8c8ff', 0.7, 0.55]
+
+materiales:
+  piel: {color: '#f6d2b0', sombra: '#dc9886', luz: '#fff3e4'}
+  pelo: {color: '#a8502a', sombra: '#70301f', hondo: '#4a1c16', luz: '#d98451', brillo: 0.35}
+  ojo: {color: '#1c1734'}
+  lente: {color: '#e4f3ff', opacidad: 0.2, sin_sombra: true, linea: '#6a3a1c'}
+  cobre: {color: '#c9813f', sombra: '#8c4c24', luz: '#f6c486', brillo: 0.7, linea: '#3a1d14'}
+  abrigo: {color: '#323a8a', sombra: '#1d2160', hondo: '#121440', luz: '#5a63bd', brillo: 0.25}
+  abrigo_os: {color: '#272d70', sombra: '#181b4c', hondo: '#101236', luz: '#4a52a8'}
+  puno: {color: '#4049a0', sombra: '#262b6a', hondo: '#161a46', luz: '#6a74c8'}
+  forro: {color: '#7a2c4c', sombra: '#4a1a32'}
+  liston: {color: '#d23a40', sombra: '#8e1f36', hondo: '#5c1226', luz: '#f47a5e', brillo: 0.3}
+  liston_rev: {color: '#9c2638', sombra: '#681a2c'}
+  oro: {color: '#ebb44e', sombra: '#a8741f', luz: '#fff2b8', brillo: 0.9, linea: '#3a2410'}
+  pantalon: {color: '#3a3352', sombra: '#211c34', hondo: '#15111f'}
+  bota: {color: '#7c4a2d', sombra: '#4b2a1d', hondo: '#2e1a14', luz: '#ab7148', brillo: 0.3}
+  cuero: {color: '#93603a', sombra: '#5c3824', hondo: '#3a2218', luz: '#c48c5c', brillo: 0.3}
+  madera: {color: '#c69d6c', sombra: '#86613e', hondo: '#5a3e26', luz: '#ead0a0', brillo: 0.4}
+  pluma: {color: '#f5eedf', sombra: '#b7b2cc', hondo: '#8a86a6', luz: '#ffffff'}
+  pluma_punta: {color: '#4f5c94', sombra: '#2e3666'}
+  papel: {color: '#f3e8cf', sombra: '#cdb894', hondo: '#8a7a64', luz: '#fffaf0'}
+  tapa: {color: '#5a2236', sombra: '#36121f', hondo: '#200a12', luz: '#8a3a52'}
+  tintero: {color: '#2a2f78', sombra: '#141640', luz: '#9fb0ff', brillo: 0.8, opacidad: 0.92}
+  corcho: {color: '#b88a5a', sombra: '#7a5434'}
+  marca_oro: {color: '#ebb44e'}
+  marca_verde: {color: '#3fa37f'}
+  marca_roja: {color: '#d23a40'}
+  marca_azul: {color: '#7fb6dc'}
+  marca_crema: {color: '#efe2c4'}
+
+huesos:
+  - {nombre: raiz}
+  - {nombre: cadera, padre: raiz, pos: [0, 45, 0]}
+  - {nombre: falda, padre: cadera, pos: [0, 2, 0]}
+  - {nombre: torso, padre: cadera, pos: [0, 4, 0], rot: [7, 0, 0]}
+  - {nombre: cuello, padre: torso, pos: [0, 27, 0.5], rot: [-5, 0, 0]}
+  - {nombre: cabeza, padre: cuello, pos: [0, 21, 2], rot: [2, 0, 0]}
+  - {nombre: hombro, padre: torso, pos: [10.5, 23, -0.5], rot: [0, 0, 10], espejo: true}
+  - {nombre: codo, padre: hombro, pos: [0, -14, 0]}
+  - {nombre: mano, padre: codo, pos: [0, -12.5, 0]}
+  - {nombre: pierna, padre: cadera, pos: [5, -1, 0], rot: [0, 0, 4], espejo: true}
+  - {nombre: rodilla, padre: pierna, pos: [0, -21, 0], rot: [6, 0, -4]}
+  - {nombre: pie, padre: rodilla, pos: [0, -19.5, 0], rot: [-6, 0, 0]}
+  - {nombre: baculo, padre: mano.d, pos: [0, -3.5, 1.4], apunta: [-0.16, 1, 0.08], frente: [-0.5, 0, 0.85]}
+  - {nombre: libro, padre: mano.i, pos: [0, -4, 4.5], apunta: [0.05, 0.92, -0.38], frente: [-0.45, 0.35, 0.82]}
+  - {nombre: liston1, padre: cuello, pos: [-8.5, 1.5, 1]}
+  - {nombre: liston2, padre: liston1, pos: [-5, -6, -5]}
+  - {nombre: liston3, padre: liston2, pos: [-4, -8, -6]}
+  - {nombre: liston4, padre: liston3, pos: [-3, -8, -6]}
+  - {nombre: liston5, padre: liston4, pos: [-2, -8, -5]}
+
+pose_base:
+  hombro.d: [-12, 0, 24]
+  codo.d: [-34, 0, -14]
+  hombro.i: [-38, 0, -16]
+  codo.i: [-78, 0, 6]
+
+piezas:
+  # ------------------------------------------------------------------ cabeza
+  - nombre: cabeza
+    hueso: cabeza
+    forma: elipsoide
+    r: [20, 19.5, 18.5]
+    material: piel
+    calcas:
+      # ojos grandes y oscuros con dos brillos
+      - {ovalo: [3.5, 4.5], centro: [7.6, -2.2], material: ojo, espejo: true, sin_caras: [parpadeo, dolor]}
+      - {circulo: 1.4, centro: [6.4, -0.6], color: '#ffffff', brillo: true, espejo: true, caras: [normal]}
+      - {circulo: 0.65, centro: [8.8, -4.2], color: '#ffffff', brillo: true, opacidad: 0.9, espejo: true, caras: [normal, decidido, grito]}
+      - {circulo: 1.0, centro: [6.6, -2.6], color: '#ffffff', brillo: true, espejo: true, caras: [decidido, grito]}
+      # párpado de enojo (decidido, grito)
+      - {contorno: [[2.8, 4.0], [12.8, 4.0], [12.8, 1.0], [3.0, -1.2]], suave: false, material: piel, espejo: true, caras: [decidido, grito]}
+      - {trazo: [[3.4, -0.9], [7.6, 0.3], [11.8, 1.1]], anchos: [0.9, 0.7, 0.3], material: ojo, espejo: true, caras: [decidido, grito]}
+      # ojos cerrados: parpadeo y dolor
+      - {trazo: [[4.4, -2.6], [7.6, -3.8], [10.8, -2.6]], anchos: [0.25, 1.0, 0.25], material: ojo, espejo: true, caras: [parpadeo]}
+      - {trazo: [[10.6, 0.8], [5.0, -2.2], [10.6, -5.0]], anchos: [0.3, 1.1, 0.3], suave: false, material: ojo, espejo: true, caras: [dolor]}
+      # cejas
+      - {trazo: [[4.0, 6.6], [8.0, 8.0], [12.2, 7.0]], anchos: [0.5, 1.3, 0.3], color: '#5c2618', espejo: true, caras: [normal, parpadeo]}
+      - {trazo: [[3.6, 4.2], [8.0, 6.0], [12.4, 7.8]], anchos: [0.6, 1.4, 0.3], color: '#5c2618', espejo: true, caras: [decidido, grito]}
+      - {trazo: [[3.8, 8.8], [8.0, 7.6], [12.2, 5.8]], anchos: [0.6, 1.3, 0.3], color: '#5c2618', espejo: true, caras: [dolor]}
+      # mejillas y pecas
+      - {ovalo: [3.4, 2.0], centro: [12.0, -8.4], color: '#f08a7c', opacidad: 0.5, blur: 0.7, espejo: true}
+      - {circulo: 0.42, centro: [10.4, -7.0], color: '#b6633f', espejo: true}
+      - {circulo: 0.36, centro: [12.6, -6.4], color: '#b6633f', espejo: true}
+      - {circulo: 0.38, centro: [11.6, -9.3], color: '#b6633f', espejo: true}
+      - {circulo: 0.32, centro: [13.8, -8.6], color: '#b6633f', espejo: true}
+      # nariz y boca
+      - {trazo: [[-0.4, -5.6], [0.7, -7.1], [-0.5, -7.8]], anchos: [0.2, 0.55, 0.2], color: '#c77a66'}
+      - {trazo: [[-3.0, -10.9], [0, -12.1], [3.0, -11.0]], anchos: [0.3, 0.85, 0.3], color: '#5c2230', caras: [normal, parpadeo]}
+      - {trazo: [[-2.6, -11.4], [0, -11.0], [2.6, -11.5]], anchos: [0.3, 0.8, 0.3], color: '#5c2230', caras: [decidido]}
+      - {contorno: [[-3.2, -10.6], [0, -10.2], [3.2, -10.6], [2.0, -14.2], [-2.0, -14.2]], color: '#5c2230', caras: [grito]}
+      - {ovalo: [1.6, 0.9], centro: [0, -13.2], color: '#e0606a', caras: [grito]}
+      - {trazo: [[-3.0, -11.8], [-1.4, -10.8], [0.1, -12.0], [1.6, -10.8], [3.0, -11.8]], anchos: [0.4, 0.75, 0.75, 0.75, 0.4], suave: false, color: '#5c2230', caras: [dolor]}
+  - {nombre: nariz, hueso: cabeza, forma: elipsoide, pos: [0, -5.8, 17.4], r: [2.2, 2.1, 2.2], material: piel, grupo: cabeza}
+  - nombre: oreja
+    hueso: cabeza
+    forma: elipsoide
+    pos: [19.0, -3.5, -1.5]
+    rot: [0, 18, -6]
+    r: [2.6, 4.6, 3.0]
+    material: piel
+    espejo: true
+    capa: -3
+  - nombre: cuello
+    hueso: cuello
+    forma: tubo
+    puntos: [[0, -3, 0], [0, 9, 0.8]]
+    radio: 4.6
+    material: piel
+    capa: -4
+  # pluma de escribir detrás de la oreja derecha
+  - {nombre: pluma_oreja, hueso: cabeza, forma: lamina, pos: [-19.5, 3, -4], rot: [0, -80, 35], contorno: [[0, 0], [-1.0, 3], [-2.2, 8], [-1.8, 12], [0, 15], [1.0, 11], [1.2, 6], [0.6, 2]], material: pluma, capa: -1, grosor: 0.7,
+     trazos: [{puntos: [[0, -1.5, 0.05], [0, 6, 0.05], [0, 14, 0.05]], anchos: [0.5, 0.35, 0.05], tono: hondo}]}
+
+  # ------------------------------------------------------------------ pelo
+  - nombre: casquete
+    hueso: cabeza
+    forma: elipsoide
+    pos: [0, 1.6, -0.9]
+    r: [21.6, 21.2, 20.2]
+    material: pelo
+    grupo: pelo
+    capa: 3
+    calcas:
+      - op: resta
+        suave: false
+        contorno: [[-24, -2], [-21, 4], [-14, 8.6], [-7, 9.6], [0, 8.8], [7, 9.6], [14, 8.6], [21, 4], [24, -2], [24, -40], [-24, -40]]
+      - {trazo: [[-6, 14], [-3, 4], [-4, -8]], anchos: [0, 0.6, 0], giro: [180, 0], color: '#5a2216'}
+      - {trazo: [[5, 15], [3, 2], [5, -10]], anchos: [0, 0.6, 0], giro: [180, 0], color: '#5a2216'}
+      - {trazo: [[0, 10], [0.5, -2], [-1, -12]], anchos: [0, 0.5, 0], giro: [180, 0], color: '#5a2216'}
+      - {trazo: [[-10, 8], [-9, -2], [-11, -10]], anchos: [0, 0.5, 0], giro: [150, 0], color: '#5a2216'}
+      - {trazo: [[10, 8], [9, -2], [11, -10]], anchos: [0, 0.5, 0], giro: [-150, 0], color: '#5a2216'}
+      - {trazo: [[-8, 6], [0, 9], [8, 6]], anchos: [0, 0.5, 0], giro: [0, 80], color: '#5a2216'}
+      # nuca y lados: el pelo no baja hasta la mandíbula
+      - {op: resta, suave: false, giro: [90, 0], espejo: true, contorno: [[-24, -3], [-6, -3], [-1, -7], [3, -14], [3, -40], [-24, -40]]}
+  - nombre: mechones
+    hueso: cabeza
+    forma: mechones
+    pos: [0, 1.6, -0.9]
+    sobre: [21.6, 21.2, 20.2]
+    material: pelo
+    grupo: pelo
+    capa: 3
+    rayas: true
+    lista:
+      # flequillo que cae sobre la frente
+      - {en: [-13, 13.5], hacia: -112, curva: 34, largo: 11, ancho: 3.4}
+      - {en: [-6, 15.5], hacia: -100, curva: 30, largo: 12.5, ancho: 3.7}
+      - {en: [1.5, 16], hacia: -84, curva: -24, largo: 12, ancho: 3.5}
+      - {en: [8.5, 15], hacia: -72, curva: -30, largo: 11, ancho: 3.3}
+      - {en: [15, 12], hacia: -66, curva: -28, largo: 10, ancho: 3.0}
+      # patillas
+      - {en: [-20.8, 4], hacia: -94, curva: 14, largo: 9, ancho: 1.5, perfil: [1, 0.7, 0]}
+      - {en: [20.8, 4], hacia: -86, curva: -14, largo: 9, ancho: 1.5, perfil: [1, 0.7, 0]}
+      # el mechón que nunca baja
+      - {en: [2, 19.5], dir: [0.1, 1, 0.35], doblez: [1.0, -0.2, -1.0], largo: 15, ancho: 2.2, perfil: [1, 0.85, 0]}
+      # puntas de arriba, despeinadas
+      - {en: [-11, 18], dir: [-0.6, 0.7, -0.4], doblez: [-0.3, -0.5, 0], largo: 8, ancho: 3.2}
+      - {en: [11, 18], dir: [0.6, 0.7, -0.4], doblez: [0.3, -0.5, 0], largo: 8, ancho: 3.2}
+      - {en: [0, 16], giro: [180, 25], dir: [0, 0.4, -1], doblez: [0, -0.6, 0], largo: 8, ancho: 3.4}
+      - {en: [-14, 10], giro: [130, 15], dir: [-0.8, 0.3, -0.6], doblez: [0, -0.8, 0], largo: 7.5, ancho: 3.0}
+      - {en: [14, 10], giro: [-130, 15], dir: [0.8, 0.3, -0.6], doblez: [0, -0.8, 0], largo: 7.5, ancho: 3.0}
+      # puntas de atrás
+      - {en: [0, 10], giro: [180, 0], dir: [0, -0.2, -1], doblez: [0, -1, 0.2], largo: 8.5, ancho: 3.2}
+      - {en: [-9, 5], giro: [150, 0], dir: [-0.6, -0.3, -0.8], doblez: [0, -0.9, 0], largo: 8, ancho: 3.0}
+      - {en: [9, 5], giro: [-150, 0], dir: [0.6, -0.3, -0.8], doblez: [0, -0.9, 0], largo: 8, ancho: 3.0}
+      - {en: [0, 2], giro: [95, 25], dir: [1, 0.2, -0.4], doblez: [0, -0.9, 0], largo: 7, ancho: 2.8}
+      - {en: [0, 2], giro: [-95, 25], dir: [-1, 0.2, -0.4], doblez: [0, -0.9, 0], largo: 7, ancho: 2.8}
+      - {en: [0, -6], giro: [180, 0], dir: [0, -1, -0.5], doblez: [0, 0, 0.5], largo: 7, ancho: 3.0}
+      - {en: [-10, -4], giro: [160, 0], dir: [-0.4, -1, -0.4], doblez: [0, 0, 0.5], largo: 6.5, ancho: 2.8}
+      - {en: [10, -4], giro: [-160, 0], dir: [0.4, -1, -0.4], doblez: [0, 0, 0.5], largo: 6.5, ancho: 2.8}
+
+  # ------------------------------------------------------------------ lentes de cobre
+  - nombre: aro
+    hueso: cabeza
+    forma: lamina
+    pos: [7.6, -2.2, 17.9]
+    rot: [0, 16, 0]
+    circulo: 6.2
+    agujeros: [{circulo: 5.0}]
+    material: cobre
+    espejo: true
+    grosor: 0.7
+    proyecta: false
+  - nombre: cristal
+    hueso: cabeza
+    forma: lamina
+    pos: [7.6, -2.2, 17.8]
+    rot: [0, 16, 0]
+    circulo: 5.1
+    material: lente
+    espejo: true
+    capa: -0.1
+    sin_linea: true
+    sin_silueta: true
+    proyecta: false
+    trazos:
+      - {puntos: [[-3.2, 1.0, 0.1], [-1.6, 3.4, 0.1]], anchos: [0.5, 0.9, 0.5], tono: '#ffffff', opacidad: 0.85}
+  - {nombre: puente, hueso: cabeza, forma: tubo, puntos: [[-1.5, -0.6, 18.4], [0, 0.4, 19.4], [1.5, -0.6, 18.4]], radio: 0.55, material: cobre, proyecta: false, grosor: 0.7}
+  - {nombre: patilla, hueso: cabeza, forma: tubo, puntos: [[13.6, -1.2, 15.2], [18.4, -0.8, 8], [19.6, -1.6, -1]], radio: 0.5, material: cobre, espejo: true, capa: -2, grosor: 0.7}
+
+  # ------------------------------------------------------------------ listón rojo (bufanda)
+  - nombre: bufanda_atras
+    hueso: cuello
+    forma: tubo
+    puntos: [[-8.2, 2, 0], [-6, 2.4, -5.6], [0, 2.8, -7.8], [6, 2.4, -5.6], [8.2, 2, 0]]
+    radio: 3.2
+    material: liston
+  - nombre: bufanda
+    hueso: cuello
+    forma: tubo
+    puntos: [[8.4, 2, 0], [6.8, 1.6, 5.2], [0, 0.4, 8.2], [-6.8, 1.0, 5.4], [-8.4, 2, 0]]
+    radio: 3.5
+    material: liston
+    capa: 3
+    trazos:
+      - {puntos: [[7.6, 3.6, 4.4], [0, 2.4, 10.6], [-7.6, 3.2, 4.8]], anchos: [0.1, 0.4, 0.1], tono: '#f2c060', normal: [0, 0, 1]}
+      - {puntos: [[7.4, 0.4, 4.6], [0, -1.2, 10.4], [-7.4, -0.2, 4.8]], anchos: [0.1, 0.4, 0.1], tono: '#f2c060', normal: [0, 0, 1]}
+  - nombre: nudo
+    hueso: cuello
+    forma: elipsoide
+    pos: [-5.6, 0.2, 7.9]
+    r: [2.6, 2.4, 1.9]
+    material: liston
+    capa: 4
+  - nombre: cola_frente
+    hueso: cuello
+    forma: cinta
+    puntos: [[-5.8, -1.5, 8.2], [torso, -8.0, 16, 9.6], [torso, -8.6, 8, 9.8]]
+    ancho: 5.6
+    normal: [0, 0, 1]
+    cola: v
+    material: liston
+    reverso: liston_rev
+    capa: 3.5
+    trazos:
+      - {puntos: [[-5.8, -1.5, 8.4], [torso, -8.0, 16, 9.8], [torso, -8.6, 9.5, 10.0]], anchos: [0.1, 0.35, 0.1], tono: '#f2c060'}
+  - nombre: cola_larga
+    hueso: liston1
+    forma: cinta
+    puntos: [[liston1, 0, 0, 0], [liston2, 0, 0, 0], [liston3, 0, 0, 0], [liston4, 0, 0, 0], [liston5, 0, 0, 0]]
+    anchos: [5.2, 6.6, 6.6, 6.4]
+    normal: [0.6, 0, -0.8]
+    cola: v
+    material: liston
+    reverso: liston_rev
+    trazos:
+      - {puntos: [[liston2, 0.1, 0, 0], [liston3, 0.1, 0, 0], [liston4, 0.1, 0, 0]], anchos: [0, 0.35, 0], tono: '#f2c060'}
+
+  # ------------------------------------------------------------------ abrigo
+  - nombre: abrigo
+    hueso: torso
+    forma: casco
+    esferas:
+      - [-9.5, 22.5, -0.5, 4.8]
+      - [9.5, 22.5, -0.5, 4.8]
+      - [0, 24, -0.5, 5.2]
+      - [-7.2, 12, 1.0, 6.2]
+      - [7.2, 12, 1.0, 6.2]
+      - [0, 14, 2.6, 6.6]
+      - [-6.8, 1, 0, 6.0]
+      - [6.8, 1, 0, 6.0]
+      - [0, 2, 1.8, 6.0]
+    material: abrigo
+    trazos:
+      - {puntos: [[-1.2, 22, 5.6], [-1.6, 12, 9.0], [-1.8, 0, 7.8]], anchos: [0.3, 0.55, 0.4], tono: linea, normal: [0, 0, 1]}
+      - {puntos: [[5.5, 18, 7.0], [8, 12, 7.0], [9.5, 5, 5.8]], anchos: [0, 0.35, 0], tono: hondo, normal: [0, 0, 1]}
+      - {puntos: [[-0.4, 22, 5.8], [-0.6, 12, 9.3], [-0.8, 1, 8.0]], ancho: 0.22, guiones: [1.0, 0.8], tono: luz, normal: [0, 0, 1]}
+  - {nombre: solapa, hueso: torso, forma: lamina, pos: [3.2, 18.5, 8.3], rot: [-14, 14, 0], contorno: [[-2.6, 7], [4.6, 6.4], [5.4, 0], [2.2, -5], [-1.4, -8]], suave: false, material: abrigo_os, espejo: true, una_cara: true, dentro_de: abrigo, grosor: 0.7,
+     trazos: [{puntos: [[-2.0, 6.2, 0.05], [4.4, 5.7, 0.05], [4.9, 0.2, 0.05], [2.0, -4.6, 0.05], [-1.2, -7.2, 0.05]], ancho: 0.32, tono: '#c79a46', suave: false}]}
+  - nombre: faldon
+    hueso: falda
+    forma: casco
+    espejo: true
+    esferas:
+      - [0, 4, 3.0, 4.8]
+      - [6.8, 4, 0, 6.0]
+      - [3, 4, -4.0, 4.8]
+      - [4.6, -29, 6.4, 0.7]
+      - [12.5, -28, 4.6, 0.7]
+      - [16.5, -26, -2.5, 0.7]
+      - [12, -25.5, -9.5, 0.7]
+      - [2.5, -26, -10.5, 0.7]
+    material: abrigo
+    trazos:
+      - {puntos: [[5.5, -2, 6.6], [6.8, -14, 7.4], [8.2, -27, 5.8]], anchos: [0, 0.45, 0.1], tono: hondo, normal: [0.2, 0, 1]}
+      - {puntos: [[11, -6, 4.6], [13, -16, 4.8], [14.8, -25, 2.0]], anchos: [0, 0.4, 0.1], tono: hondo, normal: [0.8, 0, 0.6]}
+      - {puntos: [[4.6, -27.4, 6.6], [12.5, -26.6, 4.9], [16.3, -24.6, -2.5]], ancho: 0.9, tono: '#c79a46', normal: [0.3, 0, 1]}
+      - {puntos: [[4.7, -26.2, 6.5], [12.4, -25.4, 4.8], [16.1, -23.4, -2.4]], ancho: 0.2, guiones: [0.8, 0.7], tono: luz, normal: [0.3, 0, 1]}
+      - {puntos: [[3.2, 2, 7.6], [4.0, -14, 7.4], [4.6, -27, 6.4]], ancho: 0.22, guiones: [1.0, 0.8], tono: luz, normal: [0, 0, 1]}
+  - nombre: forro
+    hueso: falda
+    forma: lamina
+    pos: [0, -14, 4.2]
+    contorno: [[-4.4, -15.2], [0, -4], [4.4, -15.2]]
+    suave: false
+    material: forro
+    una_cara: true
+    capa: -6
+    sin_silueta: true
+  - nombre: cinturon
+    hueso: torso
+    forma: tubo
+    puntos: [[-12.9, 0.6, 0], [-9.6, 0.6, 5.2], [0, 0.8, 8.2], [9.6, 0.6, 5.2], [12.9, 0.6, 0]]
+    radio: 1.6
+    material: cuero
+    trazos:
+      - {puntos: [[-12, 0.6, 1.6], [-9, 0.6, 6.6], [0, 0.8, 9.8], [9, 0.6, 6.6], [12, 0.6, 1.6]], ancho: 0.18, guiones: [0.7, 0.6], tono: luz}
+  - {nombre: hebilla, hueso: torso, forma: lamina, pos: [-4.2, 0.8, 9.3], rot: [0, -12, 0], rect: [3.6, 3.4], radio: 0.6, agujeros: [{rect: [1.8, 1.6]}], material: oro, una_cara: true, grosor: 0.7}
+  - {nombre: boton, hueso: torso, forma: lamina, pos: [-2.6, 9.5, 9.1], circulo: 1.0, material: oro, una_cara: true, dentro_de: abrigo, grosor: 0.8}
+  - {nombre: boton2, hueso: torso, forma: lamina, pos: [-2.8, 4.5, 8.4], circulo: 1.0, material: oro, una_cara: true, dentro_de: abrigo, grosor: 0.8}
+  # bolsillos con marcapáginas (catorce en total; se ven los de adelante)
+  - {nombre: bolsillo_pecho, hueso: torso, forma: lamina, pos: [7.4, 12.5, 6.8], rot: [0, 30, 0], rect: [5.6, 5.0], radio: 0.8, material: abrigo_os, una_cara: true, dentro_de: abrigo, grosor: 0.7,
+     trazos: [{puntos: [[-2.4, 1.6, 0.05], [2.4, 1.6, 0.05]], ancho: 0.18, guiones: [0.6, 0.5], tono: luz}]}
+  - {nombre: marca_pecho, hueso: torso, forma: lamina, pos: [6.8, 15.8, 7.0], rot: [0, 30, 4], rect: [1.4, 4.0], material: marca_verde, una_cara: true, capa: 1, grosor: 0.6}
+  - {nombre: marca_pecho2, hueso: torso, forma: lamina, pos: [8.6, 15.4, 6.2], rot: [0, 30, -6], rect: [1.2, 3.2], material: marca_oro, una_cara: true, capa: 1, grosor: 0.6}
+  - {nombre: bolsillo_faldon, hueso: falda, forma: lamina, pos: [9.5, -12, 6.2], rot: [-8, 24, 0], rect: [6.6, 6.2], radio: 1.0, material: abrigo_os, espejo: true, una_cara: true, dentro_de: faldon, grosor: 0.7,
+     trazos: [{puntos: [[-2.9, 2.1, 0.05], [2.9, 2.1, 0.05]], ancho: 0.18, guiones: [0.6, 0.5], tono: luz}]}
+  - {nombre: marca_faldon, hueso: falda, forma: lamina, pos: [8.4, -8.2, 6.8], rot: [-8, 24, 5], rect: [1.5, 4.2], material: marca_roja, una_cara: true, capa: 1, grosor: 0.6}
+  - {nombre: marca_faldon2, hueso: falda, forma: lamina, pos: [-10.6, -8.4, 6.4], rot: [-8, -24, -4], rect: [1.4, 3.8], material: marca_crema, una_cara: true, capa: 1, grosor: 0.6}
+  - {nombre: marca_faldon3, hueso: falda, forma: lamina, pos: [-8.6, -8.8, 6.7], rot: [-8, -24, 8], rect: [1.2, 3.0], material: marca_oro, una_cara: true, capa: 1, grosor: 0.6}
+  # tintero colgado del cinturón
+  - {nombre: cordel, hueso: torso, forma: tubo, puntos: [[6.5, 0, 7.4], [7.0, -2.5, 8.6], [7.4, -4.5, 8.8]], radio: 0.35, material: cuero, capa: 2}
+  - {nombre: tintero, hueso: torso, forma: casco, esferas: [[7.4, -7.6, 8.8, 2.6], [7.4, -9.2, 8.8, 2.4], [7.4, -5.0, 8.8, 1.2]], material: tintero, capa: 2.2,
+     trazos: [{puntos: [[6.2, -6.6, 11.0], [6.0, -8.6, 11.0]], anchos: [0.5, 0.2], tono: '#c8d4ff', opacidad: 0.9}]}
+  - {nombre: corcho, hueso: torso, forma: cilindro, a: [7.4, -4.6, 8.8], b: [7.4, -3.2, 8.8], ra: 1.0, rb: 1.1, material: corcho, capa: 2.4}
+
+  # ------------------------------------------------------------------ brazos
+  - nombre: manga
+    hueso: hombro
+    forma: tubo
+    puntos: [[0, 2.5, 0, 4.8], [codo, 0, 0, 0, 4.0], [mano, 0, 3.0, 0, 4.6]]
+    material: abrigo
+    capa: 1
+    trazos:
+      - {puntos: [[codo, 2.4, 2.4, 2.8], [codo, 0, 0.4, 3.8], [codo, -2.4, 2.0, 2.8]], anchos: [0, 0.35, 0], tono: hondo}
+  - nombre: puno
+    hueso: mano
+    forma: cilindro
+    a: [0, 5.0, 0]
+    b: [0, 1.4, 0]
+    ra: 4.4
+    rb: 5.4
+    material: puno
+    capa: 1.2
+    trazos:
+      - {puntos: [[-5.2, 2.0, 0.8], [0, 2.0, 5.4], [5.2, 2.0, 0.8]], ancho: 0.45, tono: '#c79a46'}
+  - nombre: mano
+    hueso: mano
+    forma: casco
+    esferas: [[0, -0.5, 0, 3.0], [0, -4.4, 0.4, 2.9], [0.6, -6.8, 0.8, 2.3]]
+    material: piel
+    capa: 1.4
+  - {nombre: pulgar, hueso: mano, forma: tubo, puntos: [[0, -1.6, 2.4, 1.3], [0.2, -4.0, 3.8, 1.1]], material: piel, capa: 1.6}
+  # manchas de tinta en los dedos de la mano derecha
+  - {nombre: mancha, hueso: mano.d, forma: lamina, pos: [-1.4, -6.2, 2.6], rot: [0, -20, 0], contorno: [[-1.2, 0.4], [0.2, 1.4], [1.4, 0.6], [1.0, -1.0], [-0.6, -1.2]], material: tintero, dentro_de: mano.d, sin_linea: true}
+
+  # ------------------------------------------------------------------ libro: El Cuento
+  - {nombre: tapa, hueso: libro, forma: lamina, pos: [0, 0, -0.9], rect: [19.5, 12.8], radio: 0.8, material: tapa, grosor: 0.8, capa: 0.4}
+  - {nombre: esquina, hueso: libro, forma: lamina, pos: [-9.2, 5.8, -0.85], contorno: [[0, 0], [2.6, 0], [0, -2.6]], suave: false, material: oro, espejo: true, dentro_de: tapa, grosor: 0.5}
+  - {nombre: esquina_b, hueso: libro, forma: lamina, pos: [-9.2, -5.8, -0.85], contorno: [[0, 0], [2.6, 0], [0, 2.6]], suave: false, material: oro, espejo: true, dentro_de: tapa, grosor: 0.5}
+  - nombre: pagina
+    hueso: libro
+    forma: lamina
+    pos: [0.2, 0, 0]
+    rot: [0, 14, 0]
+    contorno: [[0, -6], [8.8, -5.7], [9.1, 6.0], [0, 6.1]]
+    suave: false
+    material: papel
+    espejo: true
+    capa: 0.8
+    grosor: 0.7
+    trazos:
+      - {puntos: [[1.6, 4.2, 0.05], [7.6, 4.3, 0.05]], ancho: 0.3, tono: hondo, opacidad: 0.7}
+      - {puntos: [[1.6, 2.6, 0.05], [7.2, 2.7, 0.05]], ancho: 0.3, tono: hondo, opacidad: 0.7}
+      - {puntos: [[1.6, 1.0, 0.05], [7.7, 1.1, 0.05]], ancho: 0.3, tono: hondo, opacidad: 0.7}
+      - {puntos: [[1.6, -0.6, 0.05], [6.4, -0.5, 0.05]], ancho: 0.3, tono: hondo, opacidad: 0.7}
+      - {puntos: [[1.6, -2.2, 0.05], [7.5, -2.1, 0.05]], ancho: 0.3, tono: hondo, opacidad: 0.7}
+      - {puntos: [[1.6, -3.8, 0.05], [5.4, -3.7, 0.05]], ancho: 0.3, tono: hondo, opacidad: 0.7}
+  - {nombre: glifo, hueso: libro, forma: lamina, pos: [-4.6, -0.2, 1.2], rot: [0, -14, 0], circulo: 1.6, agujeros: [{circulo: 1.05}], material: oro, capa: 1.2, sin_linea: true}
+  - {nombre: cinta_libro, hueso: libro, forma: cinta, puntos: [[0, 6, 0.3], [0.6, 2, 1.8], [1.4, -4, 1.2], [2.2, -9.5, -0.5]], ancho: 1.1, normal: [0, 0, 1], cola: v, material: liston, reverso: liston_rev, capa: 1.4, grosor: 0.7}
+
+  # ------------------------------------------------------------------ piernas y botas
+  - nombre: pierna
+    hueso: pierna
+    forma: tubo
+    puntos: [[0, 2, 0, 4.2], [rodilla, 0, 0, 0.3, 3.5], [pie, 0, 3, 0, 3.0]]
+    material: pantalon
+    capa: -2
+  - nombre: bota
+    hueso: pie
+    forma: casco
+    esferas: [[0, 2.0, -0.4, 3.6], [0, -1.6, -1.2, 3.2], [0, -2.0, 4.8, 2.9], [0, -0.8, 2.2, 3.3]]
+    material: bota
+    capa: -1
+    trazos:
+      - {puntos: [[-2.9, -4.4, -2.5], [-3.0, -4.3, 2.0], [-2.6, -4.3, 6.4]], ancho: 0.7, tono: hondo}
+      - {puntos: [[-1.6, 1.6, 3.0], [1.6, 0.2, 4.4]], ancho: 0.4, tono: hondo, normal: [0, 0.3, 1]}
+      - {puntos: [[1.6, 1.6, 3.0], [-1.6, 0.2, 4.4]], ancho: 0.4, tono: hondo, normal: [0, 0.3, 1]}
+  - nombre: vuelta
+    hueso: pie
+    forma: cilindro
+    a: [0, 3.0, -0.3]
+    b: [0, 6.2, -0.3]
+    ra: 3.9
+    rb: 4.5
+    material: bota
+    capa: -0.8
+    trazos:
+      - {puntos: [[-4.1, 4.6, 1.6], [0, 4.6, 4.4], [4.1, 4.6, 1.6]], ancho: 0.2, guiones: [0.6, 0.5], tono: luz}
+
+  # ------------------------------------------------------------------ morral
+  - nombre: morral
+    hueso: cadera
+    forma: caja
+    pos: [-12.5, -3, 3.5]
+    rot: [0, -55, 4]
+    tam: [10.5, 9.5, 3.8]
+    radio: 1.4
+    material: cuero
+    capa: 2
+  - {nombre: rollo, hueso: cadera, forma: tubo, pos: [-12.5, -3, 3.5], rot: [0, -55, 4], puntos: [[-3.5, 3, 0, 1.4], [-2.2, 8.5, 0.4, 1.4]], material: papel, capa: 1.8,
+     trazos: [{puntos: [[-3.1, 5.2, 1.4], [-2.6, 5.2, 1.6]], ancho: 0.6, tono: '#d23a40'}]}
+  - {nombre: solapa_morral, hueso: cadera, forma: lamina, pos: [-12.5, -1.2, 5.4], rot: [0, -55, 4], contorno: [[-5.2, 3.6], [5.2, 3.6], [4.8, -2.2], [0, -3.8], [-4.8, -2.2]], material: cuero, una_cara: true, capa: 2.2, grosor: 0.8,
+     trazos: [{puntos: [[-4.2, 2.8, 0.05], [0, -2.8, 0.05], [4.2, 2.8, 0.05]], ancho: 0.2, guiones: [0.6, 0.5], tono: luz, suave: false}]}
+  - {nombre: broche, hueso: cadera, forma: lamina, pos: [-12.5, -3.8, 5.5], rot: [0, -55, 4], circulo: 1.0, material: oro, una_cara: true, capa: 2.4, grosor: 0.7}
+  - nombre: correa
+    hueso: torso
+    forma: cinta
+    puntos: [[cadera, -9.5, 1.5, 5.0], [torso, -5.5, 7, 8.8], [torso, 4, 16, 8.4], [torso, 9.5, 23, 3.6], [torso, 10.5, 25.5, -1]]
+    ancho: 2.4
+    normal: [0, 0, 1]
+    material: cuero
+    capa: 2.5
+
+  # ------------------------------------------------------------------ báculo: la Pluma de Aprendiz
+  - nombre: vara
+    hueso: baculo
+    forma: tubo
+    puntos: [[0, -40, 0, 1.0], [0, 20, 0, 1.15], [0, 74, 0, 1.25]]
+    material: madera
+    capa: 3
+    trazos:
+      - {puntos: [[0.4, 30, 1.1], [0.3, 46, 1.2]], anchos: [0, 0.25, 0], tono: hondo}
+      - {puntos: [[-0.3, -10, 1.0], [-0.4, 8, 1.1]], anchos: [0, 0.25, 0], tono: hondo}
+  - nombre: virola
+    hueso: baculo
+    forma: cilindro
+    a: [0, 72, 0]
+    b: [0, 78, 0]
+    ra: 1.7
+    rb: 1.4
+    material: cobre
+    capa: 3.1
+  - {nombre: cuerda, hueso: baculo, forma: cilindro, a: [0, 66, 0], b: [0, 70, 0], r: 1.45, material: cuero, capa: 3.05,
+     trazos: [{puntos: [[-1.5, 66.6, 0.4], [1.5, 67.6, 0.4]], ancho: 0.3, tono: hondo}, {puntos: [[-1.5, 68.0, 0.4], [1.5, 69.0, 0.4]], ancho: 0.3, tono: hondo}]}
+  - nombre: pluma
+    hueso: baculo
+    forma: lamina
+    pos: [0, 77, 0]
+    contorno: [[0, 0], [-1.6, 4], [-4.4, 11], [-5.4, 18], [-3.8, 25], [-0.6, 31], [1.2, 25], [2.4, 18], [2.3, 10], [1.0, 3]]
+    material: pluma
+    capa: 2.8
+    trazos:
+      - {puntos: [[0, 0, 0.05], [-0.8, 12, 0.05], [-1.0, 22, 0.05], [-0.6, 30, 0.05]], anchos: [0.6, 0.45, 0.1], tono: hondo}
+      - {puntos: [[-0.9, 8, 0.05], [-3.6, 12, 0.05]], anchos: [0.2, 0.1], tono: hondo}
+      - {puntos: [[-1.0, 13, 0.05], [-4.4, 17.5, 0.05]], anchos: [0.2, 0.1], tono: hondo}
+      - {puntos: [[-1.0, 18, 0.05], [-4.2, 22.5, 0.05]], anchos: [0.2, 0.1], tono: hondo}
+      - {puntos: [[-0.8, 9.5, 0.05], [1.6, 13.5, 0.05]], anchos: [0.2, 0.1], tono: hondo}
+      - {puntos: [[-1.0, 16, 0.05], [1.8, 20.5, 0.05]], anchos: [0.2, 0.1], tono: hondo}
+  - {nombre: punta_pluma, hueso: baculo, forma: lamina, pos: [0, 77, 0.06], contorno: [[-5.2, 20.5], [-3.8, 25], [-0.6, 31], [1.2, 25], [2.0, 21], [0.0, 22.5], [-2.6, 21.6]], material: pluma_punta, dentro_de: pluma, grosor: 0.6}
+
+animaciones:
+  reposo:
+    cuadros: 8
+    fps: 8
+    caras: [{desde: 0.75, hasta: 0.875, cara: parpadeo}]
+    pose:
+      torso: {rot: ['1.2*sin(tau*t)', 0, 0], pos: [0, '0.45*sin(tau*t)', 0]}
+      cabeza: ['-1.5*sin(tau*t + 0.6)', 0, '0.8*sin(tau*t)']
+      hombro.d: ['1.5*sin(tau*t + 0.3)', 0, 0]
+      hombro.i: ['-2*sin(tau*t + 0.3)', 0, 0]
+      libro: ['2*sin(tau*t + 1.0)', 0, 0]
+      falda: ['0.8*sin(tau*t - 0.5)', 0, 0]
+      liston2: ['5*sin(tau*t)', 0, '4*sin(tau*t)']
+      liston3: ['7*sin(tau*t - 0.8)', 0, '5*sin(tau*t - 0.8)']
+      liston4: ['9*sin(tau*t - 1.6)', 0, '6*sin(tau*t - 1.6)']
+      liston5: ['11*sin(tau*t - 2.4)', 0, '6*sin(tau*t - 2.4)']
+
+  ataque:
+    cuadros: 12
+    fps: 12
+    bucle: false
+    claves:
+      - {t: 0, pose: {}}
+      - t: 0.28
+        cara: decidido
+        apunta: {baculo: {hacia: [-0.6, 0.72, -0.35], frente: [-0.5, 0, 0.85]}}
+        pose:
+          cadera: {pos: [0, -1.8, -1]}
+          torso: [-6, -32, 0]
+          cabeza: [6, 22, 0]
+          hombro.d: [-165, 0, 48]
+          codo.d: [-55, 0, 0]
+          hombro.i: [16, 0, 4]
+          codo.i: [16, 0, 0]
+          pierna.d: [-10, 0, 0]
+          pierna.i: [10, 0, 0]
+          rodilla.i: [12, 0, 0]
+          falda: [-4, -10, 0]
+          liston2: [0, 0, 14]
+          liston3: [0, 0, 12]
+          liston4: [0, 0, 8]
+      - t: 0.44
+        curva: lineal
+        cara: grito
+        apunta: {baculo: {hacia: [0.55, -0.3, 0.78], frente: [-0.5, 0.3, 0.8]}}
+        pose:
+          raiz: {pos: [0, 0, 3]}
+          cadera: {pos: [0, -2.8, 0]}
+          torso: [16, 28, 0]
+          cabeza: [-6, -14, 0]
+          hombro.d: [-70, 0, 12]
+          codo.d: [24, 0, 0]
+          hombro.i: [26, 0, 22]
+          codo.i: [30, 0, 0]
+          pierna.d: [20, 0, 0]
+          pierna.i: [-18, 0, 0]
+          rodilla.d: [16, 0, 0]
+          falda: [8, 16, 0]
+          liston2: [-24, 0, -26]
+          liston3: [-18, 0, -22]
+          liston4: [-14, 0, -18]
+          liston5: [-10, 0, -14]
+      - t: 0.62
+        cara: grito
+        apunta: {baculo: {hacia: [0.35, -0.8, 0.5], frente: [-0.5, 0.3, 0.8]}}
+        pose:
+          raiz: {pos: [0, 0, 3.4]}
+          cadera: {pos: [0, -3.0, 0]}
+          torso: [20, 34, 0]
+          cabeza: [-4, -16, 0]
+          hombro.d: [-40, 0, 4]
+          codo.d: [20, 0, 0]
+          hombro.i: [28, 0, 26]
+          codo.i: [34, 0, 0]
+          pierna.d: [22, 0, 0]
+          pierna.i: [-20, 0, 0]
+          rodilla.d: [18, 0, 0]
+          falda: [10, 20, 0]
+          liston2: [-10, 0, -30]
+          liston3: [-20, 0, -26]
+          liston4: [-24, 0, -22]
+          liston5: [-20, 0, -18]
+      - {t: 1, pose: {}}
+
+  golpe:
+    cuadros: 7
+    fps: 12
+    bucle: false
+    claves:
+      - {t: 0, pose: {}}
+      - t: 0.15
+        curva: lineal
+        cara: dolor
+        pose:
+          raiz: {pos: [-4, 0, -3]}
+          cadera: {pos: [0, -1.5, 0]}
+          torso: [-16, -10, 6]
+          cabeza: [-14, -8, 8]
+          hombro.d: [20, 0, 30]
+          hombro.i: [30, 0, 30]
+          codo.i: [40, 0, 0]
+          falda: [-8, 0, 4]
+          liston2: [18, 0, 20]
+          liston3: [16, 0, 18]
+          liston4: [14, 0, 16]
+      - t: 0.5
+        cara: dolor
+        pose:
+          raiz: {pos: [-5, 0, -4]}
+          cadera: {pos: [0, -2, 0]}
+          torso: [-8, -6, 3]
+          cabeza: [-6, -4, 4]
+          hombro.d: [10, 0, 16]
+          hombro.i: [16, 0, 16]
+          codo.i: [20, 0, 0]
+          falda: [-4, 0, 2]
+          liston2: [-8, 0, -6]
+          liston3: [-10, 0, -8]
+      - {t: 1, cara: decidido, pose: {}}

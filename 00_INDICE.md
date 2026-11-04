@@ -92,7 +92,7 @@ Cada Pliegue incluye: atmósfera, mapa con zonas y bloqueos, bestiario, minijefe
 ### Herramienta de arte — `herramientas/forja/`
 | Archivo | Contenido |
 |---|---|
-| [herramientas/forja/README.md](herramientas/forja/README.md) | **Forja**: la herramienta con la que se dibuja, revisa y anima el arte del juego sin modelos de generación de imágenes. Personajes por piezas y huesos que salen idénticos en cualquier ángulo y cuadro, escenarios del mundo con vista cenital, baldosas de suelo, efectos de ataque cuadro a cuadro y revisión automática de calidad. |
+| [herramientas/forja/README.md](herramientas/forja/README.md) | **Forja**: la herramienta con la que se dibuja, revisa y anima el arte del juego sin modelos de generación de imágenes. Tiene un estilo ilustrado a tinta y color plano (Teo ya está hecho en él) y el estilo pixel art. Personajes por piezas y huesos que salen idénticos en cualquier ángulo y cuadro, escenarios del mundo con vista cenital, baldosas de suelo, efectos de ataque cuadro a cuadro y revisión automática de calidad. |
 
 ### Producción — `produccion/`
 | Archivo | Contenido |

@@ -1,10 +1,55 @@
-# Forja: herramienta de pixel art
+# Forja: herramienta de arte
 
-Forja es la herramienta con la que Claude dibuja, revisa y anima el arte de *El Bibliotecario*. No usa modelos que generan imágenes. Cada personaje, edificio o efecto se escribe como un archivo de texto con piezas, colores y huesos, y un motor en Python lo convierte en pixel art. Por eso:
+Forja es la herramienta con la que Claude dibuja, revisa y anima el arte de *El Bibliotecario*. No usa modelos que generan imágenes. Cada personaje, edificio o efecto se escribe como un archivo de texto con piezas, colores y huesos, y un motor en Python lo dibuja. Tiene dos estilos:
+
+- **Ilustrado (pluma):** tinta y color plano en alta resolución, con líneas suaves y sombras dibujadas, inspirado en juegos dibujados a mano como Hollow Knight. Es la dirección actual para los personajes.
+- **Pixel art:** el primer estilo, que se mantiene para el mundo y los efectos mientras se decide.
+
+En los dos:
 
 - el mismo personaje sale idéntico desde cualquier ángulo y en cada cuadro de animación;
 - cualquier parte se puede cambiar (el sombrero, un color, la pose) sin redibujar el resto;
 - cada render pasa por una revisión automática que señala pixeles sueltos, huecos en el contorno, curvas con dientes, bandas de sombra y colores que no se distinguen.
+
+## Estilo ilustrado (pluma)
+
+![Teo ilustrado: ambiente oscuro, papel, cara de cerca, giro completo, silueta, valores y tamaño en pantalla](muestras/teo_ilustrado_hoja.png)
+
+![Teo ataca con la Pluma de Aprendiz](muestras/teo_ilustrado_ataque.gif) ![Teo recibe un golpe](muestras/teo_ilustrado_golpe.gif)
+
+Las piezas son formas con volumen pegadas a un esqueleto 3D, pero en cada cuadro se proyectan a la pantalla como curvas exactas y se pintan como lo haría un ilustrador:
+
+1. **Tinta.** Contorno más grueso del lado contrario a la luz y una línea todavía más gruesa alrededor de toda la silueta.
+2. **Color plano** por material, con su tono de sombra, de luz y de línea.
+3. **Lo pegado a cada pieza** (bolsillos, botones, solapas, manchas de tinta), recortado a su forma.
+4. **Sombra en media luna** y **sombras que proyectan las piezas de adelante**, en una capa multiplicada que también oscurece los detalles.
+5. **Luces, brillos y trazos interiores**: pliegues, mechones y costuras punteadas.
+6. **Calcas sobre la cara**: ojos, cejas, boca, pecas y mejillas se dibujan de frente y se pegan a la cabeza. Al girar se deforman y se recortan justo en el borde de la silueta.
+7. **Expresiones**: cada calca dice en qué caras aparece (`normal`, `parpadeo`, `decidido`, `grito`, `dolor`). Las animaciones eligen la cara por clave o por tramo.
+
+| Forma | Para qué sirve |
+|---|---|
+| `elipsoide` | Cabeza, nariz, orejas, nudos; recibe calcas |
+| `tubo` | Brazos, piernas, bufanda, báculo; cada punto puede ir pegado a otro hueso y tener su radio |
+| `casco` | Torso, faldón, manos, botas: la envolvente de varias esferas (y discos) |
+| `caja`, `cilindro` | Morral, puños, virolas, vueltas de bota |
+| `lamina` | Piezas planas con agujeros: lentes, páginas, plumas, bolsillos, solapas |
+| `cinta` | Listones que se tuercen y muestran su revés, con punta en V |
+| `mechones` | Pelo: mechones afilados que nacen sobre la cabeza y la siguen o salen de ella |
+
+Otras herramientas del estilo:
+
+- `dentro_de: pieza` recorta un detalle a la forma de otra pieza.
+- `apunta: [x, y, z]` en un hueso (o en una clave de animación) orienta el báculo o el libro hacia una dirección. En las animaciones, la dirección sigue un arco y el giro de la muñeca se calcula en cada cuadro.
+- Los mechones que nacen del lado oculto de la cabeza se dibujan detrás de ella, desde cualquier ángulo.
+- `python -m forja texto modelo.yaml --zona x,y` dice qué pieza hay en ese pixel, para encontrar qué tapa qué.
+
+```bash
+python -m forja hoja personajes/teo_pluma.yaml
+python -m forja animar personajes/teo_pluma.yaml --anim ataque
+```
+
+## Estilo pixel art
 
 ![Teo en 8 ángulos, atacando y recibiendo un golpe](muestras/teo_angulos_y_animaciones.png)
 
@@ -25,7 +70,7 @@ Forja es la herramienta con la que Claude dibuja, revisa y anima el arte de *El 
 
 ## Uso
 
-Requiere Python 3.12 con `numpy`, `Pillow` y `PyYAML`. Desde `herramientas/forja/`:
+Requiere Python 3.12 con `numpy`, `Pillow` y `PyYAML`, más `skia-python` para el estilo ilustrado (`pip install skia-python`). Desde `herramientas/forja/`:
 
 ```bash
 python -m forja hoja personajes/teo.yaml
@@ -47,8 +92,8 @@ A los archivos que son bibliotecas de objetos se les agrega `--objeto nombre`. C
 
 | Carpeta | Contenido |
 |---|---|
-| `forja/` | El motor: `modelo`, `render`, `sdf` (formas), `color` (rampas en OKLab), `revisar`, `vistas`, `baldosas`, `escena`, `efectos` |
-| `personajes/` | Teo, con postura base, reposo, ataque y golpe |
+| `forja/` | El motor: `pluma` y `laminas` (estilo ilustrado), `modelo`, `render`, `sdf` (formas), `color` (rampas en OKLab), `revisar`, `vistas`, `baldosas`, `escena`, `efectos` |
+| `personajes/` | Teo ilustrado (`teo_pluma.yaml`: El Cuento en una mano, la Pluma de Aprendiz en la otra, cinco expresiones, reposo, ataque y golpe) y Teo en pixel art (`teo.yaml`) |
 | `mundo/` | Casa, pino, roble, biblioteca de objetos (barril, caja, rocas, tocón, cerca, arbusto, heno) y la escena de la aldea |
 | `efectos/` | Tajo de pluma, impacto, Gota de Tinta, Réplica Perfecta, Subrayar y chispa de Pavesa |
 | `muestras/` | Imágenes de ejemplo |
@@ -81,6 +126,8 @@ animaciones:
 ```
 
 ## Límites actuales
+
+- Estilo ilustrado: solo Teo está hecho. El mundo y los efectos siguen en pixel art hasta decidir si también pasan a este estilo.
 
 - El acabado todavía no iguala a un pixel artista profesional en caras y telas. Para eso están las calcas y los retoques de pixel, que hay que ir afinando a mano.
 - Los efectos son la forma en pixel. El resplandor se agrega en el motor del juego usando la máscara de brillo que exporta cada efecto.

@@ -9,6 +9,9 @@
   python -m forja escena  escena.yaml [--escala 3]
   python -m forja efecto  efecto.yaml
 
+Los dibujos a tinta (estilo: pluma en el YAML) usan hoja, giro, animar y texto (--zona x,y dice qué
+pieza hay en ese pixel).
+
 Con una biblioteca de objetos se agrega --objeto nombre.
 
 Cada corrida guarda sus imágenes en salida/<modelo>/ con un número de versión y una copia del YAML,
@@ -19,6 +22,9 @@ import json
 import os
 import shutil
 import sys
+
+import yaml
+from PIL import Image
 
 from . import revisar, vistas
 from .modelo import Modelo
@@ -88,6 +94,11 @@ def main(argv=None):
         print(f'{len(rgbas)} cuadros, {len(colores)} colores. Tira: {pre}_tira_noche.png')
         return
 
+    with open(a.modelo, encoding='utf-8') as f:
+        estilo = (yaml.safe_load(f) or {}).get('estilo')
+    if estilo == 'pluma':
+        return _pluma(a)
+
     m = Modelo(a.modelo, a.objeto)
     d, n = _carpeta(m, a.modelo, a.salida)
     pre = os.path.join(d, f'{n:03d}')
@@ -137,6 +148,48 @@ def main(argv=None):
     elif a.orden == 'paleta':
         vistas.muestras(m).save(pre + '_paleta.png')
         print('Paleta:', pre + '_paleta.png')
+
+
+def _pluma(a):
+    """Las mismas órdenes para los dibujos a tinta (estilo: pluma)."""
+    from . import laminas
+    from .pluma import Dibujo, dibujar
+    dib = Dibujo(a.modelo)
+    d, n = _carpeta(dib, a.modelo, a.salida)
+    pre = os.path.join(d, f'{n:03d}')
+    if a.orden == 'hoja':
+        titulo = f'{dib.nombre} v{n:03d} · yaw {a.yaw if a.yaw is not None else dib.camara["yaw"]:g} · {a.anim or "pose base"}'
+        im, r = laminas.hoja(dib, titulo, a.yaw, a.pitch, a.anim, a.cuadro)
+        im.save(pre + '_hoja.png')
+        laminas.recortar(r.rgba).save(pre + '_dibujo.png')
+        print(titulo)
+        print('Hoja:', pre + '_hoja.png')
+    elif a.orden == 'giro':
+        yaws = [float(x) for x in a.yaws.split(',')]
+        ims = [laminas.recortar(dibujar(dib, y, a.pitch, a.anim, a.cuadro).rgba) for y in yaws]
+        alto = max(i.height for i in ims)
+        tira = Image.new('RGBA', (sum(i.width for i in ims) + 20 * len(ims), alto), laminas.PAPEL + (255,))
+        x = 0
+        for i in ims:
+            tira.alpha_composite(i, (x, alto - i.height))
+            x += i.width + 20
+        tira.convert('RGB').save(pre + '_giro.png')
+        print('Giro:', pre + '_giro.png')
+    elif a.orden == 'animar':
+        if a.anim not in dib.animaciones:
+            sys.exit(f'No existe la animación "{a.anim}". Hay: {", ".join(dib.animaciones)}')
+        tira, fotos, fps = laminas.animacion(dib, a.anim, a.yaw, a.pitch)
+        tira.save(pre + f'_{a.anim}_tira.png')
+        laminas.guardar_gif(fotos, pre + f'_{a.anim}.gif', fps)
+        print('Animación:', pre + f'_{a.anim}.gif')
+    elif a.orden == 'texto':
+        from .pluma import que_hay
+        r = dibujar(dib, a.yaw, a.pitch, a.anim, a.cuadro)
+        x, y = (float(v) for v in a.zona.split(','))
+        for fila in que_hay(r, x, y):
+            print(fila)
+    else:
+        sys.exit(f'La orden "{a.orden}" no aplica a dibujos a tinta.')
 
 
 if __name__ == '__main__':

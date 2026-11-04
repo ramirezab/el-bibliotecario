@@ -73,7 +73,65 @@ class Material:
         self.textura = d.get('textura')
 
 
-class Modelo:
+class Esqueleto:
+    """Huesos con espejo, poses y animaciones; lo comparten el modelo de volumen y el dibujo a tinta."""
+
+    def _armar_huesos(self, lista):
+        self.huesos, self.orden, self.espejados = {}, [], set()
+        for h in lista:
+            nombre, padre = h['nombre'], h.get('padre')
+            if padre is not None and padre not in self.espejados and padre not in self.huesos:
+                raise ValueError(f'El hueso "{nombre}" usa el padre "{padre}", que no está definido antes.')
+            if h.get('espejo') or padre in self.espejados:
+                self.espejados.add(nombre)
+                for lado in ('i', 'd'):
+                    p = f'{padre}.{lado}' if padre in self.espejados else padre
+                    n = f'{nombre}.{lado}'
+                    self.huesos[n] = dict(h, nombre=n, padre=p, lado=lado, base=nombre)
+                    self.orden.append(n)
+            else:
+                self.huesos[nombre] = dict(h, lado=None, base=nombre)
+                self.orden.append(nombre)
+
+    def matrices(self, pose, t=0.0):
+        W = {}
+        for n in self.orden:
+            h = self.huesos[n]
+            prot, ppos = np.zeros(3), np.zeros(3)
+            for clave in {n, h['base']}:
+                r_, p_ = _como_dict(pose.get(clave), t)
+                prot, ppos = prot + r_, ppos + p_
+            L = tras(_vec(h.get('pos', [0, 0, 0])) + ppos) @ rot(h.get('rot', [0, 0, 0])) @ rot(prot)
+            if h['lado'] == 'd':
+                L = S @ L @ S
+            W[n] = (W[h['padre']] if h.get('padre') else np.eye(4)) @ L
+        return W
+
+    def pose_de(self, anim=None, cuadro=0):
+        """Pose (diccionario de huesos) y fase t para un cuadro de una animación, o la pose con ese nombre."""
+        if not anim:
+            return {}, 0.0
+        if anim in self.poses and anim not in self.animaciones:
+            return self.poses[anim], 0.0
+        a = self.animaciones[anim]
+        n = a.get('cuadros', 1)
+        t = cuadro / n if a.get('bucle', True) else (cuadro / max(n - 1, 1))
+        if 'pose' in a:
+            return a['pose'], t
+        claves = sorted(a['claves'], key=lambda k: k['t'])
+        if t <= claves[0]['t']:
+            return claves[0]['pose'], t
+        for k0, k1 in zip(claves, claves[1:]):
+            if k0['t'] <= t <= k1['t']:
+                u = (t - k0['t']) / max(k1['t'] - k0['t'], 1e-9)
+                if k1.get('curva', 'suave') == 'suave':
+                    u = u * u * (3 - 2 * u)
+                return _mezclar_poses(k0['pose'], k1['pose'], u, t), t
+        return claves[-1]['pose'], t
+
+
+
+class Modelo(Esqueleto):
     def __init__(self, ruta_o_dict, objeto=None):
         if isinstance(ruta_o_dict, dict):
             d = ruta_o_dict
@@ -111,38 +169,6 @@ class Modelo:
         self.animaciones = d.get('animaciones', {})
         self.retoques = d.get('retoques', {})
         self.grupos_cfg = d.get('grupos', {})
-
-    # ---------------------------------------------------------------- huesos
-    def _armar_huesos(self, lista):
-        self.huesos, self.orden, self.espejados = {}, [], set()
-        for h in lista:
-            nombre, padre = h['nombre'], h.get('padre')
-            if padre is not None and padre not in self.espejados and padre not in self.huesos:
-                raise ValueError(f'El hueso "{nombre}" usa el padre "{padre}", que no está definido antes.')
-            if h.get('espejo') or padre in self.espejados:
-                self.espejados.add(nombre)
-                for lado in ('i', 'd'):
-                    p = f'{padre}.{lado}' if padre in self.espejados else padre
-                    n = f'{nombre}.{lado}'
-                    self.huesos[n] = dict(h, nombre=n, padre=p, lado=lado, base=nombre)
-                    self.orden.append(n)
-            else:
-                self.huesos[nombre] = dict(h, lado=None, base=nombre)
-                self.orden.append(nombre)
-
-    def matrices(self, pose, t=0.0):
-        W = {}
-        for n in self.orden:
-            h = self.huesos[n]
-            prot, ppos = np.zeros(3), np.zeros(3)
-            for clave in {n, h['base']}:
-                r_, p_ = _como_dict(pose.get(clave), t)
-                prot, ppos = prot + r_, ppos + p_
-            L = tras(_vec(h.get('pos', [0, 0, 0])) + ppos) @ rot(h.get('rot', [0, 0, 0])) @ rot(prot)
-            if h['lado'] == 'd':
-                L = S @ L @ S
-            W[n] = (W[h['padre']] if h.get('padre') else np.eye(4)) @ L
-        return W
 
     # ---------------------------------------------------------------- piezas
     def _armar_piezas(self, lista):
@@ -217,29 +243,6 @@ class Modelo:
             k = max([salida[i]['suave'] for i in idx] + [self.grupos_cfg.get(g.split('.')[0], {}).get('suave', 0)])
             lista_grupos.append(dict(nombre=g, piezas=idx, suave=k))
         return salida, lista_grupos
-
-    def pose_de(self, anim=None, cuadro=0):
-        """Pose (diccionario de huesos) y fase t para un cuadro de una animación, o la pose con ese nombre."""
-        if not anim:
-            return {}, 0.0
-        if anim in self.poses and anim not in self.animaciones:
-            return self.poses[anim], 0.0
-        a = self.animaciones[anim]
-        n = a.get('cuadros', 1)
-        t = cuadro / n if a.get('bucle', True) else (cuadro / max(n - 1, 1))
-        if 'pose' in a:
-            return a['pose'], t
-        claves = sorted(a['claves'], key=lambda k: k['t'])
-        if t <= claves[0]['t']:
-            return claves[0]['pose'], t
-        for k0, k1 in zip(claves, claves[1:]):
-            if k0['t'] <= t <= k1['t']:
-                u = (t - k0['t']) / max(k1['t'] - k0['t'], 1e-9)
-                if k1.get('curva', 'suave') == 'suave':
-                    u = u * u * (3 - 2 * u)
-                return _mezclar_poses(k0['pose'], k1['pose'], u, t), t
-        return claves[-1]['pose'], t
-
 
 def _como_dict(v, t):
     if v is None:
