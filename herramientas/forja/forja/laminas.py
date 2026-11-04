@@ -81,7 +81,8 @@ def hoja(dib, titulo, yaw=None, pitch=None, anim=None, cuadro=0, giros=(0, 45, 9
     heroe = recortar(r.rgba, 30)
     H = 640
     heroe_g = _a_alto(heroe, H)
-    bruma = sobre(heroe_g, fondo_bruma(heroe_g.width, heroe_g.height))
+    colores = dib.d.get('fondo_bruma', ['#0b1022', '#2b3b66'])
+    bruma = sobre(heroe_g, fondo_bruma(heroe_g.width, heroe_g.height, *colores))
     papel = sobre(heroe_g, PAPEL)
 
     # cara de cerca
@@ -127,7 +128,7 @@ def hoja(dib, titulo, yaw=None, pitch=None, anim=None, cuadro=0, giros=(0, 45, 9
         L.paste(im, (x, y))
         _rotulo(L, (x, y + im.height + 4), rot, 13)
         x += im.width + 30
-    fondo_j = fondo_bruma(sum(j.width for j in juego) + 80, 300, semilla=5)
+    fondo_j = fondo_bruma(sum(j.width for j in juego) + 80, 300, *colores, semilla=5)
     xj = 20
     for j in juego:
         fondo_j.alpha_composite(j, (xj, 300 - j.height - 20))
@@ -156,7 +157,7 @@ def animacion(dib, anim, yaw=None, pitch=None, alto=360):
     if dib.d.get('fondo_revision') == 'papel':
         fondo = PAPEL
     else:
-        fondo = fondo_bruma(ims[0].width, alto, semilla=7)
+        fondo = fondo_bruma(ims[0].width, alto, *dib.d.get('fondo_bruma', ['#0b1022', '#2b3b66']), semilla=7)
     fotos = [sobre(i, fondo).convert('RGB') for i in ims]
     return tira.convert('RGB'), fotos, a.get('fps', 8)
 

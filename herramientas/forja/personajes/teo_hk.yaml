@@ -1,7 +1,7 @@
-# El personaje base del autor (arte/referencias/personaje_base.png) llevado a un estilo inspirado en
-# Hollow Knight: formas filosas, paleta oscura y fría, cara clara como punto de atención, ojos negros
-# profundos, línea fina oscura, sombreado suave y luz de contorno. Conserva el diseño del autor: cabeza
-# redonda, ojos ovalados sin boca, pelo con flequillo y remolino, cuello grueso, capa de campana y botas.
+# El personaje base del autor (arte/referencias/personaje_base.png) dibujado con el estilo de Hollow Knight
+# (formas filosas, línea fina oscura, sombreado suave y luz de contorno), pero con los colores del dibujo
+# original. Conserva el diseño del autor: cabeza redonda, ojos ovalados sin boca, pelo sin flequillo con
+# remolino y mechón al costado, cuello grueso (aquí un manto corto en picos), capa de campana y botas.
 # Unidades: 1 = 4 px. Mira hacia +Z; +X es su lado izquierdo.
 nombre: Teo_hk
 estilo: pluma
@@ -10,22 +10,23 @@ origen: [240, 560]
 escala: 4
 camara: {yaw: 30, pitch: 6}
 luz: [-0.55, 0.6, 0.6]
-tinta: '#0c0a12'
+tinta: '#1c140a'
+fondo_bruma: ['#1d1a12', '#4a4430']
 grosor: 0.42
 grosor_silueta: 0.9
 peso_sombra: 0.6
 sombra_proyectada: 1.0
-degradado: ['#ffffff', '#c9cbe0']
-contraluz: ['#9fb8e6', 0.55, 0.5]
+degradado: ['#ffffff', '#ddd2b8']
+contraluz: ['#f3dfb0', 0.55, 0.4]
 
 materiales:
-  cara: {color: '#ece4d4', sombra: '#b9b4bf', luz: '#ffffff', ancho_sombra: 0.22, suave: 2.2}
-  ojo: {color: '#0b0a10'}
-  pelo: {color: '#3e2c24', sombra: '#2a1e1c', hondo: '#160f10', luz: '#6a4e3e', ancho_sombra: 0.3, suave: 0.5}
-  capa: {color: '#3b3d3f', sombra: '#202229', hondo: '#14151b', luz: '#62656a', brillo: 0.2, ancho_sombra: 0.3, suave: 1.6}
-  manto: {color: '#4a4a46', sombra: '#2a2b31', hondo: '#1a1b21', luz: '#72726c', brillo: 0.25, ancho_sombra: 0.32, suave: 1.4}
-  pierna: {color: '#25232a', sombra: '#141318'}
-  bota: {color: '#4b3a2e', sombra: '#2a1f1c', luz: '#6e5646', brillo: 0.3, ancho_sombra: 0.35, suave: 1.0}
+  cara: {color: '#fcd7a0', sombra: '#e8b88a', luz: '#fff0d6', ancho_sombra: 0.22, suave: 2.2}
+  ojo: {color: '#3a2c12'}
+  pelo: {color: '#886632', sombra: '#6a4f2a', hondo: '#4a361c', luz: '#a8844a', brillo: 0.25, ancho_sombra: 0.14, suave: 0.8}
+  capa: {color: '#594a23', sombra: '#3e3316', hondo: '#2b230e', luz: '#7c6a39', brillo: 0.2, ancho_sombra: 0.3, suave: 1.6}
+  manto: {color: '#615229', sombra: '#433818', hondo: '#2e2610', luz: '#857440', brillo: 0.25, ancho_sombra: 0.32, suave: 1.4}
+  pierna: {color: '#64471f', sombra: '#4a3216', luz: '#86643a'}
+  bota: {color: '#64471f', sombra: '#4a3216', hondo: '#33230e', luz: '#86643a', brillo: 0.3, ancho_sombra: 0.35, suave: 1.0}
 
 huesos:
   - {nombre: raiz}
@@ -52,7 +53,7 @@ piezas:
       - {trazo: [[5.6, -2.4], [8.0, -3.2], [10.4, -2.4]], anchos: [0.3, 1.1, 0.3], material: ojo, espejo: true, caras: [parpadeo]}
       - {trazo: [[10.4, 1.0], [6.6, -1.8], [10.4, -4.6]], anchos: [0.5, 1.3, 0.5], suave: false, material: ojo, espejo: true, caras: [dolor]}
 
-  # ------------------------------------------------------------------ pelo: flequillo en picos y remolino curvo
+  # ------------------------------------------------------------------ pelo sin flequillo, remolino y mechón al costado
   - nombre: casquete
     hueso: cabeza
     forma: elipsoide
@@ -64,7 +65,7 @@ piezas:
     calcas:
       - op: resta
         suave: false
-        contorno: [[-25, -2], [-20, 4.5], [-14.5, 8.0], [-7, 9.0], [0, 8.4], [7, 9.0], [12.5, 8.2], [16.5, 4.0], [18.5, -3], [22, -6], [25, -40], [-25, -40]]
+        contorno: [[-25, -2], [-21.5, 3], [-18.5, 7.0], [-14.5, 10.2], [-9.5, 12.2], [-4, 13.2], [1.5, 13.4], [7, 12.6], [11.5, 11.0], [15, 8.0], [17.4, 3.5], [18.6, -3], [22, -6], [25, -40], [-25, -40]]
   - nombre: mechones
     hueso: cabeza
     forma: mechones
@@ -74,12 +75,6 @@ piezas:
     grupo: pelo
     capa: 3
     lista:
-      - {en: [-16.5, 11], hacia: -108, curva: 18, largo: 9.5, ancho: 3.6, perfil: [1, 0.6, 0], alza: [0.3, 0.4]}
-      - {en: [-9.5, 12.5], hacia: -98, curva: 12, largo: 10.5, ancho: 3.8, perfil: [1, 0.6, 0], alza: [0.3, 0.4]}
-      - {en: [-2, 12.5], hacia: -88, curva: -6, largo: 9.0, ancho: 3.7, perfil: [1, 0.6, 0], alza: [0.3, 0.4]}
-      - {en: [5.5, 12.5], hacia: -80, curva: -12, largo: 10.0, ancho: 3.7, perfil: [1, 0.6, 0], alza: [0.3, 0.4]}
-      - {en: [11.5, 11.5], hacia: -70, curva: -16, largo: 8.5, ancho: 3.3, perfil: [1, 0.6, 0], alza: [0.3, 0.4]}
-      - {en: [-19, 6], hacia: -96, curva: 10, largo: 9, ancho: 2.8, perfil: [1, 0.6, 0], alza: [0.4, 0.6]}
       # mechón largo del costado, en punta
       - {en: [16.2, 10], hacia: -98, curva: 34, largo: 22, ancho: 4.6, perfil: [1, 1, 0.7, 0], alza: [0.8, 1.2]}
       # remolino: dos cuernitos curvos
