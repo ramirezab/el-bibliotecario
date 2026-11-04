@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>El Bibliotecario · Biblia del juego</title>
+  <meta name="description" content="Biblia de diseño de El Bibliotecario: historia, lore, diálogos, sistemas y efectos visuales.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/themes/vue.css">
+  <style>
+    /* Pergamino y tinta: el lector lee un manuscrito de Orvalis */
+    :root {
+      --pergamino: #f4ecda;
+      --pergamino-hondo: #e9dcc0;
+      --tinta: #23202b;
+      --tinta-suave: #5b5466;
+      --indigo: #3b3f8f;
+      --ambar: #b8741a;
+      --liston: #c8323c;
+      --plata: #8a93a6;
+      --regla: #d6c6a4;
+      --display: "Cormorant Garamond", "Garamond", "Times New Roman", serif;
+      --texto: "Literata", "Georgia", serif;
+      --theme-color: var(--indigo);
+      --base-background-color: var(--pergamino);
+      --base-color: var(--tinta);
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --pergamino: #17151d;
+        --pergamino-hondo: #201d29;
+        --tinta: #e8e1d2;
+        --tinta-suave: #a59fb3;
+        --indigo: #9aa2ff;
+        --ambar: #e0a24a;
+        --liston: #ff6b74;
+        --regla: #34303f;
+        color-scheme: dark;
+      }
+    }
+    body { background: var(--pergamino); color: var(--tinta); font-family: var(--texto); }
+    .markdown-section { max-width: 72ch; padding: 32px 24px 64px; font-size: 1.02rem; line-height: 1.72; color: var(--tinta); }
+    .markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4 {
+      font-family: var(--display); color: var(--tinta); text-wrap: balance; letter-spacing: 0.01em;
+    }
+    .markdown-section h1 { font-size: 2.6rem; border-bottom: 2px solid var(--liston); padding-bottom: 0.2em; }
+    .markdown-section h2 { font-size: 1.9rem; margin-top: 2.2em; border-bottom: 1px solid var(--regla); padding-bottom: 0.15em; }
+    .markdown-section h3 { font-size: 1.45rem; color: var(--indigo); }
+    .markdown-section h4 { font-size: 1.2rem; }
+    .markdown-section p, .markdown-section li { color: var(--tinta); }
+    .markdown-section strong { color: var(--tinta); }
+    .markdown-section em { color: var(--tinta); }
+    .markdown-section a { color: var(--indigo); font-weight: 600; }
+    .markdown-section blockquote {
+      border-left: 4px solid var(--ambar); background: var(--pergamino-hondo); color: var(--tinta);
+      padding: 0.6em 1.1em; margin: 1.2em 0; font-style: italic;
+    }
+    .markdown-section blockquote p { color: var(--tinta); }
+    .markdown-section code { background: var(--pergamino-hondo); color: var(--liston); border-radius: 3px; font-size: 0.88em; }
+    .markdown-section pre, .markdown-section pre > code { background: var(--pergamino-hondo); color: var(--tinta); }
+    .markdown-section table { display: block; overflow-x: auto; border-collapse: collapse; font-size: 0.92rem; }
+    .markdown-section th { background: var(--pergamino-hondo); color: var(--tinta); font-family: var(--display); font-size: 1.05rem; }
+    .markdown-section td, .markdown-section th { border: 1px solid var(--regla); padding: 6px 10px; vertical-align: top; }
+    .markdown-section tr:nth-child(2n) { background: transparent; }
+    .markdown-section hr { border-bottom: 1px solid var(--regla); }
+    .sidebar { background: var(--pergamino-hondo); border-right: 1px solid var(--regla); }
+    .sidebar > h1 { font-family: var(--display); font-size: 1.7rem; margin: 18px 0 8px; }
+    .sidebar > h1 a { color: var(--tinta); }
+    .sidebar ul li a { color: var(--tinta-suave); font-size: 0.92rem; }
+    .sidebar ul li.active > a { color: var(--liston); border-right: 3px solid var(--liston); font-weight: 600; }
+    .sidebar-nav > ul > li > p, .sidebar-nav strong { font-family: var(--display); font-size: 1.05rem; color: var(--ambar); text-transform: uppercase; letter-spacing: 0.08em; }
+    .sidebar-toggle { background: transparent; }
+    .sidebar-toggle span { background-color: var(--liston); }
+    .search input { background: var(--pergamino); color: var(--tinta); border: 1px solid var(--regla); }
+    .search .matching-post { border-bottom: 1px solid var(--regla); }
+    .search a, .search p, .search h2 { color: var(--tinta) !important; }
+    .app-nav { display: none; }
+    :focus-visible { outline: 2px solid var(--liston); outline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <div id="app">Cargando la biblia…</div>
+  <script>
+    window.$docsify = {
+      name: 'El Bibliotecario',
+      nameLink: '#/',
+      homepage: '00_INDICE.md',
+      loadSidebar: '_sidebar.md',
+      subMaxLevel: 2,
+      maxLevel: 3,
+      auto2top: true,
+      relativePath: false,
+      notFoundPage: true,
+      search: {
+        placeholder: 'Buscar en la biblia',
+        noData: 'Sin resultados',
+        depth: 3,
+        maxAge: 3600000
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/docsify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/plugins/search.min.js"></script>
+</body>
+</html>
