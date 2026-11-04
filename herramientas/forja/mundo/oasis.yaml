@@ -31,8 +31,16 @@ materiales:
   agua: {color: '#5cb8c4', sombra: '#3a8a9c', luz: '#c8f4f4', linea: '#1a4a58', brillo: 0.6}
   tela_azul: {color: '#3a6e9a', sombra: '#264c70', luz: '#5a90be', linea: '#122436'}
   sal: {color: '#f4eefb', sombra: '#b8b0d6', luz: '#ffffff', linea: '#3a3058', brillo: 0.9}
+  papel: {color: '#f6ecd6', sombra: '#d2c0a0', luz: '#ffffff', linea: '#3a2a18', aura: ['#ffe08a', 3.0, 0.55]}
 
 objetos:
+  pagina:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - {nombre: hoja, forma: lamina, pos: [0, 8, 0], rot: [-10, 15, 8], contorno: [[-4.5, -6], [4, -6], [5, 5.5], [-4, 6]], suave: false, material: papel,
+         trazos: [{puntos: [[-2.5, 3.2, 0.05], [2.8, 3.4, 0.05]], ancho: 0.35, tono: '#8a7a64'}, {puntos: [[-2.6, 1.2, 0.05], [2.6, 1.3, 0.05]], ancho: 0.35, tono: '#8a7a64'},
+                  {puntos: [[-2.7, -0.8, 0.05], [2.9, -0.7, 0.05]], ancho: 0.35, tono: '#8a7a64'}, {puntos: [[-2.8, -2.8, 0.05], [1.4, -2.7, 0.05]], ancho: 0.35, tono: '#8a7a64'}]}
+
   palmera:
     huesos: [{nombre: raiz}]
     piezas:

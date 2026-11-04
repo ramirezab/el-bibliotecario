@@ -1,0 +1,82 @@
+# Pavesa: espíritu de brasa que acompaña a Teo. Cuerpo de llama con un núcleo claro, tres lenguas de fuego
+# que se agitan, ojos y una sonrisa. Mira hacia +Z.
+nombre: Pavesa
+estilo: pluma
+lienzo: [320, 360]
+origen: [160, 330]
+escala: 4
+tamano: 1.4
+camara: {yaw: 20, pitch: 10}
+luz: [-0.55, 0.65, 0.55]
+tinta: '#3e1006'
+grosor: 0.55
+grosor_silueta: 0.8
+linea_encima: true
+peso_sombra: 0.4
+contraluz: ['#fff0b0', 0.6, 0.4]
+
+materiales:
+  fuego: {color: '#ff8a2a', sombra: '#d84a18', hondo: '#a02a0e', luz: '#ffc85a', linea: '#3e1006', brillo: 0.5, ancho_sombra: 0.32, suave: 1.2, aura: ['#ff9a3a', 3.5, 0.45]}
+  nucleo: {color: '#ffd776', sombra: '#ffb04a', luz: '#fff6d0', linea: '#3e1006', sin_sombra: true}
+  ojo: {color: '#2a0c04'}
+
+huesos:
+  - {nombre: raiz}
+  - {nombre: cuerpo, padre: raiz, pos: [0, 9, 0]}
+  - {nombre: lengua_c, padre: cuerpo, pos: [0, 6, -1]}
+  - {nombre: lengua_i, padre: cuerpo, pos: [4.5, 4, -1], rot: [0, 0, -28]}
+  - {nombre: lengua_d, padre: cuerpo, pos: [-4.5, 4, -1], rot: [0, 0, 26]}
+
+piezas:
+  - nombre: cuerpo
+    hueso: cuerpo
+    forma: elipsoide
+    r: [7.5, 8.5, 7]
+    material: fuego
+    grupo: llama
+    calcas:
+      - {ovalo: [1.6, 2.3], centro: [2.9, 0.4], material: ojo, espejo: true, sin_caras: [parpadeo]}
+      - {circulo: 0.55, centro: [3.3, 1.0], color: '#fff4d6', brillo: true, espejo: true, sin_caras: [parpadeo]}
+      - {trazo: [[1.6, 0.0], [2.9, -0.6], [4.2, 0.0]], anchos: [0.2, 0.6, 0.2], material: ojo, espejo: true, caras: [parpadeo]}
+      - {trazo: [[-1.6, -2.8], [0, -3.6], [1.6, -2.8]], anchos: [0.2, 0.55, 0.2], material: ojo}
+  - {nombre: lengua_c, hueso: lengua_c, forma: tubo, puntos: [[0, 0, 0, 4.2], [1.2, 6, 0, 3.0], [-1.0, 11, 0, 1.4], [0.6, 15, 0, 0.15]], material: fuego, grupo: llama}
+  - {nombre: lengua_i, hueso: lengua_i, forma: tubo, puntos: [[0, 0, 0, 2.8], [1.0, 4.5, 0, 1.8], [0.2, 8, 0, 0.12]], material: fuego, grupo: llama}
+  - {nombre: lengua_d, hueso: lengua_d, forma: tubo, puntos: [[0, 0, 0, 2.6], [-1.0, 4.0, 0, 1.7], [-0.2, 7.5, 0, 0.12]], material: fuego, grupo: llama}
+
+animaciones:
+  reposo:
+    cuadros: 16
+    fps: 16
+    caras: [{desde: 0.8, hasta: 0.875, cara: parpadeo}]
+    pose:
+      raiz: {pos: [0, '1.5*sin(tau*t)', 0]}
+      cuerpo: {rot: [0, 0, '3*sin(tau*t)'], pos: [0, '0.4*sin(2*tau*t)', 0]}
+      lengua_c: [0, 0, '10*sin(2*tau*t)']
+      lengua_i: [0, 0, '-12*sin(2*tau*t + 1.2)']
+      lengua_d: [0, 0, '12*sin(2*tau*t + 2.4)']
+  caminar:
+    cuadros: 12
+    fps: 18
+    pose:
+      raiz: {pos: [0, '2*sin(tau*t)', 0]}
+      cuerpo: [8, 0, '4*sin(tau*t)']
+      lengua_c: [-18, 0, '12*sin(2*tau*t)']
+      lengua_i: [-14, 0, '-14*sin(2*tau*t + 1.2)']
+      lengua_d: [-14, 0, '14*sin(2*tau*t + 2.4)']
+  ataque:
+    cuadros: 14
+    fps: 22
+    bucle: false
+    claves:
+      - {t: 0, pose: {}}
+      - {t: 0.35, curva: salida, pose: {cuerpo: {rot: [-14, 0, 0], pos: [0, 2, -2]}, lengua_c: [-24, 0, 0], lengua_i: [-20, 0, -10], lengua_d: [-20, 0, 10]}}
+      - {t: 0.5, curva: entrada, pose: {raiz: {pos: [0, 0, 8]}, cuerpo: {rot: [20, 0, 0]}, lengua_c: [30, 0, 0], lengua_i: [24, 0, 10], lengua_d: [24, 0, -10]}}
+      - {t: 1, curva: sobrepaso, pose: {}}
+  golpe:
+    cuadros: 10
+    fps: 22
+    bucle: false
+    claves:
+      - {t: 0, pose: {}}
+      - {t: 0.2, curva: lineal, cara: parpadeo, pose: {raiz: {pos: [0, 0, -5]}, cuerpo: {rot: [-16, 0, 10]}, lengua_c: [20, 0, 20]}}
+      - {t: 1, curva: sobrepaso, pose: {}}

@@ -47,7 +47,7 @@ i0 = s.index('// ===============================================================
 i1 = s.index('// =====================================================================\n// DATOS: unidades')
 s = s[:i0] + s[i1:]
 cambiar("  if (usaDibujo(u)) return drawTeoDibujo(u, silCol);\n",
-        "  if (u.hoja) return drawUnitHoja(u, silCol);\n  if (u.key === 'pavesa') { u.sy = 1 + Math.sin(now / 90) * 0.04; u.sx = 1 - Math.sin(now / 90) * 0.03; }\n")
+        "  if (u.hoja) return drawUnitHoja(u, silCol);\n")
 cambiar("  if (!teo || !teo.chain || !teo.visible || TEO_DIBUJO.listo) return;", "  if (!teo || !teo.chain || !teo.visible || true) return;")
 s = re.sub(r"    if \(TEO_DIBUJO\.listo\) \{.*?\}\n    else \{ const pt = portrait\('teo', \[8, 3, 11, 14\]\); ctx\.drawImage\(pt, 90, 20, pt\.width \* 18, pt\.height \* 18\); \}",
            "    ctx.imageSmoothingEnabled = true; ctx.drawImage(ARTE.img['retrato_teo.webp'], 70, 10, 280, 280); ctx.imageSmoothingEnabled = false;", s, flags=re.S)
@@ -100,10 +100,10 @@ cambiar("    await moveTo(pavesa, target.x + target.ox - 90, pavesa.y, 220);", "
 # arena en vez de paja dorada
 cambiar("color: 'rgba(255,214,140,0.55)', kind: 'chaff'", "color: 'rgba(246,222,176,0.6)', kind: 'chaff'")
 
-# ------------------------------------------------------------------ Pavesa dibujada, exploración y arranque
-cambiar("SP.pavesa = mk(22, 16, g => {", "SP.pavesaPixel = mk(22, 16, g => {")
+# ------------------------------------------------------------------ Pavesa con su hoja de Forja, exploración y arranque
+cambiar("  pavesa:   { name: 'Pavesa', spr: 'pavesa', hp: 170,", "  pavesa:   { name: 'Pavesa', spr: 'pavesa', hoja: 'pavesa_combate', hp: 170,")
 cambiar("// =====================================================================\n// BUCLE PRINCIPAL",
-        open(os.path.join(AQUI, 'exploracion.js'), encoding='utf-8').read() + "\nSP.pavesa = pintaPavesa();\n\n// =====================================================================\n// BUCLE PRINCIPAL")
+        open(os.path.join(AQUI, 'exploracion.js'), encoding='utf-8').read() + "\n// =====================================================================\n// BUCLE PRINCIPAL")
 cambiar("""  update(dt);
   render();
   requestAnimationFrame(frame);""", """  update(dt);

@@ -105,10 +105,10 @@ def npc_kiko():
     })
 
 
-def retrato(dib, nombre, cara='normal'):
+def retrato(dib, nombre, cara='normal', parte='cabeza'):
     """El busto para la caja de diálogo: la cabeza de frente, recortada en un cuadrado."""
     r = dibujar(dib, 15, 4, zoom=1.3, cara=cara)
-    cab = next(it for it in r.items if it['nombre'] == 'cabeza')['camino'].getBounds()
+    cab = next(it for it in r.items if it['nombre'] == parte)['camino'].getBounds()
     cx, cy, lado = cab.centerX(), cab.centerY() + cab.height() * 0.12, max(cab.width(), cab.height()) * 0.78
     im = Image.fromarray(r.rgba, 'RGBA').crop((int(cx - lado), int(cy - lado), int(cx + lado), int(cy + lado)))
     im.resize((256, 256), Image.LANCZOS).save(os.path.join(SALIDA, f'retrato_{nombre}.webp'), 'WEBP', quality=90)
@@ -135,6 +135,15 @@ def personajes(meta):
         retrato(dib, nombre)
 
 
+def pavesa(meta):
+    print('Pavesa')
+    dib = Dibujo(ruta('personajes', 'pavesa.yaml'))
+    meta['pavesa'] = exploracion(dib, 'pavesa', [0, 90, 180], (('reposo', 1), ('caminar', 1)))
+    meta['pavesa_combate'] = juego.exportar(dib, [{'clave': a, 'anim': a, 'yaw': 60, 'pitch': 6} for a in
+                                                  ('reposo', 'caminar', 'ataque', 'golpe')], SALIDA, 'pavesa_combate', Z_COMBATE)
+    retrato(dib, 'pavesa', parte='llama')
+
+
 def escarabajo(meta):
     print('Escarabajo')
     esc = Dibujo(ruta('personajes', 'escarabajo.yaml'))
@@ -146,7 +155,7 @@ def escarabajo(meta):
 
 
 # tamaño de cada elemento respecto de Teo (que es cabezón): la palmera mide más del doble que él
-TAMANO = {'palmera': 2.6, 'tienda': 2.1, 'pozo': 1.7, 'vasijas': 1.4, 'cajas': 1.5, 'roca': 1.6, 'cactus': 1.7,
+TAMANO = {'pagina': 1.6, 'palmera': 2.6, 'tienda': 2.1, 'pozo': 1.7, 'vasijas': 1.4, 'cajas': 1.5, 'roca': 1.6, 'cactus': 1.7,
           'arbusto': 1.3, 'juncos': 1.5, 'columna': 2.2, 'arco': 2.4, 'bloque': 1.6}
 
 
@@ -416,6 +425,8 @@ def main(partes):
     meta = json.load(open(ruta_meta, encoding='utf-8')) if os.path.exists(ruta_meta) else {}
     if not partes or 'personajes' in partes:
         personajes(meta)
+    if not partes or 'pavesa' in partes:
+        pavesa(meta)
     if not partes or 'escarabajo' in partes:
         escarabajo(meta)
     if not partes or 'elementos' in partes:

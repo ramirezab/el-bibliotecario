@@ -8,7 +8,7 @@ async function cargarArte() {
   ARTE.meta = meta;
   const nombres = new Set(['suelo.webp', 'fondo_batalla.webp']);
   for (const [k, grupo] of Object.entries(meta)) { if (k.startsWith('_')) continue; for (const a of Object.values(grupo)) if (a && a.img) nombres.add(a.img); }
-  for (const n of ['teo', 'teo_dolor', 'nadia', 'basim', 'kiko']) nombres.add(`retrato_${n}.webp`);
+  for (const n of ['teo', 'teo_dolor', 'nadia', 'basim', 'kiko', 'pavesa']) nombres.add(`retrato_${n}.webp`);
   const lista = [...nombres]; let hechos = 0;
   await Promise.all(lista.map(n => cargarImg('arte/' + n).then(i => { ARTE.img[n] = i; hechos++; showDesc(`Cargando el arte… ${hechos}/${lista.length}`); })));
   ARTE.listo = true;
@@ -72,29 +72,9 @@ function retratoChico(key) {
   if (RETRATOS[key]) return RETRATOS[key];
   const c = document.createElement('canvas'); c.width = 48; c.height = 48; const g = c.getContext('2d'); g.imageSmoothingQuality = 'high';
   if (key === 'teo') g.drawImage(ARTE.img['retrato_teo.webp'], 0, 0, 48, 48);
-  else if (key === 'pavesa') g.drawImage(SP.pavesa, 4, 2, 40, 44);
+  else if (key === 'pavesa') g.drawImage(ARTE.img['retrato_pavesa.webp'], 0, 0, 48, 48);
   else if (key === 'escarabajo') { const a = ARTE.meta.escarabajo_combate.reposo; const [sx, sy, cw, ch] = recorteCuadro(a, 0); const k = 48 / Math.max(cw, ch); g.drawImage(ARTE.img[a.img], sx, sy, cw, ch, (48 - cw * k) / 2, 48 - ch * k, cw * k, ch * k); }
   return (RETRATOS[key] = c);
-}
-
-// ---------------------------------------------------------------------- Pavesa dibujada a tinta
-function pintaPavesa() {
-  const L = 60, A = 64, c = document.createElement('canvas'); c.width = L * RES; c.height = A * RES; c.logW = L; c.logH = A;
-  const g = c.getContext('2d'); g.scale(RES, RES); g.lineJoin = 'round';
-  const llama = (k, col, borde) => {
-    g.beginPath(); g.moveTo(30, 62);
-    g.bezierCurveTo(30 - 24 * k, 60, 30 - 26 * k, 36, 30 - 12 * k, 26);
-    g.bezierCurveTo(30 - 6 * k, 20, 30 - 4 * k, 12, 33, 2 + (1 - k) * 24);
-    g.bezierCurveTo(30 + 8 * k, 12, 30 + 14 * k, 18, 30 + 18 * k, 26);
-    g.bezierCurveTo(30 + 27 * k, 38, 30 + 24 * k, 58, 30, 62); g.closePath();
-    g.fillStyle = col; g.fill(); if (borde) { g.lineWidth = 2.6; g.strokeStyle = borde; g.stroke(); }
-  };
-  llama(1, '#e5501c', '#3e1006'); llama(0.74, '#ff963a'); llama(0.48, '#ffd776');
-  g.fillStyle = '#2a0c04';
-  [[23, 44], [37, 44]].forEach(([x, y]) => { g.beginPath(); g.ellipse(x, y, 3.2, 4.6, 0, 0, Math.PI * 2); g.fill(); });
-  g.fillStyle = '#fff4d6'; [[24.2, 42.4], [38.2, 42.4]].forEach(([x, y]) => { g.beginPath(); g.arc(x, y, 1.2, 0, Math.PI * 2); g.fill(); });
-  g.strokeStyle = '#2a0c04'; g.lineWidth = 1.4; g.beginPath(); g.arc(30, 50, 3, 0.2, Math.PI - 0.2); g.stroke();
-  return c;
 }
 
 // ---------------------------------------------------------------------- mundo
@@ -133,6 +113,7 @@ const NPCS = [
 ];
 const ZONA_RUINAS = { x: 1100, y: 340, r: 120 };
 
+const ZOOM = 0.62; // la cámara de exploración se aleja: el mundo se ve más grande y los personajes más chicos
 const X = {
   pj: { x: 1085, y: 1300, yaw: 180, mov: false, t0: 0, paso: 0 },
   sigue: { x: 1040, y: 1320 },           // Pavesa
@@ -161,7 +142,7 @@ function libre(x, y, r = 12) {
 
 // ---------------------------------------------------------------------- diálogos
 const SPK = { teo: { nombre: 'Teo', img: 'retrato_teo.webp' }, nadia: { nombre: 'Nadia, mercader', img: 'retrato_nadia.webp' },
-  basim: { nombre: 'Basim, guardián del pozo', img: 'retrato_basim.webp' }, kiko: { nombre: 'Kiko', img: 'retrato_kiko.webp' }, pavesa: { nombre: 'Pavesa', img: null } };
+  basim: { nombre: 'Basim, guardián del pozo', img: 'retrato_basim.webp' }, kiko: { nombre: 'Kiko', img: 'retrato_kiko.webp' }, pavesa: { nombre: 'Pavesa', img: 'retrato_pavesa.webp' } };
 function decir(lineas) {
   return new Promise(res => { X.dialogo = { lineas, i: 0, t0: now, res }; SFX.click(); });
 }
@@ -232,7 +213,7 @@ window.addEventListener('blur', () => { X.teclas = {}; });
 cv.addEventListener('pointerdown', e => {
   if (G.mode !== 'explore') return;
   const r = cv.getBoundingClientRect();
-  const x = (e.clientX - r.left) / r.width * W + X.cam.x, y = (e.clientY - r.top) / r.height * H + X.cam.y;
+  const x = (e.clientX - r.left) / r.width * W / ZOOM + X.cam.x, y = (e.clientY - r.top) / r.height * H / ZOOM + X.cam.y;
   if (X.dialogo) { avanzarDialogo(); return; }
   if (X.bloqueo) return;
   const n = NPCS.find(n => Math.hypot(x - n.x, y - (n.y - 40)) < 50);
@@ -277,7 +258,7 @@ function updExplore(dt) {
   if (Math.random() < 0.3 * dt / 16.67) X.polvo.push({ x: X.sigue.x + rnd(-6, 6), y: X.sigue.y - 50 + rnd(-6, 6), t: 0, life: rnd(500, 900), r: rnd(1.5, 3), brasa: true, vy: rnd(-40, -20) });
   for (let i = X.polvo.length - 1; i >= 0; i--) { const p = X.polvo[i]; p.t += dt; if (p.vy) p.y += p.vy * s; if (p.t > p.life) X.polvo.splice(i, 1); }
   // viento con granos de arena
-  if (Math.random() < 0.6 * dt / 16.67) X.arena.push({ x: X.cam.x - 20, y: X.cam.y + rnd(0, H), vx: rnd(90, 200), vy: rnd(-8, 12), t: 0, life: rnd(4000, 7000), r: rnd(1, 2.2) });
+  if (Math.random() < 0.9 * dt / 16.67) X.arena.push({ x: X.cam.x - 20, y: X.cam.y + rnd(0, H / ZOOM), vx: rnd(90, 200), vy: rnd(-8, 12), t: 0, life: rnd(4000, 7000), r: rnd(1, 2.2) });
   for (let i = X.arena.length - 1; i >= 0; i--) { const p = X.arena[i]; p.t += dt; p.x += p.vx * s; p.y += (p.vy + Math.sin(p.t / 300) * 10) * s; if (p.t > p.life) X.arena.splice(i, 1); }
   // páginas perdidas
   for (const p of X.paginas) if (!p.tomada && Math.hypot(pj.x - p.x, pj.y - p.y) < 40) {
@@ -293,7 +274,8 @@ function updExplore(dt) {
   }
   if (enRuinas && X.flags.mision && !X.flags.emboscada && !X.bloqueo) emboscada();
   // cámara
-  const cx = clamp(pj.x - W / 2, 0, MAPA.w - W), cy = clamp(pj.y - H * (X.dialogo ? 0.36 : 0.55), 0, MAPA.h - H);
+  const VW = W / ZOOM, VH = H / ZOOM;
+  const cx = clamp(pj.x - VW / 2, 0, MAPA.w - VW), cy = clamp(pj.y - VH * (X.dialogo ? 0.36 : 0.55), 0, MAPA.h - VH);
   X.cam.x += (cx - X.cam.x) * Math.min(1, s * 5); X.cam.y += (cy - X.cam.y) * Math.min(1, s * 5);
   X.cam.shake *= Math.pow(0.86, dt / 16.67);
   if (X.escarabajo) X.escarabajo.t += dt;
@@ -377,8 +359,8 @@ function renderExplore() {
   const sh = X.cam.shake ? rnd(-X.cam.shake, X.cam.shake) : 0;
   const cx = Math.round(X.cam.x * RES) / RES, cy = Math.round(X.cam.y * RES) / RES;
   ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(ARTE.img['suelo.webp'], cx * RES, cy * RES, W * RES, H * RES, sh, sh, W, H);
-  ctx.translate(-cx + sh, -cy + sh);
+  ctx.drawImage(ARTE.img['suelo.webp'], cx * RES, cy * RES, W / ZOOM * RES, H / ZOOM * RES, sh, sh, W, H);
+  ctx.scale(ZOOM, ZOOM); ctx.translate(-cx + sh, -cy + sh);
   // agua: brillos que se mueven
   const e = ESTANQUE, agua = X.flags.victoria ? 1 : 0.55;
   ctx.save(); ctx.beginPath(); ctx.ellipse(e.x, e.y, e.rx - 8, e.ry - 6, 0, 0, Math.PI * 2); ctx.clip();
@@ -397,7 +379,7 @@ function renderExplore() {
   for (const n of NPCS) cosas.push({ y: n.y, f: () => { const [q, flip] = yawNpc(n.mira); const a = ARTE.meta[n.id]['reposo_' + q]; sombra(n.x, n.y, 26); dibujaCuadro(a, indiceCuadro(a, n.x * 7), n.x, n.y, flip); } });
   const pj = X.pj;
   cosas.push({ y: pj.y, f: () => { const [q, flip] = yawCuadro(pj.yaw); const a = ARTE.meta.teo[(pj.mov ? 'caminar_' : 'reposo_') + q]; sombra(pj.x, pj.y, 28); dibujaCuadro(a, indiceCuadro(a, pj.t0), pj.x, pj.y, flip); } });
-  cosas.push({ y: X.sigue.y, f: () => { const b = Math.sin(now / 260) * 5; sombra(X.sigue.x, X.sigue.y, 12, 4, 0.18); const esc = 0.62 * (1 + Math.sin(now / 90) * 0.03); ctx.save(); ctx.translate(X.sigue.x, X.sigue.y - 40 + b); ctx.scale(esc, esc * (1 - Math.sin(now / 90) * 0.03)); ctx.imageSmoothingEnabled = true; ctx.drawImage(SP.pavesa, -30, -60, 60, 64); ctx.restore(); } });
+  cosas.push({ y: X.sigue.y, f: () => { const [q, flip] = yawNpc(pj.yaw); const a = ARTE.meta.pavesa[(pj.mov ? 'caminar_' : 'reposo_') + q]; sombra(X.sigue.x, X.sigue.y, 12, 4, 0.18); dibujaCuadro(a, indiceCuadro(a, 0), X.sigue.x, X.sigue.y - 22, flip); } });
   if (X.escarabajo) { const b = X.escarabajo, k = clamp(b.t / 900, 0, 1); cosas.push({ y: b.y, f: () => { const a = ARTE.meta.escarabajo.reposo_20; sombra(b.x, b.y, 70 * k); ctx.save(); ctx.globalAlpha = k; dibujaCuadro(a, indiceCuadro(a, 0), b.x, b.y + (1 - k) * 40, 1, 0.7 + 0.3 * k); ctx.restore(); } }); }
   for (const p of X.paginas) if (!p.tomada) cosas.push({ y: p.y, f: () => dibujaPagina(p) });
   cosas.sort((a, b) => a.y - b.y).forEach(c => c.f());
@@ -408,7 +390,7 @@ function renderExplore() {
   for (const p of X.arena) { ctx.fillStyle = `rgba(250,226,180,${0.6 * Math.min(1, (p.life - p.t) / 800)})`; ctx.fillRect(p.x, p.y, p.r * 2.4, p.r); }
   // burbuja para hablar
   const n = !X.bloqueo && !X.dialogo && cercano();
-  if (n) { const b = Math.sin(now / 200) * 2; ctx.save(); ctx.translate(n.x, n.y - 118 + b); ctx.fillStyle = '#f6ecd6'; ctx.strokeStyle = '#3a2a18'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(-36, -14, 72, 28, 8); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#7a1d22'; ctx.font = '600 15px "Pixelify Sans", monospace'; ctx.textAlign = 'center'; ctx.fillText('E  Hablar', 0, 5); ctx.restore(); }
+  if (n) { const b = Math.sin(now / 200) * 2; ctx.save(); ctx.setTransform(RES, 0, 0, RES, 0, 0); ctx.translate((n.x - cx) * ZOOM, (n.y - cy) * ZOOM - 84 + b); ctx.fillStyle = '#f6ecd6'; ctx.strokeStyle = '#3a2a18'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(-36, -14, 72, 28, 8); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#7a1d22'; ctx.font = '600 15px "Pixelify Sans", monospace'; ctx.textAlign = 'center'; ctx.fillText('E  Hablar', 0, 5); ctx.restore(); }
   // pantalla
   ctx.setTransform(RES, 0, 0, RES, 0, 0);
   const v = ctx.createRadialGradient(W / 2, H / 2, H * 0.45, W / 2, H / 2, H * 0.95); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(70,30,10,0.32)'); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
@@ -418,13 +400,8 @@ function renderExplore() {
   drawTransicion();
 }
 function dibujaPagina(p) {
-  const b = Math.sin(now / 400 + p.i) * 4, x = p.x, y = p.y - 34 + b;
-  sombra(p.x, p.y, 12, 4, 0.2);
-  ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(x, y, 2, x, y, 30); g.addColorStop(0, 'rgba(255,230,150,0.7)'); g.addColorStop(1, 'rgba(255,230,150,0)'); ctx.fillStyle = g; ctx.fillRect(x - 30, y - 30, 60, 60); ctx.restore();
-  ctx.save(); ctx.translate(x, y); ctx.rotate(Math.sin(now / 700 + p.i) * 0.2); ctx.fillStyle = '#f6ecd6'; ctx.strokeStyle = '#3a2a18'; ctx.lineWidth = 1.6;
-  ctx.beginPath(); ctx.moveTo(-9, -12); ctx.lineTo(8, -12); ctx.lineTo(10, 11); ctx.lineTo(-8, 12); ctx.closePath(); ctx.fill(); ctx.stroke();
-  ctx.strokeStyle = '#8a7a64'; ctx.lineWidth = 1; for (let k = 0; k < 4; k++) { ctx.beginPath(); ctx.moveTo(-5, -6 + k * 5); ctx.lineTo(5, -6 + k * 5); ctx.stroke(); }
-  ctx.restore();
+  sombra(p.x, p.y, 10, 3.5, 0.2);
+  dibujaCuadro(ARTE.meta.props.pagina, 0, p.x, p.y - 16 + Math.sin(now / 400 + p.i) * 4);
 }
 function drawHudExplore() {
   ctx.save();
@@ -442,7 +419,7 @@ function drawDialogo() {
   const [quien, txt] = d.lineas[d.i]; const spk = SPK[quien];
   const n = Math.floor((now - d.t0) / 1000 * 48); const vis = txt.slice(0, n);
   // el cuadro va abajo, salvo que tape a Teo: entonces sube
-  const x = 70, w = W - 140, h = 158, y = X.pj.y - X.cam.y > 300 ? 54 : 362;
+  const x = 70, w = W - 140, h = 158, y = (X.pj.y - X.cam.y) * ZOOM > 300 ? 54 : 362;
   ctx.save();
   ctx.fillStyle = 'rgba(246,236,214,0.97)'; ctx.strokeStyle = '#3a2a18'; ctx.lineWidth = 3;
   ctx.beginPath(); ctx.roundRect(x, y, w, h, 10); ctx.fill(); ctx.stroke();
@@ -451,8 +428,7 @@ function drawDialogo() {
   const px = x + 14, py = y + 14, ps = 130;
   ctx.fillStyle = '#e2cfa6'; ctx.beginPath(); ctx.roundRect(px, py, ps, ps, 8); ctx.fill();
   ctx.save(); ctx.beginPath(); ctx.roundRect(px, py, ps, ps, 8); ctx.clip(); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
-  if (spk.img) ctx.drawImage(ARTE.img[spk.img], px - 6, py - 2, ps + 12, ps + 12);
-  else ctx.drawImage(SP.pavesa, px + 20, py + 12, 90, 96);
+  ctx.drawImage(ARTE.img[spk.img], px - 6, py - 2, ps + 12, ps + 12);
   ctx.restore();
   ctx.strokeStyle = '#3a2a18'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(px, py, ps, ps, 8); ctx.stroke();
   // nombre y texto
