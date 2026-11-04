@@ -1,0 +1,10 @@
+# Golpe que conecta: destello, estrella de cuatro puntas, anillo y esquirlas.
+lienzo: [72, 72]
+cuadros: 8
+fps: 20
+capas:
+  - {tipo: anillo, centro: [36, 36], r0: 4, r1: 30, grosor: 7, ventana: [-0.05, 0.7], paleta: tinta, emisiva: false}
+  - {tipo: disco, centro: [36, 36], radio: 18, ventana: [-0.12, 0.3], paleta: oro}
+  - {tipo: estrella, centro: [36, 36], radio: 34, puntas: 4, giro: 45, ventana: [-0.1, 0.4], agudeza: 10, nucleo: 0.3, paleta: oro}
+  - {tipo: particulas, origen: [36, 36], cantidad: 16, angulo: [0, 360], velocidad: [30, 60], inicio: [0.0, 0.1], vida: [0.35, 0.7],
+     gravedad: 30, estela: 0.08, paleta: oro, semilla: 5}

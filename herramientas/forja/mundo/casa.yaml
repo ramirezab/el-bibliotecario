@@ -1,0 +1,55 @@
+# Casa de aldea con entramado de madera y techo de tejas (vista cenital oblicua, 2x2 baldosas de 32 px).
+nombre: Casa
+lienzo: [104, 124]
+origen: [52, 92]
+camara: {proyeccion: oblicua, alto: 1.0, fondo: 0.55, yaw: -12}
+luz: [-0.7, 0.7, 0.15]
+tinta: '#1f1418'
+sombra_suelo: true
+umbral_linea: 2.0
+
+materiales:
+  piedra: {color: '#8d8a86', giro: 10, textura: {escala: 2, fuerza: 0.08}}
+  junta: {color: '#4e4744', pasos: 3, indice: 1}
+  yeso: {color: '#e9d9b6', dL: 0.08, textura: {escala: 3, fuerza: 0.05}}
+  viga: {color: '#7a4a2a', giro: 12}
+  teja: {color: '#c4462e', giro: 14, textura: {escala: 2, fuerza: 0.06}}
+  teja_junta: {color: '#7e2a20', pasos: 3, indice: 1}
+  puerta: {color: '#8a5a32', textura: {escala: 1.5, fuerza: 0.05}}
+  vidrio: {colores: ['#1d2a44', '#2e4466', '#4f72a0', '#9cc4e8', '#e8f4ff'], brillo: 0.25}
+  hierro: {color: '#4a4650', brillo: 0.15}
+
+huesos:
+  - {nombre: raiz}
+
+piezas:
+  - {nombre: cimiento, forma: caja, tam: [52, 6, 40], radio: 1, pos: [0, 3, 0], material: piedra,
+     regiones: [{tipo: ladrillos, alto: 3, ancho: 6, junta: 0.8, material: junta}]}
+  - {nombre: muro, forma: caja, tam: [48, 32, 36], radio: 0.5, pos: [0, 22, 0], material: yeso,
+     regiones: [
+       {tipo: caja, centro: [23.2, 0, 0], tam: [2.4, 40, 60], material: viga},
+       {tipo: caja, centro: [-23.2, 0, 0], tam: [2.4, 40, 60], material: viga},
+       {tipo: caja, centro: [0, 0, 17.5], tam: [60, 40, 1.2], material: yeso},
+       {tipo: caja, centro: [23.2, 0, 17.6], tam: [2.6, 40, 2], material: viga},
+       {tipo: caja, centro: [-23.2, 0, 17.6], tam: [2.6, 40, 2], material: viga},
+       {tipo: franja, eje: y, desde: 14.5, hasta: 17, material: viga},
+       {tipo: franja, eje: y, desde: -1, hasta: 1, material: viga},
+       {tipo: caja, centro: [0, 0, -17.6], tam: [2.4, 40, 2], material: viga},
+       {tipo: caja, centro: [24, 0, 0], tam: [2, 40, 2.4], material: viga},
+       {tipo: caja, centro: [-24, 0, 0], tam: [2, 40, 2.4], material: viga}]}
+  - {nombre: hastial, forma: extrusion, puntos: [[-18, 0], [18, 0], [0, 13]], grosor: 48, pos: [0, 38, 0], rot: [0, 90, 0], material: yeso,
+     regiones: [{tipo: franja, eje: x, desde: -1.2, hasta: 1.2, material: viga}]}
+  - {nombre: techo, forma: extrusion, puntos: [[-24, -2], [24, -2], [0, 19]], grosor: 58, radio: 0.8, pos: [0, 37, 0], rot: [0, 90, 0], material: teja,
+     regiones: [{tipo: ladrillos, plano: zy, alto: 3, ancho: 5, junta: 1.0, junta_v: 0.8, material: teja_junta}]}
+  - {nombre: hueco_techo, forma: extrusion, puntos: [[-20.5, -3], [20.5, -3], [0, 15.5]], grosor: 52, pos: [0, 37, 0], rot: [0, 90, 0], material: teja, op: resta, grupo: techo}
+  - {nombre: cumbrera, forma: cilindro, r: 1.6, alto: 59, pos: [0, 56, 0], rot: [0, 0, 90], material: viga}
+  - {nombre: chimenea, forma: caja, tam: [7, 16, 7], radio: 0.5, pos: [15, 54, -9], material: piedra,
+     regiones: [{tipo: ladrillos, alto: 2.5, ancho: 4, junta: 0.7, material: junta}]}
+  - {nombre: puerta, forma: caja, tam: [11, 19, 2], radio: 0.6, pos: [-6, 15.5, 18.3], material: puerta,
+     regiones: [{tipo: rayas, eje: x, periodo: 3.6, ancho: 0.7, material: viga}]}
+  - {nombre: dintel, forma: caja, tam: [14, 2, 2.6], pos: [-6, 26, 18.4], material: viga}
+  - {nombre: picaporte, forma: esfera, r: 0.9, pos: [-2.2, 15, 19.6], material: hierro, sin_linea: true}
+  - {nombre: ventana, forma: caja, tam: [10, 9, 1.2], pos: [12, 22, 18.1], material: vidrio,
+     regiones: [{tipo: franja, eje: x, desde: -0.5, hasta: 0.5, material: viga}, {tipo: franja, eje: y, desde: -0.5, hasta: 0.5, material: viga}]}
+  - {nombre: marco, forma: caja, tam: [12.5, 11.5, 1.6], pos: [12, 22, 17.7], material: viga}
+  - {nombre: alfeizar, forma: caja, tam: [14, 1.6, 3.4], pos: [12, 16.6, 18.6], material: viga}

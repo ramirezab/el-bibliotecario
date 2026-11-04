@@ -40,6 +40,7 @@
 - **Arte**
   - [Dirección de arte](arte/Direccion_de_Arte.md)
   - [Biblia de efectos visuales](arte/Biblia_de_Efectos_Visuales.md)
+  - [Forja: herramienta de pixel art](herramientas/forja/README.md)
 
 - **Producción**
   - [Plan de desarrollo](produccion/Plan_de_Desarrollo.md)

@@ -1,0 +1,76 @@
+# Biblioteca de objetos de aldea (vista cenital oblicua). Comparten materiales, cámara y luz.
+nombre: Objetos
+camara: {proyeccion: oblicua, alto: 1.0, fondo: 0.55, yaw: 0}
+luz: [-0.7, 0.7, 0.15]
+tinta: '#1a1214'
+sombra_suelo: true
+materiales:
+  duela: {color: '#9a6436', textura: {escala: 1.4, fuerza: 0.06}}
+  aro: {color: '#5a5660', brillo: 0.12}
+  tabla: {color: '#b07a44', dL: 0.1, textura: {escala: 1.5, fuerza: 0.05}}
+  tabla_osc: {color: '#6e4426', pasos: 3, indice: 1}
+  roca: {color: '#8a8f99', giro: 14, textura: {escala: 2, fuerza: 0.1}}
+  musgo: {color: '#6f9a3c', pasos: 4, indice: 2}
+  corteza: {color: '#6b4a2b', textura: {escala: 1.2, fuerza: 0.08}}
+  anillos: {color: '#d9b27a', pasos: 4, indice: 2}
+  arbusto: {color: '#4a8a36', giro: 18, textura: {escala: 1.6, fuerza: 0.14}}
+  flor: {color: '#e8d24a', pasos: 3, indice: 1}
+  heno: {color: '#e3b84e', giro: 12, textura: {escala: 1.2, fuerza: 0.1}}
+huesos:
+  - {nombre: raiz}
+grupos:
+  mata: {suave: 2}
+  rocas: {suave: 1}
+objetos:
+  barril:
+    lienzo: [24, 30]
+    origen: [12, 24]
+    piezas:
+      - {nombre: barril, forma: capsula, a: [0, 2, 0], b: [0, 12, 0], ra: 5.2, rb: 5.2, material: duela,
+         regiones: [{tipo: franja, eje: y, desde: 3.2, hasta: 4.4, material: aro}, {tipo: franja, eje: y, desde: 9.6, hasta: 10.8, material: aro},
+                    {tipo: rayas, eje: x, periodo: 2.6, ancho: 0.5, material: tabla_osc}]}
+      - {nombre: corte1, forma: caja, tam: [14, 6, 14], pos: [0, 17.6, 0], material: duela, op: resta, grupo: barril}
+      - {nombre: corte2, forma: caja, tam: [14, 6, 14], pos: [0, -3.6, 0], material: duela, op: resta, grupo: barril}
+  caja:
+    lienzo: [24, 30]
+    origen: [12, 22]
+    piezas:
+      - {nombre: caja, forma: caja, tam: [12, 11, 12], radio: 0.6, pos: [0, 5.5, 0], material: tabla,
+         regiones: [{tipo: rayas, eje: y, periodo: 3.7, ancho: 0.6, material: tabla_osc}]}
+  rocas:
+    lienzo: [36, 26]
+    origen: [16, 18]
+    piezas:
+      - {nombre: roca1, forma: elipsoide, radios: [9, 6.5, 7.5], pos: [0, 3.5, 0], material: roca, grupo: rocas, rugosidad: {escala: 2.6, fuerza: 1.1},
+         regiones: [{tipo: ruido, escala: 3, umbral: 0.62, material: musgo}]}
+      - {nombre: roca2, forma: elipsoide, radios: [5, 4, 4.5], pos: [10, 2, 6], material: roca, grupo: rocas, rugosidad: {escala: 2, fuerza: 0.8, semilla: 7}}
+  tocon:
+    lienzo: [24, 24]
+    origen: [12, 16]
+    piezas:
+      - {nombre: tocon, forma: cilindro, r: 6, alto: 7, radio: 1, pos: [0, 3.5, 0], material: corteza,
+         regiones: [{tipo: franja, eje: y, desde: 2.6, hasta: 9, material: anillos}]}
+      - {nombre: raiz1, forma: capsula, a: [0, 1, 4], b: [3, 0.5, 9], ra: 2, rb: 0.8, material: corteza}
+  cerca:
+    lienzo: [48, 30]
+    origen: [24, 22]
+    piezas:
+      - {nombre: poste1, forma: caja, tam: [2.6, 13, 2.6], radio: 0.4, pos: [-16, 6.5, 0], material: tabla}
+      - {nombre: poste2, forma: caja, tam: [2.6, 13, 2.6], radio: 0.4, pos: [0, 6.5, 0], material: tabla}
+      - {nombre: poste3, forma: caja, tam: [2.6, 13, 2.6], radio: 0.4, pos: [16, 6.5, 0], material: tabla}
+      - {nombre: travesano1, forma: caja, tam: [38, 2, 1.4], radio: 0.3, pos: [0, 9.5, 1.6], material: tabla}
+      - {nombre: travesano2, forma: caja, tam: [38, 2, 1.4], radio: 0.3, pos: [0, 4.5, 1.6], material: tabla}
+  arbusto:
+    lienzo: [32, 28]
+    origen: [16, 20]
+    piezas:
+      - {nombre: a1, forma: esfera, r: 6.5, pos: [0, 5, 0], material: arbusto, grupo: mata, rugosidad: {escala: 2, fuerza: 1.2}}
+      - {nombre: a2, forma: esfera, r: 5, pos: [-6, 4, 2], material: arbusto, grupo: mata, rugosidad: {escala: 2, fuerza: 1.1, semilla: 2}}
+      - {nombre: a3, forma: esfera, r: 5, pos: [6, 4, 1], material: arbusto, grupo: mata, rugosidad: {escala: 2, fuerza: 1.1, semilla: 3},
+         regiones: [{tipo: ruido, escala: 1.6, umbral: 0.74, material: flor}]}
+  heno:
+    lienzo: [28, 26]
+    origen: [14, 18]
+    piezas:
+      - {nombre: fardo, forma: caja, tam: [14, 8, 9], radio: 2, pos: [0, 4, 0], material: heno,
+         regiones: [{tipo: rayas, eje: y, periodo: 2.2, ancho: 0.5, material: tabla_osc}]}

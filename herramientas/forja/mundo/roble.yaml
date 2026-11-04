@@ -1,0 +1,23 @@
+# Árbol de copa redonda (vista cenital oblicua). Racimos de esferas rugosas.
+nombre: Roble
+lienzo: [64, 80]
+origen: [32, 70]
+camara: {proyeccion: oblicua, alto: 1.0, fondo: 0.55, yaw: 0}
+luz: [-0.7, 0.7, 0.15]
+tinta: '#12180f'
+sombra_suelo: true
+materiales:
+  hoja: {color: '#4f8f3a', giro: 18, dL: 0.11, textura: {escala: 1.8, fuerza: 0.14}}
+  tronco: {color: '#6b4a2b', textura: {escala: 1.2, fuerza: 0.08}}
+huesos:
+  - {nombre: raiz}
+grupos:
+  copa: {suave: 2.5}
+piezas:
+  - {nombre: tronco, forma: capsula, a: [0, 0, 0], b: [0, 16, 0], ra: 3.6, rb: 2.6, material: tronco}
+  - {nombre: rama, forma: capsula, a: [0, 12, 0], b: [6, 20, 1], r: 1.4, material: tronco}
+  - {nombre: c1, forma: esfera, r: 11, pos: [0, 30, 0], material: hoja, grupo: copa, rugosidad: {escala: 2.6, fuerza: 1.6}}
+  - {nombre: c2, forma: esfera, r: 8.5, pos: [-10, 24, 3], material: hoja, grupo: copa, rugosidad: {escala: 2.6, fuerza: 1.5, semilla: 2}}
+  - {nombre: c3, forma: esfera, r: 8.5, pos: [10, 25, 2], material: hoja, grupo: copa, rugosidad: {escala: 2.6, fuerza: 1.5, semilla: 3}}
+  - {nombre: c4, forma: esfera, r: 7.5, pos: [2, 22, 9], material: hoja, grupo: copa, rugosidad: {escala: 2.4, fuerza: 1.4, semilla: 4}}
+  - {nombre: c5, forma: esfera, r: 7, pos: [-4, 36, -5], material: hoja, grupo: copa, rugosidad: {escala: 2.4, fuerza: 1.3, semilla: 5}}

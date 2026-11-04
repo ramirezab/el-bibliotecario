@@ -1,0 +1,9 @@
+# Chispa de Pavesa: estallido de brasas que suben.
+lienzo: [72, 80]
+cuadros: 10
+fps: 18
+capas:
+  - {tipo: disco, centro: [36, 56], radio: 18, ventana: [-0.1, 0.35], paleta: brasa}
+  - {tipo: estrella, centro: [36, 56], radio: 26, puntas: 6, giro: 15, ventana: [-0.1, 0.3], agudeza: 10, paleta: brasa}
+  - {tipo: particulas, origen: [36, 58], dispersion: 6, cantidad: 26, angulo: [-150, -30], velocidad: [20, 60], inicio: [0, 0.3],
+     vida: [0.4, 0.7], gravedad: -30, roce: 1, estela: 0.08, paleta: brasa, semilla: 10}

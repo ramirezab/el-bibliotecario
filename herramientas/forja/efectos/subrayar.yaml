@@ -1,0 +1,8 @@
+# Subrayar: Teo traza una línea de tinta bajo el enemigo; se enciende de punta a punta y se deshace en ceniza dorada.
+lienzo: [128, 48]
+cuadros: 14
+fps: 18
+capas:
+  - {tipo: trazo, puntos: [[8, 30], [40, 18], [80, 40], [120, 24]], grosor: 9, presion: 0.5, dibujo: [0, 0.3], ignicion: [0.32, 0.6], desvanecer: [0.62, 1]}
+  - {tipo: particulas, origen: [64, 30], dispersion: 50, cantidad: 30, angulo: [-120, -60], velocidad: [10, 30], inicio: [0.6, 0.9],
+     vida: [0.2, 0.4], gravedad: -20, paleta: oro, semilla: 9}

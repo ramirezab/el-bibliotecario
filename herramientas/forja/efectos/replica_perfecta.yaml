@@ -1,0 +1,10 @@
+# Réplica perfecta: anillo de luna, estrella de ocho puntas que gira y chispas de papel.
+lienzo: [96, 96]
+cuadros: 10
+fps: 20
+capas:
+  - {tipo: anillo, centro: [48, 48], r0: 6, r1: 44, grosor: 10, ventana: [-0.08, 0.65], paleta: luna}
+  - {tipo: estrella, centro: [48, 48], radio: 42, puntas: 8, giro: 0, gira: 40, ventana: [-0.1, 0.5], agudeza: 12, nucleo: 0.26, paleta: oro}
+  - {tipo: disco, centro: [48, 48], radio: 16, ventana: [-0.1, 0.25], paleta: luna}
+  - {tipo: particulas, origen: [48, 48], cantidad: 24, angulo: [0, 360], velocidad: [40, 70], inicio: [0.05, 0.15], vida: [0.4, 0.8],
+     gravedad: 0, roce: 3, estela: 0.07, paleta: papel, semilla: 8}

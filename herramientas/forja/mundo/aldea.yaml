@@ -1,0 +1,44 @@
+# Escena de prueba: claro de aldea en el bosque, para comparar con las referencias.
+nombre: Aldea
+tam: 32
+terrenos:
+  - {letra: p, nombre: pasto, base: '#4f8a34', tipo: pasto, semilla: 3, giro: 20, cortes: [0.12, 0.24, 0.7, 0.9], celda: 6, matas: 4}
+  - {letra: t, nombre: tierra, base: '#b88e5c', tipo: tierra, semilla: 5, giro: 10, cortes: [0.2, 0.36, 0.7, 0.88]}
+vertices: |
+  ppppppppppppp
+  ppppppppppppp
+  ppppppppppppp
+  ppppttttttppp
+  ppppttttttppp
+  ppppttttttppp
+  pppppptttpppp
+  pppppptttpppp
+  ppppptttppppp
+  ppppptttppppp
+objetos:
+  - {modelo: casa.yaml, en: [6.6, 3.3]}
+  - {modelo: pino.yaml, en: [1.0, 1.4]}
+  - {modelo: pino.yaml, en: [2.3, 0.7]}
+  - {modelo: pino.yaml, en: [0.5, 3.3]}
+  - {modelo: pino.yaml, en: [11.4, 1.3]}
+  - {modelo: pino.yaml, en: [10.2, 0.5]}
+  - {modelo: pino.yaml, en: [12.1, 3.6]}
+  - {modelo: pino.yaml, en: [0.8, 7.6]}
+  - {modelo: pino.yaml, en: [11.7, 8.2]}
+  - {modelo: pino.yaml, en: [10.6, 7.1]}
+  - {modelo: roble.yaml, en: [9.6, 5.6]}
+  - {modelo: roble.yaml, en: [2.4, 5.9]}
+  - {modelo: objetos.yaml, objeto: barril, en: [8.6, 4.4]}
+  - {modelo: objetos.yaml, objeto: barril, en: [9.0, 4.7]}
+  - {modelo: objetos.yaml, objeto: caja, en: [8.5, 4.95]}
+  - {modelo: objetos.yaml, objeto: heno, en: [4.4, 4.6]}
+  - {modelo: objetos.yaml, objeto: rocas, en: [3.3, 8.3]}
+  - {modelo: objetos.yaml, objeto: tocon, en: [9.4, 8.5]}
+  - {modelo: objetos.yaml, objeto: cerca, en: [2.6, 3.9]}
+  - {modelo: objetos.yaml, objeto: cerca, en: [4.0, 2.6]}
+  - {modelo: objetos.yaml, objeto: arbusto, en: [5.0, 2.2]}
+  - {modelo: objetos.yaml, objeto: arbusto, en: [1.9, 6.7]}
+  - {modelo: objetos.yaml, objeto: arbusto, en: [8.3, 6.8]}
+dispersar:
+  - {modelo: pino.yaml, terreno: p, cantidad: 70, distancia: 0.62, lejos_de: t, margen: 1.25, semilla: 4}
+  - {modelo: objetos.yaml, objeto: tocon, terreno: p, cantidad: 8, distancia: 0.8, lejos_de: t, margen: 0.45, semilla: 9}

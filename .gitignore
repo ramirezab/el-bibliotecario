@@ -3,3 +3,5 @@ Screenshot_*.jpg
 .DS_Store
 Thumbs.db
 .claude/
+herramientas/forja/salida/
+__pycache__/

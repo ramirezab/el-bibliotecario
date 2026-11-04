@@ -1,0 +1,15 @@
+# Ataque básico de Teo: tajo de la pluma. Media luna de tinta con núcleo de oro, destello en la punta,
+# chispas de oro y gotas de tinta que caen.
+lienzo: [112, 92]
+cuadros: 10
+fps: 20
+capas:
+  - {tipo: arco, centro: [46, 52], radio: 36, grosor: 24, desde: -170, hasta: 35, barrido: [-0.12, 0.28], desvanecer: [0.3, 1], cola: 175,
+     paleta: tinta, emisiva: false, disolver: [0.45, 1], semilla: 2, tramado: 1.4}
+  - {tipo: arco, centro: [46, 52], radio: 33, grosor: 12, desde: -170, hasta: 35, barrido: [-0.08, 0.32], desvanecer: [0.25, 0.8], cola: 150, paleta: oro}
+  - {tipo: disco, centro: [80, 74], radio: 11, ventana: [0.18, 0.42], paleta: oro}
+  - {tipo: estrella, centro: [80, 74], radio: 20, puntas: 4, giro: 20, ventana: [0.2, 0.5], agudeza: 10, nucleo: 0.3, paleta: oro}
+  - {tipo: particulas, origen: [80, 72], dispersion: 4, cantidad: 24, angulo: [-60, 80], velocidad: [30, 80], inicio: [0.18, 0.4],
+     vida: [0.25, 0.55], gravedad: 60, estela: 0.07, umbral_grande: 0.4, paleta: oro, semilla: 3}
+  - {tipo: particulas, origen: [70, 76], dispersion: 8, cantidad: 12, angulo: [60, 120], velocidad: [8, 26], inicio: [0.25, 0.5],
+     vida: [0.3, 0.5], gravedad: 160, umbral_grande: 0.3, paleta: tinta, emisiva: false, semilla: 4}

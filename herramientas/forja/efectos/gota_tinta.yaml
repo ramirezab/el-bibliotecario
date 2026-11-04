@@ -1,0 +1,13 @@
+# Gota de Tinta: proyectil con estela que se enciende al chocar y salpica.
+lienzo: [160, 64]
+cuadros: 12
+fps: 20
+capas:
+  - {tipo: gota, camino: [[10, 40], [50, 14], [100, 14], [140, 34]], ventana: [0, 0.6], radio: 5, estela: 40, paleta: tinta, emisiva: false}
+  - {tipo: gota, camino: [[10, 40], [50, 14], [100, 14], [140, 34]], ventana: [0, 0.6], radio: 2.2, estela: 18, paleta: oro}
+  - {tipo: disco, centro: [140, 34], radio: 12, ventana: [0.58, 0.8], paleta: oro}
+  - {tipo: anillo, centro: [140, 34], r0: 3, r1: 18, grosor: 4, ventana: [0.6, 0.95], paleta: tinta, emisiva: false}
+  - {tipo: particulas, origen: [140, 34], cantidad: 16, angulo: [150, 390], velocidad: [20, 50], inicio: [0.6, 0.66], vida: [0.25, 0.4],
+     gravedad: 120, paleta: tinta, emisiva: false, semilla: 6}
+  - {tipo: particulas, origen: [140, 34], cantidad: 10, angulo: [0, 360], velocidad: [20, 45], inicio: [0.6, 0.66], vida: [0.2, 0.35],
+     estela: 0.05, paleta: oro, semilla: 7}

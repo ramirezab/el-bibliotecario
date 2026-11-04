@@ -89,6 +89,11 @@ Cada Pliegue incluye: atmósfera, mapa con zonas y bloqueos, bestiario, minijefe
 |---|---|
 | [prototipo/index.html](prototipo/index.html ':ignore :target=_self') | **Prototipo de combate jugable en el navegador**: Teo y Pavesa contra los Comensales Huecos, un Gorgojo Excavador y Don Tragón, en el Banquete Hueco. Tiene turnos por iniciativa, PA, la Réplica completa (desviar, esquivar, saltar y refutar, con fintas), Réplica Perfecta, Postura y Ruptura, Remate Ilustrado, fases lunares, eclipse, la Iluminación "Érase una Vez" y la hoja de examen. Sin instalar nada. |
 
+### Herramienta de arte — `herramientas/forja/`
+| Archivo | Contenido |
+|---|---|
+| [herramientas/forja/README.md](herramientas/forja/README.md) | **Forja**: la herramienta con la que se dibuja, revisa y anima el arte del juego sin modelos de generación de imágenes. Personajes por piezas y huesos que salen idénticos en cualquier ángulo y cuadro, escenarios del mundo con vista cenital, baldosas de suelo, efectos de ataque cuadro a cuadro y revisión automática de calidad. |
+
 ### Producción — `produccion/`
 | Archivo | Contenido |
 |---|---|
