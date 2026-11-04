@@ -26,7 +26,7 @@ from .modelo import Esqueleto, S, rot, tras, _sumar_poses
 REFLEJO = np.array([-1.0, 1, 1])
 UNION, RESTA, CRUCE = (skia.PathOp.kUnion_PathOp, skia.PathOp.kDifference_PathOp,
                        skia.PathOp.kIntersect_PathOp)
-FORMAS = ('elipsoide', 'tubo', 'casco', 'caja', 'cilindro', 'lamina', 'cinta', 'mechones')
+FORMAS = ('elipsoide', 'tubo', 'casco', 'caja', 'cilindro', 'lamina', 'cinta', 'mechones', 'campana')
 
 
 # ---------------------------------------------------------------------------- 2D
@@ -58,21 +58,33 @@ def _mover(camino, d):
     return q
 
 
+def _op_o_nada(a, b, op):
+    """skia.Op con reintentos: la geometría casi coincidente a veces la hace fallar; corrida una fracción de
+    pixel o simplificada, casi siempre funciona. Devuelve None si no hubo caso."""
+    intentos = (lambda: (a, b), lambda: (a, _mover(b, (0.013, 0.007))), lambda: (_simplificar(a), _simplificar(b)),
+                lambda: (a, _mover(b, (-0.011, 0.017))))
+    for intento in intentos:
+        x, y = intento()
+        if x is None or y is None:
+            continue
+        try:
+            r = skia.Op(x, y, op)
+        except Exception:
+            r = None
+        if r is not None:
+            return r
+    return None
+
+
 def _op(a, b, op):
-    try:
-        r = skia.Op(a, b, op)
-    except Exception:
-        r = None
+    r = _op_o_nada(a, b, op)
     return r if r is not None else skia.Path(a if op == RESTA else skia.Path())
 
 
 def _restar(base, agujeros):
     """Resta los agujeros; si la operación falla, arma el mismo camino con la regla par-impar."""
     for h in agujeros:
-        try:
-            r = skia.Op(base, h, RESTA)
-        except Exception:
-            r = None
+        r = _op_o_nada(base, h, RESTA)
         if r is None:
             r = skia.Path(base)
             r.addPath(h)
@@ -100,19 +112,8 @@ def _union(caminos):
     # Si la unión de todo junto falla (geometría degenerada), se une de a una, saltando lo que no se pueda
     acc = skia.Path()
     for c in caminos:
-        r = None
-        for cand in (c, _simplificar(c)):
-            if cand is None:
-                continue
-            try:
-                r = skia.Op(acc, cand, UNION)
-            except Exception:
-                r = None
-            if r is not None:
-                break
-        if r is None:
-            acc.addPath(c)
-        else:
+        r = _op_o_nada(acc, c, UNION)
+        if r is not None:
             acc = r
     return acc
 
@@ -133,16 +134,19 @@ def _contorno_de(camino, ancho):
     return out
 
 
-def _tinta(camino, ancho, luz2, extra=0.75):
+def _tinta(cv, camino, ancho, luz2, extra, pintura):
     """Contorno de tinta de ancho `ancho`, más grueso del lado contrario a la luz (hasta `ancho·(1+extra)`).
 
-    El engrosamiento es la banda del borde que queda bajo la forma corrida hacia la sombra; al limitarlo a
-    una banda, las puntas finas no rellenan el hueco que las separa del resto."""
-    base = _contorno_de(camino, ancho)
+    El engrosamiento es la banda del borde que cae bajo la forma corrida hacia la sombra. Se recorta con el
+    lienzo (no con una operación booleana) para que respete exactamente la forma, por compleja que sea; al
+    limitarlo a una banda, las puntas finas no rellenan el hueco que las separa del resto."""
+    cv.drawPath(_contorno_de(camino, ancho), pintura)
     if extra <= 0:
-        return base
-    banda = _contorno_de(camino, ancho * (1 + 2 * extra))
-    return _union([base, _op(banda, _mover(camino, -luz2 * ancho * extra * 1.2), CRUCE)])
+        return
+    cv.save()
+    cv.clipPath(_mover(camino, -luz2 * ancho * extra * 1.2), skia.ClipOp.kIntersect, True)
+    cv.drawPath(_contorno_de(camino, ancho * (1 + 2 * extra)), pintura)
+    cv.restore()
 
 
 def _engordar(camino, r):
@@ -406,6 +410,8 @@ class Material:
         self.ancho_luz = d.get('ancho_luz', 0.2)
         self.sin_sombra = d.get('sin_sombra', False)
         self.aura = d.get('aura')
+        self.borde_suave = d.get('borde_suave')
+        self.sin_grano = d.get('sin_grano', False)
         base, sb = color.hex_a_rgb(self.color), color.hex_a_rgb(self.sombra)
         self.multiplica = color.rgb_a_hex(np.clip(sb / np.maximum(base, 1) * 255, 0, 255))
 
@@ -414,7 +420,7 @@ class Material:
                 'linea': self.linea}.get(nombre, nombre)
 
 
-CLAVES_PIEZA = {'nombre', 'hueso', 'forma', 'pos', 'rot', 'material', 'grupo', 'capa', 'dentro_de',
+CLAVES_PIEZA = {'nombre', 'hueso', 'forma', 'pos', 'rot', 'material', 'grupo', 'capa', 'dentro_de', 'fuera_de',
                 'sin_linea', 'grosor', 'proyecta', 'recibe', 'calcas', 'trazos', 'op', 'oculta', 'espejo',
                 'sin_silueta'}
 
@@ -441,6 +447,9 @@ class Dibujo(Esqueleto):
         self.proyectada = d.get('sombra_proyectada', 1.6)
         self.degradado = d.get('degradado')
         self.contraluz = d.get('contraluz')
+        self.peso_sombra = d.get('peso_sombra', 0.75)
+        self.grano = d.get('grano', 0.0)
+        self.linea_encima = d.get('linea_encima', False)
         self.materiales = {n: Material(n, md, self.tinta) for n, md in d.get('materiales', {}).items()}
         self._armar_huesos(d.get('huesos', [{'nombre': 'raiz'}]))
         self._resolver_apuntes()
@@ -565,7 +574,8 @@ class Dibujo(Esqueleto):
                     capa=pz.get('capa', 0.0), dentro_de=padre, linea=not pz.get('sin_linea', False),
                     grosor=pz.get('grosor', 1.0), proyecta=pz.get('proyecta', True),
                     recibe=pz.get('recibe', True), calcas=pz.get('calcas', []), trazos=pz.get('trazos', []),
-                    op=pz.get('op', 'union'), silueta=not pz.get('sin_silueta', False)))
+                    op=pz.get('op', 'union'), silueta=not pz.get('sin_silueta', False),
+                    fuera_de=pz.get('fuera_de')))
         return salida
 
     def hueso_lado(self, nombre, lado):
@@ -651,6 +661,21 @@ class _Proyector:
             m.setdefault('pieza', pz)
         return miembros
 
+    def _dentro_de_campana(self, nombre, Pw):
+        """Qué puntos del mundo quedan dentro del volumen de la campana `nombre` (entre su ruedo y su aro de
+        arriba, dentro de la elipse que forman los aros a esa altura)."""
+        cap = next((q for q in self.dib.piezas if q['nombre'] == nombre and q['forma'] == 'campana'), None)
+        if cap is None:
+            raise ValueError(f'fuera_de: "{nombre}" no es una pieza con forma campana.')
+        M = self.matriz(cap)
+        L = (np.atleast_2d(Pw) - M[:3, 3]) @ M[:3, :3]
+        aros = sorted(cap['p']['aros'])
+        ys = np.array([a[0] for a in aros])
+        rx = np.interp(L[:, 1], ys, [a[1] for a in aros])
+        rz = np.interp(L[:, 1], ys, [a[2] for a in aros])
+        return ((L[:, 1] >= ys[0] - 1) & (L[:, 1] <= ys[-1] + 4)
+                & ((L[:, 0] / rx) ** 2 + (L[:, 2] / rz) ** 2 < 1.0))
+
     # -- formas
     def _elipsoide(self, pz):
         M = self.matriz(pz)
@@ -688,6 +713,15 @@ class _Proyector:
         if p.get('curva', True) and len(P) > 2:
             Q = _catmull(np.column_stack([P, R]), p.get('pasos', 6), cerrado)
             P, R = Q[:, :3], np.maximum(Q[:, 3], 0)
+        if pz['fuera_de']:
+            # solo se dibuja lo que asoma fuera de la capa
+            Q = _catmull(np.column_stack([P, R]), 4) if len(P) > 1 else np.column_stack([P, R])
+            P, R = Q[:, :3], Q[:, 3]
+            fuera = ~self._dentro_de_campana(pz['fuera_de'], P)
+            if not fuera.any():
+                return []
+            i0 = max(int(np.argmax(fuera)) - 1, 0)
+            P, R = P[i0:], R[i0:]
         camino = self._tubo_de(P, R, cerrado)
         m = dict(camino=camino, prof=float(np.mean(self.v.prof(P))), r_ef=float(np.mean(R) * self.v.esc))
         m['trazos'] = self._trazos(pz)
@@ -718,9 +752,65 @@ class _Proyector:
 
     def _casco(self, pz):
         p = pz['p']
+        if pz['fuera_de'] and self._dentro_de_campana(pz['fuera_de'], self.matriz(pz)[:3, 3])[0]:
+            return []
         m = self._esferas_y_discos(pz, p.get('esferas'), p.get('discos'))
         m['trazos'] = self._trazos(pz)
         return [m]
+
+    def _campana(self, pz):
+        """Capa o falda acampanada: aros de arriba abajo ([y, rx, rz]); el último es el ruedo, que se ondula en
+        `ondas` paños que cuelgan `caida` en su centro. Con `pliegues: true` dibuja un pliegue en cada entrada."""
+        p = pz['p']
+        aros = p['aros']
+        n = p.get('ondas', 8)
+        caida = p.get('caida', 2.0)
+        r = p.get('redondeo', 1.5)
+        fase = math.radians(p.get('fase', 0))
+        angs = fase + np.arange(n + 1) * math.tau / n
+        M = self.matriz(pz)
+        prof = float(self.v.prof(M[:3, 3])[0])
+        miembros = []
+        for i in range(n):
+            a0, a1 = angs[i], angs[i + 1]
+            am = (a0 + a1) / 2
+            esf = [[rx * math.sin(a), y, rz * math.cos(a), r] for y, rx, rz in aros[:-1] for a in (a0, am, a1)]
+            y, rx, rz = aros[-1]
+            if 'caidas' in p:
+                caida = p['caidas'][i % len(p['caidas'])]
+            if p.get('puntas'):
+                # ruedo en picos: cada paño termina en una punta afilada (capa rasgada)
+                esf += [[rx * math.sin(a0), y, rz * math.cos(a0), 0.3], [rx * math.sin(a1), y, rz * math.cos(a1), 0.3],
+                        [rx * 1.04 * math.sin(am), y - caida, rz * 1.04 * math.cos(am), 0.05]]
+            else:
+                esf += [[rx * math.sin(a), y - dy, rz * math.cos(a), r * 0.6]
+                        for a, dy in ((a0, 0.0), (am, caida), (a1, 0.0))]
+            m = self._esferas_y_discos(pz, esf, None)
+            m['prof'] = prof
+            miembros.append(m)
+        rayas = []
+        if p.get('pliegues'):
+            y0, rx0, rz0 = aros[-1]
+            y1, rx1, rz1 = aros[max(len(aros) - 3, 0)]
+            alto = p.get('alto_pliegue', 0.45)
+            for a in angs[:-1]:
+                n_loc = np.array([math.sin(a) / rx0, 0, math.cos(a) / rz0])
+                if pz['lado'] == 'd':
+                    n_loc = n_loc * REFLEJO
+                if float(self.v.de_frente(M[:3, :3] @ n_loc)[0]) < 0.15:
+                    continue
+                k = np.linspace(0, alto, 6)[:, None]
+                ini = np.array([rx0 * math.sin(a), y0, rz0 * math.cos(a)])
+                fin = np.array([rx1 * math.sin(a), y1, rz1 * math.cos(a)])
+                P3 = ini + (fin - ini) * k / max(alto, 1e-6) * alto
+                P3 = P3 * 1.01
+                if pz['lado'] == 'd':
+                    P3 = P3 * REFLEJO
+                C = self.v.pant(P3 @ M[:3, :3].T + M[:3, 3])
+                w = _perfil(p.get('ancho_pliegue', [0.7, 0.4, 0.0]), len(C)) * self.v.esc
+                rayas.append(dict(camino=_camino(_tira2d(C, w)), tono='linea', opacidad=0.9))
+        miembros[0]['trazos'] = rayas + self._trazos(pz)
+        return miembros
 
     def _caja(self, pz):
         w, h, d = (np.asarray(pz['p']['tam'], float) / 2)
@@ -968,7 +1058,8 @@ def _armar(dib, yaw, pitch, anim, cuadro, pose, zoom, cara):
         for m in ms:
             for c in m.get('calcas', []):
                 if c['op'] == 'resta':
-                    m['camino'] = _op(m['camino'], c['camino'], RESTA)
+                    # engordado apenas, para no dejar astillas de un pixel junto al borde de la silueta
+                    m['camino'] = _op(m['camino'], _engordar(c['camino'], 1.5), RESTA)
         if pz['dentro_de']:
             hijos += ms
         elif ms:
@@ -1016,8 +1107,9 @@ def _pintar_item(cv, it, cerca, vista, dib):
     P, m = it['camino'], it['mat']
     l2, f = vista.luz2, vista.fuerza
     w = dib.grosor * vista.esc * it['grosor']
-    if it['linea']:
-        cv.drawPath(_tinta(P, w, l2, 0.75 if m.opacidad >= 1 else 0), _pintura(m.linea))
+    extra = dib.peso_sombra if m.opacidad >= 1 else 0
+    if it['linea'] and not dib.linea_encima:
+        _tinta(cv, P, w, l2, extra, _pintura(m.linea))
     cv.drawPath(P, _pintura(m.color, m.opacidad))
     cv.save()
     cv.clipPath(P, skia.ClipOp.kIntersect, True)
@@ -1027,7 +1119,8 @@ def _pintar_item(cv, it, cerca, vista, dib):
         hm = h.get('mat', h['pieza']['mat'])
         cv.drawPath(h['camino'], _pintura(hm.color, hm.opacidad))
         if h['pieza']['linea']:
-            cv.drawPath(_contorno_de(h['camino'], w * 0.7 * h['pieza']['grosor']), _pintura(hm.linea))
+            cv.drawPath(_contorno_de(h['camino'], w * (1.0 if dib.linea_encima else 0.7) * h['pieza']['grosor']),
+                        _pintura(hm.linea))
         for t in h.get('trazos', []):
             cv.drawPath(t['camino'], _pintura(hm.tono(t['tono']), t['opacidad']))
     for c in it['calcas']:
@@ -1047,6 +1140,13 @@ def _pintar_item(cv, it, cerca, vista, dib):
         if it['recibe'] and cerca is not None and not cerca.isEmpty():
             cv.drawPath(_mover(cerca, -l2 * dib.proyectada * vista.esc), ps)
         cv.restore()
+        if m.borde_suave:
+            ancho, fuerza = m.borde_suave
+            pb = skia.Paint(AntiAlias=True, Style=skia.Paint.kStroke_Style, StrokeWidth=float(ancho * vista.esc * 2))
+            pb.setColor4f(_c4(m.multiplica, fuerza))
+            pb.setMaskFilter(skia.MaskFilter.MakeBlur(skia.kNormal_BlurStyle, float(ancho * vista.esc * 0.6)))
+            pb.setBlendMode(skia.BlendMode.kMultiply)
+            cv.drawPath(P, pb)
         if m.brillo > 0:
             pl = _pintura(m.luz, m.brillo, blur)
             for mb in it['miembros']:
@@ -1058,6 +1158,8 @@ def _pintar_item(cv, it, cerca, vista, dib):
         if c['brillo']:
             cv.drawPath(c['camino'], _pintura(c['color'], c['opacidad'], c['blur']))
     cv.restore()
+    if it['linea'] and dib.linea_encima:
+        _tinta(cv, P, w, l2, extra, _pintura(m.linea))
 
 
 def dibujar(dib, yaw=None, pitch=None, anim=None, cuadro=0, pose=None, zoom=1.0, cara=None, fondo=None):
@@ -1071,7 +1173,8 @@ def dibujar(dib, yaw=None, pitch=None, anim=None, cuadro=0, pose=None, zoom=1.0,
 
     silueta = _union([it['camino'] for it in items if it['silueta']])
     ws = dib.grosor_silueta * vista.esc
-    cv.drawPath(_tinta(silueta, ws, l2, 0.5), _pintura(dib.tinta))
+    if ws > 0:
+        _tinta(cv, silueta, ws, l2, 0.5, _pintura(dib.tinta))
 
     cerca, acc = [None] * len(items), skia.Path()
     for i in reversed(range(len(items))):
@@ -1089,6 +1192,20 @@ def dibujar(dib, yaw=None, pitch=None, anim=None, cuadro=0, pose=None, zoom=1.0,
         cv.save()
         cv.clipPath(silueta, skia.ClipOp.kIntersect, True)
         cv.drawRect(b.makeOutset(ws * 2, ws * 2), p)
+        cv.restore()
+
+    if dib.grano:
+        rng = np.random.default_rng(11)
+        g = rng.random((alto, ancho))
+        g = (g + np.roll(g, 1, 0) + np.roll(g, 1, 1) + np.roll(np.roll(g, 1, 0), 1, 1)) / 4
+        v = (255 * (1 - dib.grano * g)).astype(np.uint8)
+        textura = skia.Image.fromarray(np.dstack([v, v, v, np.full_like(v, 255)]))
+        zona = skia.Path()
+        for it in items:
+            zona = _op(zona, it['camino'], RESTA if it['mat'].sin_grano else UNION)
+        cv.save()
+        cv.clipPath(zona, skia.ClipOp.kIntersect, True)
+        cv.drawImage(textura, 0, 0, skia.SamplingOptions(), skia.Paint(BlendMode=skia.BlendMode.kMultiply))
         cv.restore()
 
     if dib.contraluz:

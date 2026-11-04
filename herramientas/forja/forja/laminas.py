@@ -153,7 +153,10 @@ def animacion(dib, anim, yaw=None, pitch=None, alto=360):
     for i in ims:
         tira.alpha_composite(i, (x, 0))
         x += i.width + 10
-    fondo = fondo_bruma(ims[0].width, alto, semilla=7)
+    if dib.d.get('fondo_revision') == 'papel':
+        fondo = PAPEL
+    else:
+        fondo = fondo_bruma(ims[0].width, alto, semilla=7)
     fotos = [sobre(i, fondo).convert('RGB') for i in ims]
     return tira.convert('RGB'), fotos, a.get('fps', 8)
 
