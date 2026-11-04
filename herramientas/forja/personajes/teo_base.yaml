@@ -28,111 +28,109 @@ materiales:
 
 huesos:
   - {nombre: raiz}
-  - {nombre: cadera, padre: raiz, pos: [0, 28, 0]}
-  - {nombre: torso, padre: cadera, pos: [0, 0, 0]}
+  - {nombre: cadera, padre: raiz, pos: [0.5, 28, 0]}
+  - {nombre: torso, padre: cadera, pos: [1.0, 0, 0]}
   - {nombre: cuello, padre: torso, pos: [0, 42, 0]}
-  - {nombre: cabeza, padre: cuello, pos: [0.3, 28.6, 0], rot: [0, -10, 0]}
-  - {nombre: pierna, padre: cadera, pos: [8.6, 0, 0], espejo: true}
-  - {nombre: pie, padre: pierna, pos: [0, -23.5, 0], rot: [0, 62, 0]}
+  - {nombre: cabeza, padre: cuello, pos: [-0.5, 29.9, 0], rot: [0, -12, 0]}
+  - {nombre: pierna, padre: cadera, pos: [9.2, 0, 0], espejo: true}
+  - {nombre: pie, padre: pierna, pos: [0, -23.0, 0], rot: [0, 72, 0]}
   - {nombre: hombro, padre: torso, pos: [9, 31, 0], rot: [0, 0, 8], espejo: true}
   - {nombre: codo, padre: hombro, pos: [0, -11, 0]}
   - {nombre: mano, padre: codo, pos: [0, -10, 0]}
 
+pose_base:
+  pie.i: [0, -28, 0]
+
 piezas:
-  # ------------------------------------------------------------------ cabeza
+  # ------------------------------------------------------------------ cabeza (mira a su derecha, a la izquierda del dibujo)
   - nombre: cabeza
     hueso: cabeza
     forma: elipsoide
-    r: [20.5, 19, 19]
+    r: [20.2, 19.5, 19.5]
     material: piel
     grosor: 0.7
     calcas:
-      - {ovalo: [2.1, 3.2], centro: [8.7, -0.7], material: ojo, espejo: true, caras: [normal, decidido]}
-      # decidido: el párpado de arriba baja en diagonal
-      - {contorno: [[5.5, 3.5], [12.5, 3.5], [12.5, 1.4], [5.5, 0.0]], suave: false, material: piel, espejo: true, caras: [decidido]}
-      - {trazo: [[6.6, -1.6], [8.7, -2.2], [10.8, -1.6]], anchos: [0.3, 0.9, 0.3], material: ojo, espejo: true, caras: [parpadeo]}
-      - {trazo: [[10.4, 1.4], [7.0, -0.8], [10.4, -3.0]], anchos: [0.4, 1.0, 0.4], suave: false, material: ojo, espejo: true, caras: [dolor]}
+      - {ovalo: [2.55, 3.8], centro: [-9.0, 0.3], material: ojo, caras: [normal, decidido]}
+      - {ovalo: [2.55, 3.8], centro: [8.4, 0.3], material: ojo, caras: [normal, decidido]}
+      - {contorno: [[-12.5, 4.5], [-5.5, 4.5], [-5.5, 1.0], [-12.5, 2.4]], suave: false, material: piel, caras: [decidido]}
+      - {contorno: [[5.0, 4.5], [12.0, 4.5], [12.0, 2.4], [5.0, 1.0]], suave: false, material: piel, caras: [decidido]}
+      - {trazo: [[-11.1, -0.6], [-9.0, -1.2], [-6.9, -0.6]], anchos: [0.3, 0.9, 0.3], material: ojo, caras: [parpadeo]}
+      - {trazo: [[6.3, -0.6], [8.4, -1.2], [10.5, -0.6]], anchos: [0.3, 0.9, 0.3], material: ojo, caras: [parpadeo]}
+      - {trazo: [[-12.7, 2.4], [-9.3, 0.2], [-12.7, -2.0]], anchos: [0.4, 1.0, 0.4], suave: false, material: ojo, caras: [dolor]}
+      - {trazo: [[12.1, 2.4], [8.7, 0.2], [12.1, -2.0]], anchos: [0.4, 1.0, 0.4], suave: false, material: ojo, caras: [dolor]}
 
-  # ------------------------------------------------------------------ pelo
+  # ------------------------------------------------------------------ pelo: casco que cubre la nuca (a la derecha del
+  # dibujo se ve la parte de atrás de la cabeza), flequillo en picos sobre la frente y remolino en la coronilla
   - nombre: casquete
     hueso: cabeza
     forma: elipsoide
-    pos: [0, 2.0, -0.6]
-    r: [21.6, 20.8, 20.2]
+    pos: [1.6, 1.5, -1.6]
+    r: [22.4, 19.4, 21.2]
     material: pelo
     grupo: pelo
     capa: 3
     calcas:
       - op: resta
         suave: false
-        contorno: [[-26, -2], [-21, 3.5], [-15.5, 7.0], [-8, 8.0], [0, 7.4], [8, 8.0], [13.5, 7.2], [17.5, 3.5], [19.5, -4], [24, -7], [26, -40], [-26, -40]]
+        contorno: [[-27.6, -1.0], [-22.5, 2.5], [-19.0, 6.5], [-13.0, 8.4], [-5.0, 9.0], [3.0, 8.8], [9.5, 8.2], [13.5, 6.0], [15.0, 1.5], [15.2, -7.0], [14.6, -12.0], [17.0, -13.2], [24.4, -13.8], [24.4, -41.5], [-27.6, -41.5]]
   - nombre: mechones
     hueso: cabeza
     forma: mechones
-    pos: [0, 2.0, -0.6]
-    sobre: [21.6, 20.8, 20.2]
+    pos: [1.6, 1.5, -1.6]
+    sobre: [22.4, 19.4, 21.2]
     material: pelo
     grupo: pelo
     capa: 3
     lista:
-      # flequillo: puntas grandes sobre la frente
-      - {en: [-18, 10], hacia: -106, curva: 16, largo: 8.5, ancho: 3.8, perfil: [1, 0.75, 0.05], alza: [0.3, 0.5]}
-      - {en: [-10.5, 11.5], hacia: -96, curva: 10, largo: 8.5, ancho: 4.0, perfil: [1, 0.75, 0.05], alza: [0.3, 0.5]}
-      - {en: [-2.5, 11.5], hacia: -86, curva: -8, largo: 8.0, ancho: 4.0, perfil: [1, 0.75, 0.05], alza: [0.3, 0.5]}
-      - {en: [5.5, 11.5], hacia: -80, curva: -10, largo: 8.4, ancho: 3.9, perfil: [1, 0.75, 0.05], alza: [0.3, 0.5]}
-      - {en: [11.5, 10.5], hacia: -72, curva: -14, largo: 7.4, ancho: 3.5, perfil: [1, 0.75, 0.05], alza: [0.3, 0.5]}
-      # sien izquierda y volumen de los costados
-      - {en: [-20.5, 5], hacia: -96, curva: 8, largo: 8, ancho: 3.0, perfil: [1, 0.8, 0.05], alza: [0.5, 0.8]}
-      - {en: [-19.5, 14], hacia: -100, curva: 6, largo: 11, ancho: 3.4, perfil: [1, 0.95, 0.2], alza: [0.7, 0.8]}
-      # mechón ancho del costado que baja hasta la mejilla
-      - {en: [17.0, 10], hacia: -98, curva: 30, largo: 21, ancho: 5.2, perfil: [1, 1, 0.85, 0.05], alza: [1.0, 1.4]}
-      # remolino de arriba
-      - {en: [8.5, 18.5], dir: [0.4, 1, -0.15], doblez: [0.8, -0.4, 0], largo: 6.5, ancho: 2.0, perfil: [1, 1.05, 0.25]}
-      - {en: [12.5, 16.5], dir: [1, 0.6, -0.1], doblez: [0.3, -0.7, 0], largo: 5.2, ancho: 1.7, perfil: [1, 1, 0.25]}
+      # flequillo: picos sobre la frente
+      - {en: [-19.0, 9.0], hacia: -104, curva: 12, largo: 6.0, ancho: 3.4, perfil: [1, 0.7, 0.05], alza: [0.3, 0.5]}
+      - {en: [-12.0, 10.5], hacia: -94, curva: 8, largo: 6.2, ancho: 3.8, perfil: [1, 0.7, 0.05], alza: [0.3, 0.5]}
+      - {en: [-4.0, 11.0], hacia: -88, curva: -6, largo: 5.0, ancho: 3.8, perfil: [1, 0.7, 0.05], alza: [0.3, 0.5]}
+      - {en: [3.5, 10.8], hacia: -84, curva: -8, largo: 6.0, ancho: 3.8, perfil: [1, 0.7, 0.05], alza: [0.3, 0.5]}
+      - {en: [10.0, 10.0], hacia: -78, curva: -10, largo: 5.0, ancho: 3.4, perfil: [1, 0.7, 0.05], alza: [0.3, 0.5]}
+      # punta de la nuca, junto a la mandíbula
+      - {en: [17.0, -6], hacia: -110, curva: 25, largo: 9.5, ancho: 2.8, perfil: [1, 0.9, 0.05], alza: [0.4, 0.6]}
+      # remolino en la coronilla
+      - {en: [9.5, 16.5], dir: [0.3, 1, -0.3], doblez: [0.9, -0.3, 0], largo: 8.5, ancho: 2.1, perfil: [1, 1.05, 0.25]}
+      - {en: [13.5, 14.5], dir: [1, 0.75, -0.3], doblez: [0.3, -0.7, 0], largo: 6.5, ancho: 1.8, perfil: [1, 1, 0.25]}
 
-  # ------------------------------------------------------------------ cuello grueso de la capa
+  # ------------------------------------------------------------------ cuello grueso de la capa: un rollo alto que
+  # envuelve el cuello por detrás de la barbilla y un segundo rollo que cuelga adelante
   - nombre: cuello_atras
     hueso: cuello
     forma: tubo
-    puntos: [[-15, 3, 0], [-10.5, 4, -7.5], [0, 4.6, -10.5], [10.5, 4, -7.5], [15, 3, 0]]
+    puntos: [[-16, 6.5, 0], [-11.5, 8, -8], [0, 8.5, -11], [11.5, 8, -8], [16, 6.5, 0]]
     radio: 6.8
     material: cuello
   - nombre: cuello
     hueso: cuello
     forma: tubo
-    puntos: [[15.4, 3, 0], [11.5, 2.4, 7.4], [1, 2.0, 10.5], [-10, 2.4, 8], [-15.4, 3, 0]]
-    radio: 6.8
+    puntos: [[16.2, 6.5, 0], [12.4, 5.0, 8], [1, 3.5, 11.2], [-11, 4.5, 8.5], [-16.2, 6.5, 0]]
+    radios: [6.8, 7.0, 7.2, 7.0, 6.8]
     material: cuello
     grupo: cuello
     capa: -10
     trazos:
-      - {puntos: [[-15, -1, 8], [-6, -4.5, 14.5], [6, -4.4, 14.8], [15, -1, 8.5]], anchos: [0, 0.75, 0.75, 0], tono: linea, normal: [0, 0, 1]}
-      - {puntos: [[-9, 4, 14.5], [-2, 3, 16.5], [4, 3.4, 16.2]], anchos: [0, 0.55, 0], tono: linea, normal: [0, 0, 1]}
-  - nombre: bulto_cuello
-    hueso: cuello
-    forma: tubo
-    puntos: [[-13, -1, 9.5], [-17.5, -6, 6.5], [-19.5, -11, 2.5]]
-    radios: [6.4, 5.8, 4.0]
-    material: cuello
-    grupo: cuello
-    capa: -10
+      - {puntos: [[-17, 0, 8], [-7, -3.5, 15.5], [6, -3.2, 15.8], [17, 0.5, 8.5]], anchos: [0, 0.8, 0.8, 0], tono: linea, normal: [0, 0, 1]}
+      - {puntos: [[-11, 6.5, 14], [-3, 5.5, 17], [5, 6.0, 16.6]], anchos: [0, 0.55, 0], tono: linea, normal: [0, 0, 1]}
   - nombre: cuello_bajo
     hueso: cuello
     forma: tubo
-    puntos: [[-20, -3, 1], [-13, -6.5, 9.5], [0, -8.2, 12.2], [13, -6.5, 9.5], [20.5, -3, 1]]
-    radios: [5.0, 5.8, 6.2, 5.8, 5.0]
+    puntos: [[-18, 0.5, 1], [-12.5, -2.5, 9.5], [0, -4.0, 11.8], [12.5, -2.5, 9.5], [18.5, 0.5, 1]]
+    radios: [5.0, 5.6, 5.8, 5.6, 5.0]
     material: cuello
     grupo: cuello
     capa: -10
     trazos:
-      - {puntos: [[-17, -8, 9], [-10, -11.5, 13.5], [-3, -12.6, 15]], anchos: [0, 0.6, 0], tono: linea, normal: [0, 0, 1]}
-      - {puntos: [[8, -11, 14.5], [14, -9, 12], [19, -6, 7]], anchos: [0, 0.6, 0], tono: linea, normal: [0.4, 0, 1]}
+      - {puntos: [[-17, -4.5, 9], [-10, -7.5, 13.5], [-2, -8.6, 15]], anchos: [0, 0.65, 0], tono: linea, normal: [0, 0, 1]}
+      - {puntos: [[7, -7.5, 14.6], [14, -5.5, 12], [19, -2.5, 7]], anchos: [0, 0.6, 0], tono: linea, normal: [0.4, 0, 1]}
+      - {puntos: [[15.5, 8, 9], [17, 3, 10], [17.5, -2, 9]], anchos: [0, 0.55, 0], tono: linea, normal: [0.6, 0, 0.8]}
 
   # ------------------------------------------------------------------ capa de campana
   - nombre: capa
     hueso: torso
     forma: campana
-    aros: [[36, 12, 9], [30, 19, 13], [18, 26.5, 18], [0, 32.5, 22]]
+    aros: [[38, 12, 9], [32, 19.5, 13.5], [18, 27.0, 18.5], [0, 32.2, 22]]
     ondas: 9
     fase: -8
     caida: 2.2
@@ -164,16 +162,16 @@ piezas:
   - nombre: bota
     hueso: pierna
     forma: tubo
-    puntos: [[0, 0, 0, 5.4], [pie, 0, 1.5, 0, 5.2]]
+    puntos: [[0, 0, 0, 6.6], [pie, 0, 1.5, 0, 6.0]]
     material: bota
     fuera_de: capa
-    capa: -8
+    capa: -30
   - nombre: pie
     hueso: pie
     forma: casco
-    esferas: [[0, 0.8, 0, 5.2], [0, -1.6, -2.2, 3.6], [0, -1.4, 4.5, 3.8], [0, -1.6, 9.5, 3.4], [0, -0.6, 10.5, 2.6]]
+    esferas: [[0, 0.8, 0, 6.0], [0, -1.8, -2.4, 4.0], [0, -1.6, 4.5, 4.4], [0, -1.8, 10.5, 3.8], [0, -0.8, 12.0, 3.0]]
     material: bota
-    capa: -7
+    capa: -29
 
 animaciones:
   reposo:
