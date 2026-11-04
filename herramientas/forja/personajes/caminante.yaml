@@ -208,20 +208,16 @@ piezas:
     trazos:
       - {puntos: [[-5.5, -7, 10.3], [torso, -7.0, 11, 10.8], [torso, -7.5, 5.5, 11.4]], anchos: [0, 0.35, 0], tono: hondo}
 
-  # ------------------------------------------------------------------ manto corto, deshilachado, echado hacia atrás sobre
-  # el hombro derecho: deja libre el brazo del bastón, que siempre queda por delante
+  # ------------------------------------------------------------------ manto corto sobre los hombros, deshilachado.
+  # Cubre siempre los hombros: con pesos al brazo (ver fisica), sube y gira con él cuando lo levanta.
   - nombre: manto
     hueso: capa
     forma: campana
     aros: [[3, 9, 7.5], [-2, 15.5, 11.5], [-12, 19.5, 14]]
     subdividir: 3
-    ondas: 14
-    abertura: 125
-    abertura_centro: -52
-    reverso: forro
-    capa_atras: -20
+    ondas: 11
     puntas: true
-    caidas: [3.5, 2.2, 4.2, 2.8, 3.8, 2.0, 4.5, 2.6, 3.4, 2.4, 4.0, 3.0, 3.6, 2.4]
+    caidas: [3.5, 2.2, 4.2, 2.8, 3.8, 2.0, 4.5, 2.6, 3.4, 2.4, 4.0]
     redondeo: 1.6
     material: capa
     capa: 7
@@ -236,8 +232,7 @@ piezas:
     aros: [[0, 9.5, 7.5], [-6, 14.5, 10.5], [-20, 18, 12.5], [-40, 21.5, 14.5], [-60, 24.5, 16.5]]
     ondas: 18
     fase: 10
-    abertura: 80
-    abertura_centro: -18
+    abertura: 64
     puntas: true
     caidas: [2.5, 1.5, 3.2, 2.0, 2.8, 1.4, 3.6, 2.2, 2.6, 1.8, 3.0, 1.6, 3.4, 2.0, 2.4, 1.5, 3.1, 2.2]
     redondeo: 1.4
@@ -287,8 +282,8 @@ piezas:
      trazos: [{puntos: [[-4, 2.6, 1.8], [0, 1.4, 1.9], [4, 2.6, 1.8]], ancho: 0.3, tono: hondo}]}
 
   # ------------------------------------------------------------------ brazos con mangas y antebrazos vendados
-  # El brazo del bastón (derecho) va siempre por delante del abrigo (manto y capa larga), que se mueve detrás de él;
-  # solo la vuelta de la bufanda le cae encima del hombro. El izquierdo vive dentro de la capa.
+  # El brazo del bastón (derecho) va por fuera de la capa larga pero siempre bajo el manto, que le cubre el hombro
+  # y lo acompaña cuando sube. El izquierdo vive dentro de la capa.
   - nombre: hombrera
     hueso: hombro
     forma: elipsoide
@@ -296,7 +291,7 @@ piezas:
     r: [4.4, 4.6, 4.4]
     material: tunica
     fuera_de: [capa_larga, manto]
-    lados: {d: {fuera_de: [], por_profundidad: [capa_larga, manto, tunica, bufanda, bufanda_vuelta]}}
+    lados: {d: {fuera_de: [], debajo_de: [manto, bufanda, bufanda_vuelta, cola_bufanda], por_profundidad: [capa_larga, tunica]}}
     capa: 11.8
   - nombre: manga
     hueso: hombro
@@ -304,7 +299,7 @@ piezas:
     puntos: [[0, 1.5, 0, 3.8], [codo, 0, 0, 0, 3.3], [codo, 0, -3, 0, 3.2]]
     material: tunica
     fuera_de: [capa_larga, manto]
-    lados: {d: {fuera_de: [], por_profundidad: [capa_larga, manto, tunica, bufanda, bufanda_vuelta]}}
+    lados: {d: {fuera_de: [], debajo_de: [manto, bufanda, bufanda_vuelta, cola_bufanda], por_profundidad: [capa_larga, tunica]}}
     capa: 12
   - nombre: venda
     hueso: codo
@@ -394,9 +389,9 @@ fisica:
     - {nombre: cana, hueso: rodilla, a: [0, 0, 0], b: [pie, 0, 0, 0], r: 4.0, espejo: true}
     - {nombre: baculo, hueso: baculo, a: [0, -46, 0], b: [0, 50, 0], r: 1.4}
   telas:
-    # el abrigo choca con el brazo del bastón, que lo empuja hacia atrás y lo arrastra al subir
-    - {pieza: manto, rigidez: 0.008, amortiguar: 0.05, friccion: 0.85, viento: 0.6, choca: [torso.i, torso.d, hombro.d, brazo.i, brazo.d, antebrazo.d]}
-    - {pieza: capa_larga, rigidez: 0.02, amortiguar: 0.04, friccion: 0.5, choca: [torso.i, torso.d, hombro.d, brazo.i, brazo.d, antebrazo.i, antebrazo.d, muslo.i, muslo.d, cana.i, cana.d]}
+    # el manto tiene pesos a los brazos: lo que está sobre el hombro sube y gira con el brazo y queda encima de él
+    - {pieza: manto, rigidez: 0.008, amortiguar: 0.05, friccion: 0.6, viento: 0.6, pesos: [{hueso: hombro, hasta: codo, radio: 14, fuerza: 1.6, espejo: true}], rigidez_peso: 0.35, choca: [torso.i, torso.d, hombro.d, brazo.i, brazo.d, antebrazo.d]}
+    - {pieza: capa_larga, rigidez: 0.02, amortiguar: 0.04, friccion: 0.5, choca: [torso.i, torso.d, brazo.i, antebrazo.i, muslo.i, muslo.d, cana.i, cana.d]}
   cadenas:
     - {nombre: capucha, huesos: [capucha1, capucha2, capucha3], punta: [0, -4.5, -0.8], rigidez: 0.06, amortiguar: 0.08, choca: [cabeza, torso.i, torso.d], grosor: 1.0}
     - {nombre: trapo, huesos: [trapo1, trapo2, trapo3], punta: [0.3, -5, 0.4], rigidez: 0.012, amortiguar: 0.03, viento: 1.4, choca: [baculo], grosor: 0.8}

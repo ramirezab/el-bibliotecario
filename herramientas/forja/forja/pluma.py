@@ -895,6 +895,11 @@ class _Proyector:
             cols = [2 * i, 2 * i + 1, (2 * i + 2) % K]
             esf = [list(G[r, k]) + [radios[r, k]] for r in range(R) for k in cols]
             m = self._esferas_y_discos(pz, esf, None)
+            if G is not G0:
+                # tela simulada: el paño se arma por franjas (fila con fila) para que se doble donde se deforma
+                franjas = [self._esferas_y_discos(pz, [list(G[r, k]) + [radios[r, k]] for r in (f, f + 1) for k in cols],
+                                                  None)['camino'] for f in range(R - 1)]
+                m['camino'] = _union(franjas)
             m['prof'] = prof
             # muestras de profundidad de la tela, para ordenar contra ella lo que esté en el mismo lugar de la pantalla
             Pw = G[:, cols].reshape(-1, 3) * (REFLEJO if pz['lado'] == 'd' else 1) @ M[:3, :3].T + M[:3, 3]

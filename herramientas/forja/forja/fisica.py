@@ -18,6 +18,8 @@ empiezan con la ropa ya asentada.
       - {nombre: brazo, hueso: hombro, a: [0, 0, 0], b: [codo, 0, 0, 0], r: 4, espejo: true}
     telas:
       - {pieza: capa_larga, rigidez: 0.05, amortiguar: 0.04, choca: [torso, brazo.i]}
+      # pesos: la tela cercana a un hueso lo sigue (se levanta y gira con el brazo y queda encima del hombro)
+      - {pieza: manto, pesos: [{hueso: hombro, hasta: codo, radio: 11, fuerza: 1, espejo: true}], rigidez_peso: 0.3}
     cadenas:
       - {nombre: capucha, huesos: [capucha1, capucha2, capucha3], punta: [0, -4.5, -0.8], rigidez: 0.06}
 """
@@ -38,7 +40,7 @@ class _Cuerpo:
         aristas = np.asarray(aristas, int).reshape(-1, 2)
         self.i, self.j = aristas[:, 0], aristas[:, 1]
         self.largo = np.linalg.norm(reposo[self.j] - reposo[self.i], axis=1)
-        self.rigidez = cfg.get('rigidez', 0.05)
+        self.rigidez = np.full(len(reposo), float(cfg.get('rigidez', 0.05)))
         self.amortiguar = cfg.get('amortiguar', 0.05)
         self.gravedad = cfg.get('gravedad', 1.0)
         self.viento = cfg.get('viento', 1.0)
@@ -156,7 +158,41 @@ class Fisica:
         fijos[:K] = True
         c = _Cuerpo(cfg['pieza'], 'tela', cfg, G.reshape(-1, 3), fijos, aristas)
         c.pieza, c.local, c.forma = pz, G.reshape(-1, 3), (R, K)
+        c.pesos = self._pesos(c, cfg)
         return c
+
+    def _pesos(self, c, cfg):
+        """Pesos de la tela a huesos, calculados en la pose base: cada punto libre cerca del segmento de un hueso
+        (de su origen al de `hasta`) lo sigue con peso suave(fuerza·(1 − distancia/radio)), hasta 1. Guarda su posición en el
+        marco del hueso para llevarla con él en cada cuadro."""
+        lista = []
+        W0 = self.dib.matrices(_sumar_poses(self.dib.d.get('pose_base', {}), {}, 0.0), 0.0)
+        M = W0[c.pieza['hueso']] @ c.pieza['local']
+        P0 = c.local @ M[:3, :3].T + M[:3, 3]
+        total = np.zeros(len(P0))
+        for pw in cfg.get('pesos', []):
+            lados = ('i', 'd') if pw.get('espejo') else (None,)
+            for lado in lados:
+                h = self.dib.hueso_lado(pw['hueso'], lado)
+                A = W0[h][:3, 3]
+                B = W0[self.dib.hueso_lado(pw['hasta'], lado)][:3, 3] if pw.get('hasta') else A
+                q = A + np.clip(((P0 - A) @ (B - A)) / max((B - A) @ (B - A), 1e-9), 0, 1)[:, None] * (B - A)
+                d = np.linalg.norm(P0 - q, axis=1)
+                w = np.clip(pw.get('fuerza', 1.0) * (1 - d / pw.get('radio', 10.0)), 0, 1)
+                w = w * w * (3 - 2 * w)
+                w[c.fijos] = 0
+                if not w.any():
+                    continue
+                loc = (P0 - W0[h][:3, 3]) @ W0[h][:3, :3]
+                lista.append((h, w, loc))
+                total += w
+        if lista:
+            # si varios huesos se reparten un punto, los pesos se normalizan para que no pasen de 1
+            k = np.where(total > 1, 1 / np.maximum(total, 1e-9), 1.0)
+            lista = [(h, w * k, loc) for h, w, loc in lista]
+            wt = np.minimum(total, 1.0)
+            c.rigidez = c.rigidez + wt * (cfg.get('rigidez_peso', 0.25) - c.rigidez)
+        return lista
 
     def _cadena(self, cfg):
         huesos = cfg['huesos']
@@ -179,7 +215,13 @@ class Fisica:
         for c in self.cuerpos:
             if c.tipo == 'tela':
                 M = W[c.pieza['hueso']] @ c.pieza['local']
-                salida.append(c.local @ M[:3, :3].T + M[:3, 3])
+                T = c.local @ M[:3, :3].T + M[:3, 3]
+                if c.pesos:
+                    resto = 1 - sum(w for _, w, _ in c.pesos)
+                    T = T * resto[:, None]
+                    for h, w, loc in c.pesos:
+                        T += w[:, None] * (loc @ W[h][:3, :3].T + W[h][:3, 3])
+                salida.append(T)
             else:
                 salida.append(self._puntos_cadena(c.cfg, W))
         return salida
@@ -230,7 +272,7 @@ class Fisica:
             fase = math.tau * vt.get('ciclos', 1) * tiempo - 0.09 * x[:, 1] + 0.05 * x[:, 0]
             f = vt.get('fuerza', 40) * (1 - vt.get('rafaga', 0.5) * (0.5 + 0.5 * np.sin(fase)))
             x += (f[:, None] * d) * c.viento * h * h
-        x += (T - x) * c.rigidez
+        x += (T - x) * c.rigidez[:, None]
         x[c.fijos] = T[c.fijos]
         w = c.libres.astype(float)
         wi, wj = w[c.i], w[c.j]
