@@ -45,6 +45,7 @@ class _Cuerpo:
         self.grosor = cfg.get('grosor', 0.6)
         self.max_desvio = cfg.get('max_desvio', 30.0)
         self.choca = cfg.get('choca')
+        self.friccion = cfg.get('friccion', 0.0)
         self.previo = {}
 
 
@@ -74,7 +75,18 @@ def rejilla_campana(p):
             rr.append(0.05 if puntas else r * 0.6)
     filas.append(np.array(ruedo, float))
     radios.append(np.array(rr, float))
-    return np.stack(filas), np.stack(radios), ang
+    G, Rd = np.stack(filas), np.stack(radios)
+    sub = int(p.get('subdividir', 1))
+    if sub > 1:
+        # aros intermedios interpolados (la forma no cambia, la tela tiene más puntos para doblarse)
+        Gs, Rs = [G[0]], [Rd[0]]
+        for r in range(len(G) - 1):
+            for k in range(1, sub + 1):
+                u = k / sub
+                Gs.append(G[r] * (1 - u) + G[r + 1] * u)
+                Rs.append(Rd[r] * (1 - u) + Rd[r + 1] * u if r + 1 < len(G) - 1 or k < sub else Rd[r + 1])
+        G, Rd = np.stack(Gs), np.stack(Rs)
+    return G, Rd, ang
 
 
 def paño_abierto(p, ang, i):
@@ -190,9 +202,23 @@ class Fisica:
         return caps
 
     # ------------------------------------------------------------------ simulación
-    def _paso(self, c, x, xp, T, caps, h, tiempo):
+    def _paso(self, c, x, xp, T, caps, h, tiempo, caps_antes=None):
         v = (x - xp) * (1 - c.amortiguar)
         xp[:] = x
+        nombres = c.choca if c.choca is not None else list(caps)
+        if c.friccion and caps_antes:
+            # Fricción: la tela que toca un hueso se mueve con él (un brazo que sube arrastra el manto hacia arriba
+            # en vez de resbalar por debajo).
+            for nombre in nombres:
+                A, B, r = caps[nombre]
+                A0, B0, _ = caps_antes[nombre]
+                ab = B - A
+                t = np.clip(((x - A) @ ab) / max(ab @ ab, 1e-9), 0, 1)
+                q = A + t[:, None] * ab
+                contacto = (np.linalg.norm(x - q, axis=1) < r + c.grosor + 0.8) & c.libres
+                if contacto.any():
+                    q0 = A0 + t[:, None] * (B0 - A0)
+                    x[contacto] += c.friccion * (q - q0)[contacto]
         a = np.array([0.0, -self.g * c.gravedad, 0.0])
         x += v + a * h * h
         if self.viento and c.viento:
@@ -211,7 +237,6 @@ class Fisica:
         np.add.at(cuantas, c.i, 1)
         np.add.at(cuantas, c.j, 1)
         cuantas = np.maximum(cuantas, 1)[:, None]
-        nombres = c.choca if c.choca is not None else list(caps)
         for _ in range(self.iteraciones):
             d = x[c.j] - x[c.i]
             L = np.linalg.norm(d, axis=1)
@@ -265,6 +290,7 @@ class Fisica:
             nonlocal x, xp
             estados = []
             previo = orden[0]
+            caps_antes = None
             for f in orden:
                 for s in range(1, self.pasos + 1):
                     u = s / self.pasos
@@ -273,7 +299,8 @@ class Fisica:
                     tiempo = ((f - 1 + u) / fps) / max(duracion, 1e-9) if bucle else (f + u) / fps
                     for ci, c in enumerate(self.cuerpos):
                         Tc = T[previo][ci] * (1 - u) + T[f][ci] * u
-                        self._paso(c, x[ci], xp[ci], Tc, caps, h, tiempo)
+                        self._paso(c, x[ci], xp[ci], Tc, caps, h, tiempo, caps_antes)
+                    caps_antes = caps
                 previo = f
                 if guardar:
                     estados.append({c.nombre: x[ci].copy() for ci, c in enumerate(self.cuerpos)})

@@ -213,6 +213,7 @@ piezas:
     hueso: capa
     forma: campana
     aros: [[3, 9, 7.5], [-2, 15.5, 11.5], [-12, 19.5, 14]]
+    subdividir: 3
     ondas: 11
     puntas: true
     caidas: [3.5, 2.2, 4.2, 2.8, 3.8, 2.0, 4.5, 2.6, 3.4, 2.4, 4.0]
@@ -287,7 +288,7 @@ piezas:
     puntos: [[0, 1.5, 0, 3.8], [codo, 0, 0, 0, 3.3], [codo, 0, -3, 0, 3.2]]
     material: tunica
     fuera_de: [capa_larga, manto]
-    lados: {d: {fuera_de: [manto]}}
+    lados: {d: {fuera_de: [manto], debajo_de: [manto, bufanda, bufanda_vuelta, cola_bufanda], encima_de: [capa_larga, tunica]}}
     capa: 12
   - nombre: venda
     hueso: codo
@@ -377,7 +378,7 @@ fisica:
     - {nombre: baculo, hueso: baculo, a: [0, -46, 0], b: [0, 50, 0], r: 1.4}
   telas:
     # el manto corto se apoya en los hombros: si sube un brazo, lo levanta
-    - {pieza: manto, rigidez: 0.012, amortiguar: 0.05, viento: 0.6, choca: [torso.i, torso.d, brazo.i, brazo.d, antebrazo.d]}
+    - {pieza: manto, rigidez: 0.008, amortiguar: 0.05, friccion: 0.85, viento: 0.6, choca: [torso.i, torso.d, brazo.i, brazo.d, antebrazo.d]}
     - {pieza: capa_larga, rigidez: 0.02, amortiguar: 0.04, choca: [torso.i, torso.d, brazo.i, antebrazo.i, muslo.i, muslo.d, cana.i, cana.d]}
   cadenas:
     - {nombre: capucha, huesos: [capucha1, capucha2, capucha3], punta: [0, -4.5, -0.8], rigidez: 0.06, amortiguar: 0.08, choca: [cabeza, torso.i, torso.d], grosor: 1.0}

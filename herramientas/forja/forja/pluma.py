@@ -436,6 +436,7 @@ class Material:
 
 
 CLAVES_PIEZA = {'nombre', 'hueso', 'forma', 'pos', 'rot', 'material', 'grupo', 'capa', 'dentro_de', 'fuera_de',
+                'debajo_de', 'encima_de',
                 'sin_linea', 'grosor', 'proyecta', 'recibe', 'calcas', 'trazos', 'op', 'oculta', 'espejo', 'lados',
                 'sin_silueta'}
 
@@ -613,7 +614,8 @@ class Dibujo(Esqueleto):
                     grosor=pz.get('grosor', 1.0), proyecta=pz.get('proyecta', True),
                     recibe=pz.get('recibe', True), calcas=pz.get('calcas', []), trazos=pz.get('trazos', []),
                     op=pz.get('op', 'union'), silueta=not pz.get('sin_silueta', False),
-                    fuera_de=pz.get('fuera_de')))
+                    fuera_de=pz.get('fuera_de'), debajo_de=pz.get('debajo_de', []),
+                    encima_de=pz.get('encima_de', [])))
         return salida
 
     def esqueleto_de(self, anim=None, cuadro=0, pose=None):
@@ -899,11 +901,12 @@ class _Proyector:
                     if reverso:
                         m['mat'] = reverso
             miembros.append(m)
-        rayas = []
+        rayas = self._arrugas(pz, G, G0, M) if G is not G0 else []
         if p.get('pliegues'):
             alto = p.get('alto_pliegue', 0.45)
+            sub = int(p.get('subdividir', 1))
             for k in range(0, K, 2):
-                ini, fin = G[-1, k], G[max(R - 3, 0), k]
+                ini, fin = G[-1, k], G[max(R - 1 - 2 * sub, 0), k]
                 n_loc = ini * [1, 0, 1]
                 n_loc = n_loc / max(np.linalg.norm(n_loc), 1e-9) * (REFLEJO if pz['lado'] == 'd' else 1)
                 if float(self.v.de_frente(M[:3, :3] @ n_loc)[0]) < 0.15:
@@ -917,6 +920,51 @@ class _Proyector:
         delante = [m for m in miembros if not m.get('atras')] or miembros
         delante[0]['trazos'] = rayas + self._trazos(pz, self.deformador(pz, G, G0))
         return miembros
+
+    def _arrugas(self, pz, G, G0, M):
+        """Arrugas donde la tela simulada quedó más corta que su diseño: si se aprieta de arriba abajo (un brazo
+        que levanta el hombro) salen pliegues de lado a lado; si se aprieta de costado, pliegues verticales."""
+        umbral = pz['p'].get('arrugas', 0.92)
+        if not umbral:
+            return []
+        R, K, _ = G.shape
+        salida = []
+
+        def frente(P):
+            n_loc = P * [1, 0, 1]
+            n_loc = n_loc / max(np.linalg.norm(n_loc), 1e-9) * (REFLEJO if pz['lado'] == 'd' else 1)
+            return float(self.v.de_frente(M[:3, :3] @ n_loc)[0])
+
+        def trazo(P3, fuerza):
+            P3 = P3 * [1.015, 1, 1.015]
+            if pz['lado'] == 'd':
+                P3 = P3 * REFLEJO
+            C = self.v.pant(_catmull(P3 @ M[:3, :3].T + M[:3, 3], 6))
+            ancho = min(1.0, 0.4 + 4 * fuerza) * self.v.esc
+            salida.append(dict(camino=_camino(_tira2d(C, _perfil([0, ancho, ancho * 0.8, 0], len(C)))),
+                               tono='linea', opacidad=min(1.0, 0.6 + 4 * fuerza)))
+
+        for r in range(R - 1):
+            for k in range(K):
+                # apretada de arriba abajo: pliegue horizontal entre los aros r y r+1, alrededor de la columna k
+                largo = np.linalg.norm(G[r + 1, k] - G[r, k])
+                largo0 = np.linalg.norm(G0[r + 1, k] - G0[r, k])
+                cociente = largo / max(largo0, 1e-6)
+                if cociente < umbral:
+                    medio = (G[r] + G[r + 1]) / 2
+                    P3 = np.array([medio[(k - 1) % K], medio[k], medio[(k + 1) % K]])
+                    if frente(P3[1]) > 0.1:
+                        trazo(P3, umbral - cociente)
+                # apretada de costado: pliegue vertical en la columna k
+                if 0 < r:
+                    ancho_ = np.linalg.norm(G[r, (k + 1) % K] - G[r, (k - 1) % K])
+                    ancho0 = np.linalg.norm(G0[r, (k + 1) % K] - G0[r, (k - 1) % K])
+                    cociente = ancho_ / max(ancho0, 1e-6)
+                    if cociente < umbral:
+                        P3 = np.array([G[r - 1, k] * 0.5 + G[r, k] * 0.5, G[r, k], G[r + 1, k] * 0.6 + G[r, k] * 0.4])
+                        if frente(P3[1]) > 0.1:
+                            trazo(P3, umbral - cociente)
+        return salida
 
     def _caja(self, pz):
         w, h, d = (np.asarray(pz['p']['tam'], float) / 2)
@@ -1183,7 +1231,7 @@ def _armar(dib, yaw, pitch, anim, cuadro, pose, zoom, cara):
         return dict(nombre=nombre, camino=camino, prof=principal['prof'] + pz['capa'] if prof is None else prof,
                     mat=principal.get('mat', pz['mat']), miembros=[m for m in ms if m['pieza']['op'] != 'resta'],
                     linea=pz['linea'], grosor=pz['grosor'], proyecta=pz['proyecta'], recibe=pz['recibe'],
-                    silueta=pz['silueta'], hijos=[],
+                    silueta=pz['silueta'], hijos=[], debajo_de=pz['debajo_de'], encima_de=pz['encima_de'],
                     calcas=[c for m in ms for c in m.get('calcas', []) if c['op'] != 'resta'],
                     trazos=[t for m in ms for t in m.get('trazos', [])],
                     reves=[m['reves'] for m in ms if 'reves' in m])
@@ -1207,7 +1255,29 @@ def _armar(dib, yaw, pitch, anim, cuadro, pose, zoom, cara):
     for it in items:
         it['hijos'].sort(key=lambda h: h['prof'] + h['pieza']['capa'])
     items.sort(key=lambda it: it['prof'])
+    _ordenar_por_reglas(items)
     return items, vista, cara
+
+
+def _ordenar_por_reglas(items):
+    """Respeta `debajo_de` y `encima_de` de las piezas por encima de la profundidad (la parte de arriba de un
+    brazo va siempre bajo el manto que la cubre, aunque el brazo esté adelante)."""
+    for _ in range(4):
+        cambio = False
+        for it in list(items):
+            for regla, arriba in (('debajo_de', False), ('encima_de', True)):
+                for otro in it[regla]:
+                    nombres = [x['nombre'] for x in items]
+                    if otro not in nombres:
+                        continue
+                    i, j = nombres.index(it['nombre']), nombres.index(otro)
+                    if (not arriba and i > j) or (arriba and i < j):
+                        items.remove(it)
+                        j = [x['nombre'] for x in items].index(otro)
+                        items.insert(j + 1 if arriba else j, it)
+                        cambio = True
+        if not cambio:
+            break
 
 
 def _pintar_item(cv, it, cerca, vista, dib):
