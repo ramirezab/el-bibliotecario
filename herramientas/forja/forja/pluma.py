@@ -22,6 +22,7 @@ import yaml
 
 from . import color
 from .modelo import Esqueleto, S, rot, tras, _sumar_poses, _mezclar_poses
+from .fisica import Fisica, rejilla_campana, paño_abierto
 
 REFLEJO = np.array([-1.0, 1, 1])
 UNION, RESTA, CRUCE = (skia.PathOp.kUnion_PathOp, skia.PathOp.kDifference_PathOp,
@@ -470,6 +471,8 @@ class Dibujo(Esqueleto):
         self.piezas = self._expandir(d.get('piezas', []))
         self.poses = d.get('poses', {})
         self.animaciones = d.get('animaciones', {})
+        self.fisica = Fisica(self) if d.get('fisica') else None
+        self._estados = {}
 
     def _rot_para(self, n, pose_total, hacia, frente):
         """Giro de pose (sumado a la base) que deja el eje +Y del hueso `n` apuntando a `hacia`."""
@@ -613,6 +616,31 @@ class Dibujo(Esqueleto):
                     fuera_de=pz.get('fuera_de')))
         return salida
 
+    def esqueleto_de(self, anim=None, cuadro=0, pose=None):
+        """Las matrices de mundo de los huesos en un cuadro (sin la física de la ropa)."""
+        if pose is None:
+            pose, t = self.pose_de(anim, cuadro)
+        else:
+            t = 0.0
+        return self.matrices(_sumar_poses(self.d.get('pose_base', {}), pose, t), t)
+
+    def estado_fisica(self, anim=None, cuadro=0, pose=None):
+        """Dónde está la ropa simulada en un cuadro. Cada animación se simula una vez, entera y en orden."""
+        if self.fisica is None:
+            return None
+        if pose is not None:
+            return self.fisica.simular([self.esqueleto_de(pose=pose)], 24, False)[0]
+        clave = anim if anim in self.animaciones else (anim or '_reposo')
+        if clave not in self._estados:
+            if anim in self.animaciones:
+                a = self.animaciones[anim]
+                Ws = [self.esqueleto_de(anim, i) for i in range(a.get('cuadros', 1))]
+                self._estados[clave] = self.fisica.simular(Ws, a.get('fps', 12), a.get('bucle', True))
+            else:
+                self._estados[clave] = self.fisica.simular([self.esqueleto_de(anim, 0)], 24, False)
+        estados = self._estados[clave]
+        return estados[min(cuadro, len(estados) - 1)]
+
     def hueso_lado(self, nombre, lado):
         if nombre in self.espejados:
             return f'{nombre}.{lado or "i"}'
@@ -667,6 +695,32 @@ class Vista:
 class _Proyector:
     def __init__(self, dib, W, vista, cara):
         self.dib, self.W, self.v, self.cara = dib, W, vista, cara
+        self.telas = {}
+
+    def rejilla(self, pz):
+        """Los puntos de una campana en su marco: los simulados si la tela tiene física, si no los de diseño."""
+        G, radios, ang = rejilla_campana(pz['p'])
+        tela = self.telas.get(pz['nombre'])
+        if tela is None:
+            return G, G, radios, ang
+        M = self.matriz(pz)
+        return (tela - M[:3, 3]) @ M[:3, :3], G, radios, ang
+
+    def deformador(self, pz, G, G0):
+        """Lleva puntos pegados a una tela (pliegues dibujados) con la deformación de la tela simulada."""
+        if G is G0:
+            return None
+        M = self.matriz(pz)
+        P0, D = G0.reshape(-1, 3), (G - G0).reshape(-1, 3)
+
+        def f(Pw):
+            L = (np.atleast_2d(Pw) - M[:3, 3]) @ M[:3, :3]
+            d2 = ((L[:, None, :] - P0[None]) ** 2).sum(2)
+            cerca = np.argsort(d2, 1)[:, :4]
+            w = 1 / (np.take_along_axis(d2, cerca, 1) + 1.0)
+            disp = (D[cerca] * w[..., None]).sum(1) / w.sum(1, keepdims=True)
+            return (L + disp) @ M[:3, :3].T + M[:3, 3]
+        return f
 
     def matriz(self, pz):
         return self.W[pz['hueso']] @ pz['local']
@@ -712,12 +766,21 @@ class _Proyector:
             raise ValueError(f'fuera_de: "{nombre}" no es una pieza con forma campana.')
         M = self.matriz(cap)
         L = (np.atleast_2d(Pw) - M[:3, 3]) @ M[:3, :3]
-        aros = sorted(cap['p']['aros'])
-        ys = np.array([a[0] for a in aros])
-        rx = np.interp(L[:, 1], ys, [a[1] for a in aros])
-        rz = np.interp(L[:, 1], ys, [a[2] for a in aros])
-        dentro = ((L[:, 1] >= ys[0] - 1) & (L[:, 1] <= ys[-1] + 4)
-                  & ((L[:, 0] / rx) ** 2 + (L[:, 2] / rz) ** 2 < 1.0))
+        G, _, _, ang = self.rejilla(cap)
+        R, K, _ = G.shape
+        # el perfil de la tela (de arriba abajo) en el ángulo de cada punto
+        u = ((np.arctan2(L[:, 0], L[:, 2]) - ang[0]) / (math.tau / K)) % K
+        k0 = np.floor(u).astype(int) % K
+        f = (u - np.floor(u))[None, :, None]
+        perfil = G[:, k0] * (1 - f) + G[:, (k0 + 1) % K] * f
+        yr, rr = perfil[..., 1], np.hypot(perfil[..., 0], perfil[..., 2])
+        q = np.hypot(L[:, 0], L[:, 2])
+        dentro = (L[:, 1] >= yr[0]) & (L[:, 1] <= yr[0] + 4) & (q < rr[0])
+        for j in range(R - 1):
+            ya, yb = yr[j], yr[j + 1]
+            entre = (L[:, 1] <= np.maximum(ya, yb)) & (L[:, 1] >= np.minimum(ya, yb))
+            w = np.clip((L[:, 1] - ya) / np.where(np.abs(yb - ya) > 1e-6, yb - ya, 1.0), 0, 1)
+            dentro |= entre & (q < rr[j] + (rr[j + 1] - rr[j]) * w)
         abertura = cap['p'].get('abertura', 0)
         if abertura:
             # lo que queda en la abertura de adelante se ve aunque esté dentro de la campana
@@ -814,37 +877,23 @@ class _Proyector:
         `abertura` (grados) deja abierta la parte de adelante. Los paños de atrás se dibujan aparte, detrás del
         cuerpo (`capa_atras`) y con el material `reverso`: por la abertura se ve el forro, no la cara de afuera."""
         p = pz['p']
-        aros = p['aros']
-        n = p.get('ondas', 8)
-        caida = p.get('caida', 2.0)
-        r = p.get('redondeo', 1.5)
-        fase = math.radians(p.get('fase', 0))
-        angs = fase + np.arange(n + 1) * math.tau / n
+        G, G0, radios, ang = self.rejilla(pz)
+        R, K, _ = G.shape
+        n = K // 2
         M = self.matriz(pz)
         prof = float(self.v.prof(M[:3, 3])[0])
         miembros = []
-        abertura = p.get('abertura', 0)
         reverso = self.dib.materiales.get(p.get('reverso'))
         for i in range(n):
-            a0, a1 = angs[i], angs[i + 1]
-            am = (a0 + a1) / 2
-            if abertura and abs((math.degrees(am) + 180) % 360 - 180) < abertura / 2:
+            if paño_abierto(p, ang, i):
                 continue
-            esf = [[rx * math.sin(a), y, rz * math.cos(a), r] for y, rx, rz in aros[:-1] for a in (a0, am, a1)]
-            y, rx, rz = aros[-1]
-            if 'caidas' in p:
-                caida = p['caidas'][i % len(p['caidas'])]
-            if p.get('puntas'):
-                # ruedo en picos: cada paño termina en una punta afilada (capa rasgada)
-                esf += [[rx * math.sin(a0), y, rz * math.cos(a0), 0.3], [rx * math.sin(a1), y, rz * math.cos(a1), 0.3],
-                        [rx * 1.04 * math.sin(am), y - caida, rz * 1.04 * math.cos(am), 0.05]]
-            else:
-                esf += [[rx * math.sin(a), y - dy, rz * math.cos(a), r * 0.6]
-                        for a, dy in ((a0, 0.0), (am, caida), (a1, 0.0))]
+            cols = [2 * i, 2 * i + 1, (2 * i + 2) % K]
+            esf = [list(G[r, k]) + [radios[r, k]] for r in range(R) for k in cols]
             m = self._esferas_y_discos(pz, esf, None)
             m['prof'] = prof
-            if abertura or reverso:
-                n_loc = np.array([math.sin(am), 0, math.cos(am)]) * (REFLEJO if pz['lado'] == 'd' else 1)
+            if p.get('abertura') or reverso:
+                n_loc = G[-1, 2 * i + 1] * [1, 0, 1]
+                n_loc = n_loc / max(np.linalg.norm(n_loc), 1e-9) * (REFLEJO if pz['lado'] == 'd' else 1)
                 if float(self.v.de_frente(M[:3, :3] @ n_loc)[0]) < 0:
                     m['atras'] = True
                     if reverso:
@@ -852,27 +901,21 @@ class _Proyector:
             miembros.append(m)
         rayas = []
         if p.get('pliegues'):
-            y0, rx0, rz0 = aros[-1]
-            y1, rx1, rz1 = aros[max(len(aros) - 3, 0)]
             alto = p.get('alto_pliegue', 0.45)
-            for a in angs[:-1]:
-                n_loc = np.array([math.sin(a) / rx0, 0, math.cos(a) / rz0])
-                if pz['lado'] == 'd':
-                    n_loc = n_loc * REFLEJO
+            for k in range(0, K, 2):
+                ini, fin = G[-1, k], G[max(R - 3, 0), k]
+                n_loc = ini * [1, 0, 1]
+                n_loc = n_loc / max(np.linalg.norm(n_loc), 1e-9) * (REFLEJO if pz['lado'] == 'd' else 1)
                 if float(self.v.de_frente(M[:3, :3] @ n_loc)[0]) < 0.15:
                     continue
-                k = np.linspace(0, alto, 6)[:, None]
-                ini = np.array([rx0 * math.sin(a), y0, rz0 * math.cos(a)])
-                fin = np.array([rx1 * math.sin(a), y1, rz1 * math.cos(a)])
-                P3 = ini + (fin - ini) * k / max(alto, 1e-6) * alto
-                P3 = P3 * 1.01
+                P3 = (ini + (fin - ini) * np.linspace(0, alto, 6)[:, None]) * [1.01, 1, 1.01]
                 if pz['lado'] == 'd':
                     P3 = P3 * REFLEJO
                 C = self.v.pant(P3 @ M[:3, :3].T + M[:3, 3])
                 w = _perfil(p.get('ancho_pliegue', [0.7, 0.4, 0.0]), len(C)) * self.v.esc
                 rayas.append(dict(camino=_camino(_tira2d(C, w)), tono='linea', opacidad=0.9))
         delante = [m for m in miembros if not m.get('atras')] or miembros
-        delante[0]['trazos'] = rayas + self._trazos(pz)
+        delante[0]['trazos'] = rayas + self._trazos(pz, self.deformador(pz, G, G0))
         return miembros
 
     def _caja(self, pz):
@@ -1058,10 +1101,12 @@ class _Proyector:
                                    brillo=c.get('brillo', False), linea=c.get('linea', False)))
         return salida
 
-    def _trazos(self, pz):
+    def _trazos(self, pz, deformar=None):
         salida = []
         for t in pz['trazos']:
             P, X, Rm = self.puntos(pz, t['puntos'])
+            if deformar is not None:
+                P = deformar(P)
             if 'normal' in t:
                 n = np.asarray(t['normal'], float) * (REFLEJO if pz['lado'] == 'd' else 1)
                 fr = float(self.v.de_frente(Rm[0] @ n)[0])
@@ -1106,14 +1151,13 @@ class Cuadro:
 def _armar(dib, yaw, pitch, anim, cuadro, pose, zoom, cara):
     yaw = dib.camara['yaw'] if yaw is None else yaw
     pitch = dib.camara['pitch'] if pitch is None else pitch
-    if pose is None:
-        pose, t = dib.pose_de(anim, cuadro)
-    else:
-        t = 0.0
-    W = dib.matrices(_sumar_poses(dib.d.get('pose_base', {}), pose, t), t)
+    W = dib.esqueleto_de(anim, cuadro, pose)
+    estado = dib.estado_fisica(anim, cuadro, pose)
+    telas = dib.fisica.aplicar(W, estado) if estado is not None else {}
     cara = cara or dib.cara_de(anim, cuadro)
     vista = Vista(dib, yaw, pitch, zoom)
     pr = _Proyector(dib, W, vista, cara)
+    pr.telas = telas
 
     grupos, hijos = {}, []
     for pz in dib.piezas:

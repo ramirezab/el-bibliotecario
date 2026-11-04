@@ -74,24 +74,56 @@ piezas:
       - {circulo: 0.9, centro: [6.4, -1.1], color: '#fff6e8', brillo: true, espejo: true, caras: [normal]}
       - {contorno: [[3.5, 2.6], [11, 2.6], [11, 0.0], [3.5, -1.6]], suave: false, material: piel, espejo: true, caras: [decidido]}
       - {trazo: [[5.2, -3.0], [7.2, -3.8], [9.2, -3.0]], anchos: [0.3, 0.9, 0.3], material: ojo, espejo: true, caras: [parpadeo]}
-      # dolor: mueca asimétrica. Su ojo izquierdo apretado con una lágrima, el derecho abierto de golpe con la
-      # pupila chica, cejas de angustia (la punta interior arriba), boca abierta y torcida con los dientes de
-      # arriba, y una gota de sudor.
-      - {trazo: [[4.4, -1.8], [7.2, -3.2], [10.2, -2.0]], anchos: [0.6, 1.4, 0.6], material: ojo, caras: [dolor]}
-      - {trazo: [[5.2, 0.0], [7.6, -0.8], [9.8, -0.4]], anchos: [0.1, 0.45, 0.1], material: ojo, caras: [dolor]}
-      - {trazo: [[5.6, -4.8], [7.8, -5.2], [9.6, -4.6]], anchos: [0.1, 0.4, 0.1], material: ojo, caras: [dolor]}
-      - {contorno: [[10.6, -3.4], [9.9, -5.4], [10.4, -6.6], [11.4, -6.6], [11.6, -5.4]], color: '#cfe8ff', linea: true, brillo: true, caras: [dolor]}
-      - {ovalo: [2.6, 3.0], centro: [-7.2, -2.4], color: '#fffaf2', linea: true, caras: [dolor]}
-      - {circulo: 1.05, centro: [-6.9, -2.8], material: ojo, caras: [dolor]}
-      - {trazo: [[-10.2, 0.2], [-7.2, 1.0], [-4.4, 0.2]], anchos: [0.3, 0.7, 0.3], material: ojo, caras: [dolor]}
-      - {trazo: [[3.6, 4.4], [6.8, 3.0], [10.4, 1.4]], anchos: [0.9, 1.0, 0.3], color: '#4a2e1a', caras: [dolor]}
-      - {trazo: [[-3.6, 4.4], [-6.8, 3.4], [-10.4, 2.4]], anchos: [0.9, 1.0, 0.3], color: '#4a2e1a', caras: [dolor]}
-      - {contorno: [[-4.8, -9.6], [-0.8, -9.0], [4.2, -10.3], [3.2, -14.0], [-0.5, -14.6], [-3.8, -13.0]], color: '#5a1f22', caras: [dolor]}
-      - {contorno: [[-4.0, -9.75], [-0.8, -9.3], [3.7, -10.4], [3.5, -11.3], [-0.8, -10.5], [-3.9, -10.8]], color: '#fff4e6', brillo: true, caras: [dolor]}
-      - {ovalo: [1.8, 0.9], centro: [0, -13.5], color: '#c9545c', caras: [dolor]}
+      # caras de dolor para elegir (dolor1..dolor6); la que diga `dolor` es la que usa la animación de golpe
+      # 1. sorpresa: ojos abiertos de golpe con la pupila chica, cejas de angustia y boca en O
+      - {ovalo: [2.7, 3.3], centro: [7.2, -2.4], color: '#fffaf2', linea: true, espejo: true, caras: [dolor1]}
+      - {circulo: 0.95, centro: [7.0, -2.7], material: ojo, espejo: true, caras: [dolor1]}
+      - {trazo: [[3.6, 4.8], [6.8, 3.8], [10.4, 2.2]], anchos: [0.9, 1.0, 0.3], color: '#4a2e1a', espejo: true, caras: [dolor1]}
+      - {ovalo: [1.7, 2.2], centro: [0, -11.4], color: '#5a1f22', caras: [dolor1]}
+      - {ovalo: [1.0, 0.6], centro: [0, -12.6], color: '#c9545c', caras: [dolor1]}
+      - {contorno: [[13.8, 3.0], [12.6, 0.0], [13.2, -1.8], [14.6, -1.8], [15.0, 0.0]], color: '#d4ecff', linea: true, brillo: true, caras: [dolor1]}
+      # 2. aguanta: ojos apretados con arrugas, ceño fruncido y dientes apretados de lado a lado
+      - {trazo: [[4.2, -1.2], [7.2, -2.6], [10.4, -3.2]], anchos: [0.7, 1.4, 0.6], material: ojo, espejo: true, caras: [dolor2, dolor]}
+      - {trazo: [[5.0, 0.4], [7.4, -0.3], [9.6, -1.0]], anchos: [0.1, 0.4, 0.1], material: ojo, espejo: true, caras: [dolor2, dolor]}
+      - {trazo: [[5.4, -4.4], [7.6, -4.8], [9.6, -4.9]], anchos: [0.1, 0.4, 0.1], material: ojo, espejo: true, caras: [dolor2, dolor]}
+      - {trazo: [[3.2, 1.4], [6.8, 2.6], [10.4, 3.8]], anchos: [1.1, 1.1, 0.4], color: '#4a2e1a', espejo: true, caras: [dolor2, dolor]}
+      - {contorno: [[-5.0, -9.4], [5.0, -9.4], [4.4, -12.9], [-4.4, -12.9]], suave: false, color: '#4a1f1c', caras: [dolor2, dolor]}
+      - {contorno: [[-4.3, -9.85], [4.3, -9.85], [3.85, -12.45], [-3.85, -12.45]], suave: false, color: '#fff4e6', brillo: true, caras: [dolor2, dolor]}
+      - {trazo: [[-4.1, -11.15], [4.1, -11.15]], ancho: 0.35, color: '#4a1f1c', brillo: true, caras: [dolor2, dolor]}
+      - {trazo: [[-2.2, -9.9], [-2.1, -12.4]], ancho: 0.25, color: '#4a1f1c', brillo: true, caras: [dolor2, dolor]}
+      - {trazo: [[0, -9.9], [0, -12.4]], ancho: 0.25, color: '#4a1f1c', brillo: true, caras: [dolor2, dolor]}
+      - {trazo: [[2.2, -9.9], [2.1, -12.4]], ancho: 0.25, color: '#4a1f1c', brillo: true, caras: [dolor2, dolor]}
+      - {contorno: [[13.8, 3.0], [12.6, 0.0], [13.2, -1.8], [14.6, -1.8], [15.0, 0.0]], color: '#d4ecff', linea: true, brillo: true, caras: [dolor2, dolor]}
+      # 3. lágrimas: ojos cerrados ondulados con lágrimas que caen y boca temblorosa
+      - {trazo: [[4.4, -2.6], [5.8, -1.8], [7.2, -2.8], [8.6, -1.8], [10.0, -2.6]], anchos: [0.4, 0.9, 1.0, 0.9, 0.4], material: ojo, espejo: true, caras: [dolor3]}
+      - {contorno: [[8.6, -3.6], [10.0, -3.6], [10.4, -8.6], [9.3, -10.2], [8.2, -8.6]], color: '#cfe8ff', linea: true, brillo: true, espejo: true, caras: [dolor3]}
+      - {trazo: [[3.6, 4.8], [6.8, 3.8], [10.4, 2.2]], anchos: [0.9, 1.0, 0.3], color: '#4a2e1a', espejo: true, caras: [dolor3]}
+      - {trazo: [[-3.4, -11.2], [-1.7, -10.3], [0, -11.2], [1.7, -10.3], [3.4, -11.2]], anchos: [0.4, 0.7, 0.7, 0.7, 0.4], color: '#5a1f22', caras: [dolor3]}
+      # 4. seria: párpados caídos, mirada baja, mueca contenida y la sombra de la capucha sobre los ojos
+      - {ovalo: [2.3, 2.6], centro: [7.2, -3.4], material: ojo, espejo: true, caras: [dolor4]}
+      - {contorno: [[3.8, 2.0], [10.8, 2.0], [10.8, -2.2], [3.8, -2.8]], suave: false, material: piel, espejo: true, caras: [dolor4]}
+      - {trazo: [[4.4, -2.7], [7.2, -1.9], [10.1, -2.4]], anchos: [0.4, 0.9, 0.3], material: ojo, espejo: true, caras: [dolor4]}
+      - {trazo: [[3.8, 3.2], [6.8, 3.1], [10.2, 1.4]], anchos: [0.8, 0.9, 0.3], color: '#4a2e1a', espejo: true, caras: [dolor4]}
+      - {trazo: [[-3.0, -11.0], [0, -10.6], [3.0, -11.8]], anchos: [0.3, 0.75, 0.3], color: '#5a1f22', caras: [dolor4]}
+      - {ovalo: [16, 7], centro: [0, 3.5], color: '#2a1c22', opacidad: 0.28, blur: 1.6, caras: [dolor4]}
+      # 5. aturdido: ojos en blanco, cejas arriba y boca abierta en zigzag
+      - {ovalo: [2.7, 3.1], centro: [7.2, -2.4], color: '#fffaf2', linea: true, espejo: true, caras: [dolor5]}
+      - {trazo: [[3.6, 5.2], [6.8, 4.6], [10.4, 3.6]], anchos: [0.6, 1.0, 0.3], color: '#4a2e1a', espejo: true, caras: [dolor5]}
+      - {contorno: [[-4.0, -9.8], [-2.0, -10.6], [0, -9.8], [2.0, -10.6], [4.0, -9.8], [3.0, -13.0], [0, -13.6], [-3.0, -13.0]], suave: false, color: '#5a1f22', caras: [dolor5]}
+      - {trazo: [[10.0, 6.5], [11.5, 8.5]], ancho: 0.45, color: '#4a2e1a', caras: [dolor5]}
+      - {trazo: [[12.0, 5.5], [14.0, 7.0]], ancho: 0.45, color: '#4a2e1a', caras: [dolor5]}
+      # 6. mueca asimétrica: un ojo apretado con lágrima, el otro abierto, boca abierta y torcida
+      - {trazo: [[4.4, -1.8], [7.2, -3.2], [10.2, -2.0]], anchos: [0.6, 1.4, 0.6], material: ojo, caras: [dolor6]}
+      - {trazo: [[5.2, 0.0], [7.6, -0.8], [9.8, -0.4]], anchos: [0.1, 0.45, 0.1], material: ojo, caras: [dolor6]}
+      - {contorno: [[10.6, -3.4], [9.9, -5.4], [10.4, -6.6], [11.4, -6.6], [11.6, -5.4]], color: '#cfe8ff', linea: true, brillo: true, caras: [dolor6]}
+      - {ovalo: [2.6, 3.0], centro: [-7.2, -2.4], color: '#fffaf2', linea: true, caras: [dolor6]}
+      - {circulo: 1.05, centro: [-6.9, -2.8], material: ojo, caras: [dolor6]}
+      - {trazo: [[3.6, 4.4], [6.8, 3.0], [10.4, 1.4]], anchos: [0.9, 1.0, 0.3], color: '#4a2e1a', espejo: true, caras: [dolor6]}
+      - {contorno: [[-4.8, -9.6], [-0.8, -9.0], [4.2, -10.3], [3.2, -14.0], [-0.5, -14.6], [-3.8, -13.0]], color: '#5a1f22', caras: [dolor6]}
+      - {contorno: [[-4.0, -9.75], [-0.8, -9.3], [3.7, -10.4], [3.5, -11.3], [-0.8, -10.5], [-3.9, -10.8]], color: '#fff4e6', brillo: true, caras: [dolor6]}
       # decidido: cejas fruncidas
       - {trazo: [[3.6, 1.4], [6.8, 2.2], [10.4, 3.4]], anchos: [0.6, 1.0, 0.3], color: '#4a2e1a', espejo: true, caras: [decidido]}
-      - {ovalo: [2.8, 1.5], centro: [11, -8], color: '#e98a74', opacidad: 0.45, blur: 0.6, espejo: true, sin_caras: [dolor]}
+      - {ovalo: [2.8, 1.5], centro: [11, -8], color: '#e98a74', opacidad: 0.45, blur: 0.6, espejo: true, sin_caras: [dolor, dolor1, dolor2, dolor3, dolor4, dolor5, dolor6]}
       - {trazo: [[-1.6, -10.4], [0, -11.0], [1.6, -10.4]], anchos: [0.25, 0.7, 0.25], color: '#7a3f30', caras: [normal, parpadeo, decidido]}
       - {contorno: [[-2.2, -9.8], [2.2, -9.8], [1.4, -12.4], [-1.4, -12.4]], color: '#6a2c26', caras: [dolor]}
 
@@ -330,9 +362,30 @@ piezas:
   - {nombre: amuleto, hueso: baculo, forma: lamina, pos: [-2.4, 35.5, 1.2], rot: [0, -30, 8], contorno: [[0, 3.5], [-1.2, 1.5], [-1.4, -2], [0, -4.5], [1.3, -2], [1.2, 1.5]], material: pluma, capa: 20.4, grosor: 0.6,
      trazos: [{puntos: [[0, 3.5, 0.05], [0, -4.2, 0.05]], anchos: [0.3, 0.1], tono: hondo}]}
 
+fisica:
+  gravedad: 600
+  pasos: 8
+  iteraciones: 5
+  viento: {dir: [-1, 0, -0.5], fuerza: 900, rafaga: 0.7, ciclos: 1}
+  colisiones:
+    - {nombre: torso, hueso: torso, a: [5, 0, 0.5], b: [5.5, 18, 0], r: 6.5, espejo: true}
+    - {nombre: cabeza, hueso: cabeza, a: [0, 2.6, -2.2], r: 21.5}
+    - {nombre: brazo, hueso: hombro, a: [0, 0, 0], b: [codo, 0, 0, 0], r: 3.8, espejo: true}
+    - {nombre: antebrazo, hueso: codo, a: [0, 0, 0], b: [mano, 0, 0, 0], r: 3.3, espejo: true}
+    - {nombre: muslo, hueso: pierna, a: [0, 0, 0], b: [rodilla, 0, 0, 0], r: 4.4, espejo: true}
+    - {nombre: cana, hueso: rodilla, a: [0, 0, 0], b: [pie, 0, 0, 0], r: 4.0, espejo: true}
+    - {nombre: baculo, hueso: baculo, a: [0, -46, 0], b: [0, 50, 0], r: 1.4}
+  telas:
+    # el manto corto se apoya en los hombros: si sube un brazo, lo levanta
+    - {pieza: manto, rigidez: 0.012, amortiguar: 0.05, viento: 0.6, choca: [torso.i, torso.d, brazo.i, brazo.d, antebrazo.d]}
+    - {pieza: capa_larga, rigidez: 0.02, amortiguar: 0.04, choca: [torso.i, torso.d, brazo.i, antebrazo.i, muslo.i, muslo.d, cana.i, cana.d]}
+  cadenas:
+    - {nombre: capucha, huesos: [capucha1, capucha2, capucha3], punta: [0, -4.5, -0.8], rigidez: 0.06, amortiguar: 0.08, choca: [cabeza, torso.i, torso.d], grosor: 1.0}
+    - {nombre: trapo, huesos: [trapo1, trapo2, trapo3], punta: [0.3, -5, 0.4], rigidez: 0.012, amortiguar: 0.03, viento: 1.4, choca: [baculo], grosor: 0.8}
+
 animaciones:
-  # Las capas, la punta de la capucha y el trapo del bastón arrastran el movimiento (retraso o fase corrida),
-  # y las claves usan curvas: salida (frena), entrada (acelera), sobrepaso (se pasa y vuelve).
+  # Solo se anima el cuerpo. La ropa (capa, manto, punta de la capucha y trapo del bastón) la mueve la física.
+  # Las claves usan curvas: salida (frena), entrada (acelera), sobrepaso (se pasa y vuelve).
   reposo:
     cuadros: 32
     fps: 20
@@ -341,12 +394,7 @@ animaciones:
       cadera: [0, 0, '1.2*sin(tau*t)']
       torso: {rot: ['1.5*sin(tau*t)', 0, '-1.0*sin(tau*t)'], pos: [0, '0.5*sin(tau*t)', 0]}
       cabeza: ['-2*sin(tau*t + 0.7)', '4*sin(tau*t - 0.3)', '1.5*sin(tau*t + 0.3)']
-      capa: ['-2.5*sin(tau*t - 0.6)', '2*sin(tau*t - 0.9)', '2.2*sin(tau*t - 1.0)']
-      capucha2: ['6*sin(tau*t - 0.8)', 0, '4*sin(tau*t - 1.0)']
-      capucha3: ['9*sin(tau*t - 1.6)', 0, '6*sin(tau*t - 1.8)']
       hombro.d: ['2.5*sin(tau*t + 0.4)', 0, '1.5*sin(tau*t)']
-      trapo2: ['10*sin(2*tau*t - 0.4)', 0, '12*sin(tau*t - 0.4)']
-      trapo3: ['14*sin(2*tau*t - 1.2)', 0, '14*sin(tau*t - 1.2)']
 
   caminar:
     cuadros: 16
@@ -363,17 +411,11 @@ animaciones:
       torso: [5, '-7*sin(tau*t)', '-1.5*cos(tau*t)']
       cabeza: ['-1.5*abs(cos(tau*t))', '4*sin(tau*t)', '1.5*cos(tau*t)']
       hombro.d: ['-10*sin(tau*t)', 0, 0]
-      capa: ['7 + 3*abs(cos(tau*t - 0.6))', '-5*sin(tau*t - 0.6)', '4*cos(tau*t - 0.7)']
-      capucha2: ['10 + 7*abs(cos(tau*t - 0.9))', 0, '5*sin(tau*t - 1.0)']
-      capucha3: ['12 + 10*abs(cos(tau*t - 1.4))', 0, '7*sin(tau*t - 1.5)']
-      trapo2: ['20 + 12*sin(2*tau*t - 0.5)', 0, '14*sin(tau*t - 0.4)']
-      trapo3: ['24 + 16*sin(2*tau*t - 1.3)', 0, '16*sin(tau*t - 1.2)']
 
   ataque:
     cuadros: 28
     fps: 24
     bucle: false
-    retraso: {capa: 0.06, capucha2: 0.08, capucha3: 0.12, trapo2: 0.07, trapo3: 0.11}
     claves:
       - {t: 0, pose: {}}
       # preparación: se agacha y alza el bastón por delante, sobre su hombro derecho (el brazo siempre a la vista)
@@ -385,16 +427,12 @@ animaciones:
           cadera: {pos: [0, -2.6, -1.5]}
           torso: [-6, -14, 0]
           cabeza: [6, 10, 0]
-          hombro.d: [-105, 45, -90]
-          codo.d: [-20, 0, 0]
+          hombro.d: [-128, -5, -90]
+          codo.d: [-8, 0, 0]
           pierna.d: [-12, 0, 0]
           pierna.i: [8, 0, 0]
           rodilla.i: [14, 0, 0]
           rodilla.d: [10, 0, 0]
-          capa: [-6, 4, 4]
-          capucha2: [-4, 0, 0]
-          trapo2: [-10, 0, 0]
-          trapo3: [-10, 0, 0]
       - t: 0.3
         curva: suave
         cara: decidido
@@ -409,10 +447,6 @@ animaciones:
           pierna.i: [8, 0, 0]
           rodilla.i: [15, 0, 0]
           rodilla.d: [11, 0, 0]
-          capa: [-7, 4, 4]
-          capucha2: [-5, 0, 0]
-          trapo2: [-12, 0, 0]
-          trapo3: [-12, 0, 0]
       # golpe: paso adelante y el bastón baja de frente, acelerando
       - t: 0.42
         curva: entrada
@@ -429,11 +463,6 @@ animaciones:
           pierna.i: [-20, 0, 0]
           rodilla.d: [22, 0, 0]
           rodilla.i: [6, 0, 0]
-          capa: [-12, -4, -8]
-          capucha2: [-18, 0, 0]
-          capucha3: [-16, 0, 0]
-          trapo2: [-34, 0, 0]
-          trapo3: [-30, 0, 0]
       # el bastón se pasa un poco y se asienta
       - t: 0.5
         curva: sobrepaso
@@ -450,11 +479,6 @@ animaciones:
           pierna.i: [-20, 0, 0]
           rodilla.d: [22, 0, 0]
           rodilla.i: [6, 0, 0]
-          capa: [-8, -2, -6]
-          capucha2: [-10, 0, 0]
-          capucha3: [-12, 0, 0]
-          trapo2: [-20, 0, 0]
-          trapo3: [-24, 0, 0]
       # recupera: lleva el bastón hacia afuera, a su costado, y de ahí lo para (no cruza la cara)
       - t: 0.7
         curva: suave
@@ -469,14 +493,12 @@ animaciones:
           codo.d: [-10, 0, 0]
           pierna.d: [8, 0, 0]
           pierna.i: [-6, 0, 0]
-          capa: [-2, 0, -2]
       - {t: 1, curva: sobrepaso, pose: {}}
 
   golpe:
     cuadros: 18
     fps: 24
     bucle: false
-    retraso: {capa: 0.08, capucha2: 0.1, capucha3: 0.14, trapo2: 0.08, trapo3: 0.12}
     claves:
       - {t: 0, pose: {}}
       # lo empujan: sale despedido hacia atrás
@@ -498,11 +520,6 @@ animaciones:
           codo.d: [-20, 0, 0]
           pierna.d: [-14, 0, 0]
           pierna.i: [-8, 0, 0]
-          capa: [16, 6, 10]
-          capucha2: [22, 0, 0]
-          capucha3: [20, 0, 0]
-          trapo2: [30, 0, 0]
-          trapo3: [30, 0, 0]
       # aterriza doblando las rodillas
       - t: 0.26
         curva: salida
@@ -515,8 +532,6 @@ animaciones:
           hombro.d: [12, 0, 14]
           rodilla.i: [22, 0, 0]
           rodilla.d: [18, 0, 0]
-          capa: [6, 2, 4]
-          capucha2: [8, 0, 0]
       # sacude la cabeza
       - t: 0.42
         cara: dolor
