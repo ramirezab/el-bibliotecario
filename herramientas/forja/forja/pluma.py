@@ -21,7 +21,7 @@ import skia
 import yaml
 
 from . import color
-from .modelo import Esqueleto, S, rot, tras, _sumar_poses
+from .modelo import Esqueleto, S, rot, tras, _sumar_poses, _mezclar_poses
 
 REFLEJO = np.array([-1.0, 1, 1])
 UNION, RESTA, CRUCE = (skia.PathOp.kUnion_PathOp, skia.PathOp.kDifference_PathOp,
@@ -375,6 +375,20 @@ def sobre_elipsoide(xy, r, giro=None, alza=0.0):
     return P + N * np.atleast_1d(alza)[:, None] if np.any(alza) else P, N
 
 
+def _curva(u, tipo='suave'):
+    """Cómo se reparte el movimiento entre dos claves."""
+    if tipo == 'lineal':
+        return u
+    if tipo == 'entrada':
+        return u ** 3
+    if tipo == 'salida':
+        return 1 - (1 - u) ** 3
+    if tipo == 'sobrepaso':
+        c = 1.70158
+        return 1 + (c + 1) * (u - 1) ** 3 + c * (u - 1) ** 2
+    return u * u * (3 - 2 * u)
+
+
 def _arco(a, b, u):
     """Dirección intermedia entre a y b por el arco más corto (u de 0 a 1)."""
     a = np.asarray(a, float) / np.linalg.norm(a)
@@ -480,30 +494,48 @@ class Dibujo(Esqueleto):
             return np.asarray(spec['hacia'], float), np.asarray(spec.get('frente', h.get('frente', [0, 0, 1])), float)
         return np.asarray(spec, float), np.asarray(h.get('frente', [0, 0, 1]), float)
 
+    def _tramo(self, claves, t):
+        """Las dos claves que rodean la fase t y el avance entre ellas, ya pasado por la curva de la clave."""
+        if t <= claves[0]['t']:
+            return claves[0], claves[0], 0.0
+        if t >= claves[-1]['t']:
+            return claves[-1], claves[-1], 0.0
+        for c0, c1 in zip(claves, claves[1:]):
+            if c0['t'] <= t <= c1['t']:
+                u = (t - c0['t']) / max(c1['t'] - c0['t'], 1e-9)
+                return c0, c1, _curva(u, c1.get('curva', 'suave'))
+        return claves[-1], claves[-1], 0.0
+
+    def _mezcla(self, claves, t):
+        c0, c1, u = self._tramo(claves, t)
+        return _mezclar_poses(c0.get('pose') or {}, c1.get('pose') or {}, u, t)
+
     def pose_de(self, anim=None, cuadro=0):
-        """Como en el esqueleto, pero los huesos con `apunta` en las claves siguen un arco: se interpola su
-        dirección (no sus ángulos) y el giro se resuelve en cada cuadro."""
-        pose, t = super().pose_de(anim, cuadro)
+        """La pose de un cuadro. Además de lo del esqueleto:
+
+        - las claves aceptan `curva`: suave, lineal, entrada (arranca lento), salida (frena al final) o
+          sobrepaso (se pasa un poco y vuelve), para que los golpes y los frenos se sientan;
+        - `retraso: {hueso: fracción}` hace que ese hueso siga la animación un poco más tarde que el resto
+          (capas, puntas y trapos que arrastran el movimiento);
+        - los huesos con `apunta` en las claves siguen un arco: se interpola su dirección y el giro de la
+          muñeca se resuelve en cada cuadro.
+        """
         a = self.animaciones.get(anim) if anim else None
         if not a or 'claves' not in a:
-            return pose, t
+            return super().pose_de(anim, cuadro)
+        n_cuadros = a.get('cuadros', 1)
+        bucle = a.get('bucle', True)
+        t = cuadro / n_cuadros if bucle else cuadro / max(n_cuadros - 1, 1)
         claves = sorted(a['claves'], key=lambda k: k['t'])
+        pose = self._mezcla(claves, t)
+        for n, d in (a.get('retraso') or {}).items():
+            tb = (t - d) % 1.0 if bucle else min(max(t - d, 0.0), 1.0)
+            pose[n] = self._mezcla(claves, tb).get(n, {'rot': [0, 0, 0], 'pos': [0, 0, 0]})
         huesos = {n for k in claves for n in (k.get('apunta') or {})}
         if not huesos:
             return pose, t
-        k0, k1, u = claves[0], claves[0], 0.0
-        if t >= claves[-1]['t']:
-            k0 = k1 = claves[-1]
-        else:
-            for c0, c1 in zip(claves, claves[1:]):
-                if c0['t'] <= t <= c1['t']:
-                    k0, k1 = c0, c1
-                    u = (t - c0['t']) / max(c1['t'] - c0['t'], 1e-9)
-                    if c1.get('curva', 'suave') == 'suave':
-                        u = u * u * (3 - 2 * u)
-                    break
+        k0, k1, u = self._tramo(claves, t)
         base = self.d.get('pose_base', {})
-        pose = dict(pose)
         for n in huesos:
             (d0, f0), (d1, f1) = self._direccion(k0, n), self._direccion(k1, n)
             d = _arco(d0, d1, u)
@@ -661,6 +693,14 @@ class _Proyector:
             m.setdefault('pieza', pz)
         return miembros
 
+    def _dentro_de_campanas(self, nombres, Pw):
+        """Dentro de alguna de las campanas (`fuera_de` acepta un nombre o una lista)."""
+        nombres = [nombres] if isinstance(nombres, str) else nombres
+        dentro = np.zeros(len(np.atleast_2d(Pw)), bool)
+        for n in nombres:
+            dentro |= self._dentro_de_campana(n, Pw)
+        return dentro
+
     def _dentro_de_campana(self, nombre, Pw):
         """Qué puntos del mundo quedan dentro del volumen de la campana `nombre` (entre su ruedo y su aro de
         arriba, dentro de la elipse que forman los aros a esa altura)."""
@@ -723,7 +763,7 @@ class _Proyector:
             # solo se dibuja lo que asoma fuera de la capa
             Q = _catmull(np.column_stack([P, R]), 4) if len(P) > 1 else np.column_stack([P, R])
             P, R = Q[:, :3], Q[:, 3]
-            fuera = ~self._dentro_de_campana(pz['fuera_de'], P)
+            fuera = ~self._dentro_de_campanas(pz['fuera_de'], P)
             if not fuera.any():
                 return []
             i0 = max(int(np.argmax(fuera)) - 1, 0)
@@ -758,7 +798,7 @@ class _Proyector:
 
     def _casco(self, pz):
         p = pz['p']
-        if pz['fuera_de'] and self._dentro_de_campana(pz['fuera_de'], self.matriz(pz)[:3, 3])[0]:
+        if pz['fuera_de'] and self._dentro_de_campanas(pz['fuera_de'], self.matriz(pz)[:3, 3])[0]:
             return []
         m = self._esferas_y_discos(pz, p.get('esferas'), p.get('discos'))
         m['trazos'] = self._trazos(pz)

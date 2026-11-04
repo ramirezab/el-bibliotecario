@@ -74,8 +74,21 @@ piezas:
       - {circulo: 0.9, centro: [6.4, -1.1], color: '#fff6e8', brillo: true, espejo: true, caras: [normal]}
       - {contorno: [[3.5, 2.6], [11, 2.6], [11, 0.0], [3.5, -1.6]], suave: false, material: piel, espejo: true, caras: [decidido]}
       - {trazo: [[5.2, -3.0], [7.2, -3.8], [9.2, -3.0]], anchos: [0.3, 0.9, 0.3], material: ojo, espejo: true, caras: [parpadeo]}
-      - {trazo: [[9.6, -0.6], [5.6, -2.6], [9.6, -4.6]], anchos: [0.4, 1.0, 0.4], suave: false, material: ojo, espejo: true, caras: [dolor]}
-      - {ovalo: [2.8, 1.5], centro: [11, -8], color: '#e98a74', opacidad: 0.45, blur: 0.6, espejo: true}
+      # dolor: ojos apretados con arrugas de esfuerzo, cejas juntas, mueca de dientes apretados con las
+      # comisuras hacia abajo, y una gota de sudor
+      - {trazo: [[4.2, -1.4], [7.0, -2.4], [10.0, -3.8]], anchos: [0.7, 1.3, 0.5], material: ojo, espejo: true, caras: [dolor]}
+      - {trazo: [[5.0, 0.2], [7.6, -0.4], [9.6, -1.4]], anchos: [0.1, 0.4, 0.1], material: ojo, espejo: true, caras: [dolor]}
+      - {trazo: [[5.6, -4.4], [8.0, -5.0], [9.8, -5.8]], anchos: [0.1, 0.4, 0.1], material: ojo, espejo: true, caras: [dolor]}
+      - {trazo: [[2.6, 2.2], [5.6, 3.6], [10.4, 2.0]], anchos: [0.9, 1.0, 0.3], color: '#4a2e1a', espejo: true, caras: [dolor]}
+      - {contorno: [[-4.6, -11.2], [-2.0, -9.7], [2.0, -9.7], [4.6, -11.2], [3.8, -12.6], [-3.8, -12.6]], suave: false, color: '#4a1f1c', caras: [dolor]}
+      - {contorno: [[-3.6, -10.6], [-1.8, -10.1], [1.8, -10.1], [3.6, -10.6], [3.2, -12.0], [-3.2, -12.0]], suave: false, color: '#fff4e6', brillo: true, caras: [dolor]}
+      - {trazo: [[-3.4, -11.1], [0, -11.0], [3.4, -11.1]], ancho: 0.3, color: '#4a1f1c', brillo: true, caras: [dolor]}
+      - {trazo: [[-1.2, -10.2], [-1.2, -11.9]], ancho: 0.22, color: '#4a1f1c', brillo: true, caras: [dolor]}
+      - {trazo: [[1.2, -10.2], [1.2, -11.9]], ancho: 0.22, color: '#4a1f1c', brillo: true, caras: [dolor]}
+      - {contorno: [[13.8, 3.0], [12.6, 0.0], [13.2, -1.8], [14.6, -1.8], [15.0, 0.0]], color: '#d4ecff', linea: true, brillo: true, caras: [dolor]}
+      # decidido: cejas fruncidas
+      - {trazo: [[3.6, 1.4], [6.8, 2.2], [10.4, 3.4]], anchos: [0.6, 1.0, 0.3], color: '#4a2e1a', espejo: true, caras: [decidido]}
+      - {ovalo: [2.8, 1.5], centro: [11, -8], color: '#e98a74', opacidad: 0.45, blur: 0.6, espejo: true, sin_caras: [dolor]}
       - {trazo: [[-1.6, -10.4], [0, -11.0], [1.6, -10.4]], anchos: [0.25, 0.7, 0.25], color: '#7a3f30', caras: [normal, parpadeo, decidido]}
       - {contorno: [[-2.2, -9.8], [2.2, -9.8], [1.4, -12.4], [-1.4, -12.4]], color: '#6a2c26', caras: [dolor]}
 
@@ -237,15 +250,15 @@ piezas:
     forma: tubo
     puntos: [[0, 1.5, 0, 3.8], [codo, 0, 0, 0, 3.3], [codo, 0, -3, 0, 3.2]]
     material: tunica
-    fuera_de: capa_larga
-    capa: 1
+    fuera_de: [capa_larga, manto]
+    capa: 12
   - nombre: venda
     hueso: codo
     forma: tubo
     puntos: [[0, -2.5, 0, 3.3], [mano, 0, 2.2, 0, 3.0]]
     material: venda
-    fuera_de: capa_larga
-    capa: 1.2
+    fuera_de: [capa_larga, manto]
+    capa: 12.2
     trazos:
       - {puntos: [[-3.3, -4.5, 0.5], [0, -5.8, 3.4], [3.3, -4.5, 0.5]], ancho: 0.35, tono: hondo}
       - {puntos: [[-3.2, -7.5, 0.5], [0, -8.8, 3.3], [3.2, -7.5, 0.5]], ancho: 0.35, tono: hondo}
@@ -254,9 +267,9 @@ piezas:
     forma: casco
     esferas: [[0, -0.5, 0, 2.8], [0, -4.0, 0.4, 2.7], [0.5, -6.2, 0.8, 2.1]]
     material: piel
-    fuera_de: capa_larga
-    capa: 1.4
-  - {nombre: pulgar, hueso: mano, forma: tubo, puntos: [[0, -1.5, 2.2, 1.2], [0.2, -3.8, 3.6, 1.0]], material: piel, fuera_de: capa_larga, capa: 1.6}
+    fuera_de: [capa_larga, manto]
+    capa: 12.4
+  - {nombre: pulgar, hueso: mano, forma: tubo, puntos: [[0, -1.5, 2.2, 1.2], [0.2, -3.8, 3.6, 1.0]], material: piel, fuera_de: [capa_larga, manto], capa: 12.6}
 
   # ------------------------------------------------------------------ piernas y botas vendadas
   - nombre: pierna
@@ -290,12 +303,12 @@ piezas:
     forma: tubo
     puntos: [[0, -46, 0, 1.1], [0.5, -10, 0.2, 1.2], [-0.4, 20, 0, 1.25], [0.9, 40, 0.5, 1.4], [0, 50, 0, 1.5]]
     material: madera
-    capa: 8
+    capa: 20
     trazos:
       - {puntos: [[0.6, 24, 1.2], [0.8, 34, 1.3]], anchos: [0, 0.3, 0], tono: hondo}
       - {puntos: [[-0.4, -20, 1.1], [-0.2, -4, 1.2]], anchos: [0, 0.3, 0], tono: hondo}
-  - {nombre: nudo, hueso: baculo, forma: elipsoide, pos: [0.2, 51.5, 0], r: [2.3, 2.6, 2.3], material: madera, capa: 8.1}
-  - {nombre: atadura, hueso: baculo, forma: cilindro, a: [0.8, 45, 0.4], b: [0.8, 48.5, 0.4], r: 1.7, material: venda, capa: 8.2,
+  - {nombre: nudo, hueso: baculo, forma: elipsoide, pos: [0.2, 51.5, 0], r: [2.3, 2.6, 2.3], material: madera, capa: 20.1}
+  - {nombre: atadura, hueso: baculo, forma: cilindro, a: [0.8, 45, 0.4], b: [0.8, 48.5, 0.4], r: 1.7, material: venda, capa: 20.2,
      trazos: [{puntos: [[-0.9, 45.8, 2.0], [2.5, 46.8, 1.6]], ancho: 0.3, tono: hondo}, {puntos: [[-0.9, 47.2, 2.0], [2.5, 48.2, 1.6]], ancho: 0.3, tono: hondo}]}
   - nombre: trapo
     hueso: trapo1
@@ -305,124 +318,240 @@ piezas:
     normal: [0, 0, 1]
     cola: v
     material: venda
-    capa: 8.3
-  - {nombre: cordel, hueso: baculo, forma: tubo, puntos: [[-1.2, 46, 0.6, 0.25], [-2.2, 42, 0.8, 0.25], [-2.4, 39, 1.0, 0.25]], material: cuero, capa: 8.2}
-  - {nombre: amuleto, hueso: baculo, forma: lamina, pos: [-2.4, 35.5, 1.2], rot: [0, -30, 8], contorno: [[0, 3.5], [-1.2, 1.5], [-1.4, -2], [0, -4.5], [1.3, -2], [1.2, 1.5]], material: pluma, capa: 8.4, grosor: 0.6,
+    capa: 20.3
+  - {nombre: cordel, hueso: baculo, forma: tubo, puntos: [[-1.2, 46, 0.6, 0.25], [-2.2, 42, 0.8, 0.25], [-2.4, 39, 1.0, 0.25]], material: cuero, capa: 20.2}
+  - {nombre: amuleto, hueso: baculo, forma: lamina, pos: [-2.4, 35.5, 1.2], rot: [0, -30, 8], contorno: [[0, 3.5], [-1.2, 1.5], [-1.4, -2], [0, -4.5], [1.3, -2], [1.2, 1.5]], material: pluma, capa: 20.4, grosor: 0.6,
      trazos: [{puntos: [[0, 3.5, 0.05], [0, -4.2, 0.05]], anchos: [0.3, 0.1], tono: hondo}]}
 
 animaciones:
+  # Las capas, la punta de la capucha y el trapo del bastón arrastran el movimiento (retraso o fase corrida),
+  # y las claves usan curvas: salida (frena), entrada (acelera), sobrepaso (se pasa y vuelve).
   reposo:
-    cuadros: 10
-    fps: 10
-    caras: [{desde: 0.7, hasta: 0.8, cara: parpadeo}]
+    cuadros: 32
+    fps: 20
+    caras: [{desde: 0.62, hasta: 0.68, cara: parpadeo}]
     pose:
-      torso: {rot: ['1.0*sin(tau*t)', 0, 0], pos: [0, '0.4*sin(tau*t)', 0]}
-      cabeza: ['-1.2*sin(tau*t + 0.6)', 0, '0.8*sin(tau*t)']
-      capa: ['-1.5*sin(tau*t - 0.4)', 0, '1.2*sin(tau*t - 0.8)']
-      capucha2: ['4*sin(tau*t - 0.5)', 0, '3*sin(tau*t - 0.5)']
-      capucha3: ['6*sin(tau*t - 1.2)', 0, '4*sin(tau*t - 1.2)']
-      trapo2: ['8*sin(tau*t)', 0, '10*sin(tau*t - 0.4)']
-      trapo3: ['10*sin(tau*t - 0.8)', 0, '12*sin(tau*t - 1.2)']
+      cadera: [0, 0, '1.2*sin(tau*t)']
+      torso: {rot: ['1.5*sin(tau*t)', 0, '-1.0*sin(tau*t)'], pos: [0, '0.5*sin(tau*t)', 0]}
+      cabeza: ['-2*sin(tau*t + 0.7)', '4*sin(tau*t - 0.3)', '1.5*sin(tau*t + 0.3)']
+      capa: ['-2.5*sin(tau*t - 0.6)', '2*sin(tau*t - 0.9)', '2.2*sin(tau*t - 1.0)']
+      capucha2: ['6*sin(tau*t - 0.8)', 0, '4*sin(tau*t - 1.0)']
+      capucha3: ['9*sin(tau*t - 1.6)', 0, '6*sin(tau*t - 1.8)']
+      hombro.d: ['2.5*sin(tau*t + 0.4)', 0, '1.5*sin(tau*t)']
+      trapo2: ['10*sin(2*tau*t - 0.4)', 0, '12*sin(tau*t - 0.4)']
+      trapo3: ['14*sin(2*tau*t - 1.2)', 0, '14*sin(tau*t - 1.2)']
 
   caminar:
-    cuadros: 8
-    fps: 10
+    cuadros: 16
+    fps: 20
     pose:
-      raiz: {pos: [0, '0.8*abs(sin(tau*t))', 0]}
-      pierna.i: ['24*sin(tau*t)', 0, 0]
-      pierna.d: ['-24*sin(tau*t)', 0, 0]
-      rodilla.i: ['10 + 12*sin(tau*t + 1.6)', 0, 0]
-      rodilla.d: ['10 - 12*sin(tau*t + 1.6)', 0, 0]
-      torso: [3, '4*sin(tau*t)', 0]
-      cabeza: ['1.2*abs(sin(tau*t))', '-3*sin(tau*t)', 0]
-      capa: ['5 + 2*abs(sin(tau*t))', 0, '2*sin(tau*t)']
-      hombro.d: ['6*sin(tau*t)', 0, 0]
-      capucha2: ['8 + 4*sin(tau*t)', 0, '3*sin(tau*t)']
-      capucha3: ['10 + 6*sin(tau*t - 0.8)', 0, '4*sin(tau*t - 0.8)']
-      trapo2: ['14 + 8*sin(tau*t)', 0, '10*sin(tau*t - 0.4)']
-      trapo3: ['16 + 10*sin(tau*t - 0.8)', 0, '12*sin(tau*t - 1.2)']
+      raiz: {pos: [0, '1.6*abs(cos(tau*t))', 0]}
+      cadera: [0, '6*sin(tau*t)', '2*cos(tau*t)']
+      pierna.i: ['26*sin(tau*t)', 0, 0]
+      pierna.d: ['-26*sin(tau*t)', 0, 0]
+      rodilla.i: ['6 + 24*max(0, -cos(tau*t))', 0, 0]
+      rodilla.d: ['6 + 24*max(0, cos(tau*t))', 0, 0]
+      pie.i: ['-8*max(0, -cos(tau*t)) + 6*sin(tau*t)', 0, 0]
+      pie.d: ['-8*max(0, cos(tau*t)) - 6*sin(tau*t)', 0, 0]
+      torso: [5, '-7*sin(tau*t)', '-1.5*cos(tau*t)']
+      cabeza: ['-1.5*abs(cos(tau*t))', '4*sin(tau*t)', '1.5*cos(tau*t)']
+      hombro.d: ['-10*sin(tau*t)', 0, 0]
+      capa: ['7 + 3*abs(cos(tau*t - 0.6))', '-5*sin(tau*t - 0.6)', '4*cos(tau*t - 0.7)']
+      capucha2: ['10 + 7*abs(cos(tau*t - 0.9))', 0, '5*sin(tau*t - 1.0)']
+      capucha3: ['12 + 10*abs(cos(tau*t - 1.4))', 0, '7*sin(tau*t - 1.5)']
+      trapo2: ['20 + 12*sin(2*tau*t - 0.5)', 0, '14*sin(tau*t - 0.4)']
+      trapo3: ['24 + 16*sin(2*tau*t - 1.3)', 0, '16*sin(tau*t - 1.2)']
 
   ataque:
-    cuadros: 12
-    fps: 12
+    cuadros: 28
+    fps: 24
     bucle: false
+    retraso: {capa: 0.06, capucha2: 0.08, capucha3: 0.12, trapo2: 0.07, trapo3: 0.11}
     claves:
       - {t: 0, pose: {}}
-      - t: 0.28
+      # preparación: baja el cuerpo y lleva el bastón hacia atrás por su costado
+      - t: 0.2
+        curva: salida
         cara: decidido
-        apunta: {baculo: {hacia: [-0.55, 0.75, -0.35], frente: [-0.5, 0, 0.85]}}
+        apunta: {baculo: {hacia: [-0.45, 0.45, -0.77], frente: [-0.5, 0, 0.85]}}
         pose:
-          cadera: {pos: [0, -1.5, -1]}
-          torso: [-4, -20, 0]
-          cabeza: [4, 14, 0]
-          hombro.d: [-150, 0, 30]
-          codo.d: [-30, 0, 0]
-          capa: [8, 0, 6]
-          pierna.d: [-10, 0, 0]
-          pierna.i: [10, 0, 0]
-          capucha2: [10, 0, 0]
+          cadera: {pos: [0, -2.6, -1.5]}
+          torso: [-8, -10, 0]
+          cabeza: [6, 12, 0]
+          hombro.d: [110, 0, 30]
+          codo.d: [-15, 0, 0]
+          pierna.d: [-12, 0, 0]
+          pierna.i: [8, 0, 0]
+          rodilla.i: [14, 0, 0]
+          rodilla.d: [10, 0, 0]
+          capa: [-6, 4, 4]
+          capucha2: [-4, 0, 0]
+          trapo2: [-10, 0, 0]
+          trapo3: [-10, 0, 0]
+      - t: 0.27
+        curva: suave
+        cara: decidido
+        apunta: {baculo: {hacia: [-0.5, 0.55, -0.67], frente: [-0.5, 0, 0.85]}}
+        pose:
+          cadera: {pos: [0, -2.9, -1.6]}
+          torso: [-9, -12, 0]
+          cabeza: [6, 13, 0]
+          hombro.d: [130, 0, 30]
+          codo.d: [-15, 0, 0]
+          pierna.d: [-12, 0, 0]
+          pierna.i: [8, 0, 0]
+          rodilla.i: [15, 0, 0]
+          rodilla.d: [11, 0, 0]
+          capa: [-7, 4, 4]
+          capucha2: [-5, 0, 0]
+          trapo2: [-12, 0, 0]
+          trapo3: [-12, 0, 0]
+      # pasa el bastón por arriba, acelerando
+      - t: 0.36
+        curva: entrada
+        cara: decidido
+        apunta: {baculo: {hacia: [0.0, 1.0, 0.15], frente: [-0.5, 0, 0.85]}}
+        pose:
+          raiz: {pos: [0, 0, 2]}
+          cadera: {pos: [0, -1.2, 1]}
+          torso: [2, 6, 0]
+          cabeza: [0, 2, 0]
+          hombro.d: [185, 0, 26]
+          codo.d: [-10, 0, 0]
+          pierna.d: [6, 0, 0]
+          pierna.i: [-4, 0, 0]
+          capa: [4, 0, 0]
+      # golpe: paso adelante y el bastón baja de frente
       - t: 0.44
         curva: lineal
         cara: decidido
         apunta: {baculo: {hacia: [0.5, -0.35, 0.8], frente: [-0.5, 0.3, 0.8]}}
         pose:
-          raiz: {pos: [0, 0, 4]}
-          cadera: {pos: [0, -2.4, 0]}
-          torso: [14, 26, 0]
-          cabeza: [-6, -12, 0]
-          hombro.d: [-75, 0, 8]
-          codo.d: [20, 0, 0]
-          capa: [-6, 0, -6]
-          pierna.d: [18, 0, 0]
-          pierna.i: [-16, 0, 0]
-          rodilla.d: [14, 0, 0]
-          capucha2: [-14, 0, 0]
-          capucha3: [-12, 0, 0]
-          trapo2: [-30, 0, 0]
+          raiz: {pos: [0, 0, 7]}
+          cadera: {pos: [0, -3.6, 0]}
+          torso: [16, 24, 0]
+          cabeza: [-6, -8, 0]
+          hombro.d: [275, 0, 8]
+          codo.d: [12, 0, 0]
+          pierna.d: [24, 0, 0]
+          pierna.i: [-20, 0, 0]
+          rodilla.d: [22, 0, 0]
+          rodilla.i: [6, 0, 0]
+          capa: [-12, -4, -8]
+          capucha2: [-18, 0, 0]
+          capucha3: [-16, 0, 0]
+          trapo2: [-34, 0, 0]
           trapo3: [-30, 0, 0]
-      - t: 0.62
+      # el bastón se pasa un poco y se asienta
+      - t: 0.52
+        curva: sobrepaso
         cara: decidido
-        apunta: {baculo: {hacia: [0.3, -0.85, 0.45], frente: [-0.5, 0.3, 0.8]}}
+        apunta: {baculo: {hacia: [0.36, -0.62, 0.7], frente: [-0.5, 0.3, 0.8]}}
         pose:
-          raiz: {pos: [0, 0, 4.5]}
-          cadera: {pos: [0, -2.8, 0]}
-          torso: [18, 32, 0]
-          cabeza: [-4, -14, 0]
-          hombro.d: [-45, 0, 4]
-          codo.d: [16, 0, 0]
-          capa: [-2, 0, -8]
-          pierna.d: [20, 0, 0]
-          pierna.i: [-18, 0, 0]
-          rodilla.d: [16, 0, 0]
-          capucha2: [-6, 0, 0]
-          trapo2: [-10, 0, 0]
-      - {t: 1, pose: {}}
+          raiz: {pos: [0, 0, 7.5]}
+          cadera: {pos: [0, -3.8, 0]}
+          torso: [19, 28, 0]
+          cabeza: [-5, -10, 0]
+          hombro.d: [290, 0, 6]
+          codo.d: [10, 0, 0]
+          pierna.d: [24, 0, 0]
+          pierna.i: [-20, 0, 0]
+          rodilla.d: [22, 0, 0]
+          rodilla.i: [6, 0, 0]
+          capa: [-8, -2, -6]
+          capucha2: [-10, 0, 0]
+          capucha3: [-12, 0, 0]
+          trapo2: [-20, 0, 0]
+          trapo3: [-24, 0, 0]
+      # vuelve a la guardia
+      - t: 0.72
+        curva: suave
+        cara: normal
+        apunta: {baculo: {hacia: [-0.4, 0.85, 0.3], frente: [-0.5, 0, 0.85]}}
+        pose:
+          raiz: {pos: [0, 0, 3]}
+          cadera: {pos: [0, -1.5, 0]}
+          torso: [6, 10, 0]
+          cabeza: [-1, -3, 0]
+          hombro.d: [330, 0, 26]
+          codo.d: [-30, 0, -8]
+          pierna.d: [8, 0, 0]
+          pierna.i: [-6, 0, 0]
+          capa: [-2, 0, -2]
+      - t: 1
+        curva: sobrepaso
+        pose:
+          hombro.d: [360, 0, 0]
 
   golpe:
-    cuadros: 7
-    fps: 12
+    cuadros: 18
+    fps: 24
     bucle: false
+    retraso: {capa: 0.08, capucha2: 0.1, capucha3: 0.14, trapo2: 0.08, trapo3: 0.12}
     claves:
       - {t: 0, pose: {}}
-      - t: 0.15
+      # lo empujan: sale despedido hacia atrás
+      - t: 0.05
         curva: lineal
         cara: dolor
         pose:
-          raiz: {pos: [-3, 0, -3]}
-          cadera: {pos: [0, -1.2, 0]}
-          torso: [-14, -8, 6]
-          cabeza: [-10, -6, 8]
-          capa: [12, 0, 6]
-          hombro.d: [16, 0, 10]
-          capucha2: [14, 0, 0]
-          capucha3: [12, 0, 0]
-          trapo2: [20, 0, 0]
-      - t: 0.5
+          raiz: {pos: [-2, 1.2, -3]}
+          torso: [-10, -5, 4]
+          cabeza: [6, -6, 5]
+      - t: 0.12
+        curva: salida
         cara: dolor
         pose:
-          raiz: {pos: [-4, 0, -4]}
+          raiz: {pos: [-4, 2.5, -6]}
+          torso: [-16, -10, 8]
+          cabeza: [16, -14, 10]
+          hombro.d: [30, 0, 26]
+          codo.d: [-20, 0, 0]
+          pierna.d: [-14, 0, 0]
+          pierna.i: [-8, 0, 0]
+          capa: [16, 6, 10]
+          capucha2: [22, 0, 0]
+          capucha3: [20, 0, 0]
+          trapo2: [30, 0, 0]
+          trapo3: [30, 0, 0]
+      # aterriza doblando las rodillas
+      - t: 0.26
+        curva: salida
+        cara: dolor
+        pose:
+          raiz: {pos: [-8, 0, -10]}
+          cadera: {pos: [0, -3.5, 0]}
+          torso: [-4, -6, 4]
+          cabeza: [14, -8, 6]
+          hombro.d: [12, 0, 14]
+          rodilla.i: [22, 0, 0]
+          rodilla.d: [18, 0, 0]
+          capa: [6, 2, 4]
+          capucha2: [8, 0, 0]
+      # sacude la cabeza
+      - t: 0.42
+        cara: dolor
+        pose:
+          raiz: {pos: [-8, 0, -10]}
+          cadera: {pos: [0, -2, 0]}
+          torso: [-2, 0, 0]
+          cabeza: [10, 12, -5]
+          rodilla.i: [10, 0, 0]
+          rodilla.d: [8, 0, 0]
+      - t: 0.56
+        cara: dolor
+        pose:
+          raiz: {pos: [-8, 0, -10]}
           cadera: {pos: [0, -1.6, 0]}
-          torso: [-6, -4, 3]
-          cabeza: [-4, -2, 3]
-          capa: [6, 0, 3]
-      - {t: 1, pose: {}}
+          torso: [-1, 0, 0]
+          cabeza: [8, -10, 4]
+          rodilla.i: [8, 0, 0]
+          rodilla.d: [6, 0, 0]
+      # se recompone
+      - t: 0.74
+        cara: decidido
+        pose:
+          raiz: {pos: [-4, 0, -5]}
+          cadera: {pos: [0, -1, 0]}
+          torso: [2, 4, 0]
+      - {t: 1, curva: sobrepaso, cara: normal, pose: {}}
