@@ -6,13 +6,13 @@ Forja es la herramienta con la que Claude dibuja, revisa y anima el arte de *El 
 - cualquier parte se puede cambiar (el sombrero, un color, la pose) sin redibujar el resto;
 - cada render pasa por una revisión automática que señala pixeles sueltos, huecos en el contorno, curvas con dientes, bandas de sombra y colores que no se distinguen.
 
-![Teo en 8 ángulos, atacando y recibiendo un golpe](herramientas/forja/muestras/teo_angulos_y_animaciones.png)
+![Teo en 8 ángulos, atacando y recibiendo un golpe](muestras/teo_angulos_y_animaciones.png)
 
-![Escena de aldea generada con la herramienta](herramientas/forja/muestras/aldea.png)
+![Escena de aldea generada con la herramienta](muestras/aldea.png)
 
-![Efectos de ataque cuadro a cuadro](herramientas/forja/muestras/efectos.png)
+![Efectos de ataque cuadro a cuadro](muestras/efectos.png)
 
-![Teo ataca: personaje, tajo e impacto](herramientas/forja/muestras/teo_ataca.gif)
+![Teo ataca: personaje, tajo e impacto](muestras/teo_ataca.gif)
 
 ## Cómo funciona
 
