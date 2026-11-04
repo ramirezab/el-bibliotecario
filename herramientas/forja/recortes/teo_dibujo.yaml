@@ -1,0 +1,115 @@
+# Teo dibujado por el autor del juego, animado por capas sin tocar el dibujo.
+# Coordenadas en pixeles de la imagen original (330 × 682). En la imagen mira un poco a la izquierda:
+# "adelante" es -x. El juego lo voltea para que mire a la derecha.
+nombre: teo_dibujo
+imagen: ../../../arte/referencias/personaje_base.png
+margen: 60
+apoyo: [178, 536]
+
+partes:
+  # cabeza: el círculo de la cara más todo el pelo que queda por encima del cuello
+  - nombre: cabeza
+    mascara: {o: [{circulo: [178, 140, 79.5]}, {rect: [0, 0, 330, 199]}]}
+    pivote: [178, 214]
+    padre: cuerpo
+    z: 3
+  # botas: lo que asoma debajo del ruedo; se alargan hacia arriba bajo la capa para que no se vea el corte
+  - nombre: bota_i
+    mascara: {rect: [0, 436, 176, 682]}
+    pivote: [140, 436]
+    extender_arriba: 30
+    z: 0
+  - nombre: bota_d
+    mascara: {rect: [176, 436, 330, 682]}
+    pivote: [215, 436]
+    extender_arriba: 30
+    z: 0
+  # cuerpo: capa y cuello; detrás de la barbilla se rellena con el color del cuello
+  - nombre: cuerpo
+    resto: true
+    pivote: [185, 432]
+    relleno: {circulo: [178, 140, 82], color: '#5a4c26', desde_y: 172}
+    z: 1
+  # gestos que se encienden según la cara del cuadro
+  - nombre: parpadeo
+    padre: cabeza
+    pivote: [178, 214]
+    z: 4
+    caras: [parpadeo]
+    dibujo:
+      - {elipse: [130.5, 147, 11, 15], color: '#fcd7a0'}
+      - {elipse: [201, 147, 11, 15], color: '#fcd7a0'}
+      - {trazo: [[121, 148], [126, 152], [130.5, 153], [135, 152], [140, 148]], ancho: 3.4, color: '#4a391b'}
+      - {trazo: [[191.5, 148], [196, 152], [201, 153], [206, 152], [210.5, 148]], ancho: 3.4, color: '#4a391b'}
+  - nombre: dolor
+    padre: cabeza
+    pivote: [178, 214]
+    z: 4
+    caras: [dolor]
+    dibujo:
+      - {elipse: [130.5, 147, 11, 15], color: '#fcd7a0'}
+      - {elipse: [201, 147, 11, 15], color: '#fcd7a0'}
+      - {trazo: [[122, 139], [137, 147], [122, 155]], ancho: 3.8, color: '#4a391b'}
+      - {trazo: [[209.5, 139], [194.5, 147], [209.5, 155]], ancho: 3.8, color: '#4a391b'}
+
+animaciones:
+  reposo:
+    cuadros: 12
+    fps: 10
+    caras: [{desde: 0.66, hasta: 0.75, cara: parpadeo}]
+    pose:
+      cuerpo: {sy: '1 + 0.012*sin(tau*t)', sx: '1 - 0.008*sin(tau*t)'}
+      cabeza: {dy: '-1.5*sin(tau*t - 0.6)', rot: '1.2*sin(tau*t)'}
+
+  caminar:
+    cuadros: 8
+    fps: 10
+    pose:
+      cuerpo: {dy: '-5*abs(sin(tau*t))', rot: '2*sin(tau*t)', kx: '0.03*sin(tau*t)'}
+      cabeza: {rot: '-2.5*sin(tau*t)', dy: '1.5*abs(sin(tau*t))'}
+      bota_i: {dy: '-9*max(0, sin(tau*t))', dx: '-3*sin(tau*t)'}
+      bota_d: {dy: '-9*max(0, -sin(tau*t))', dx: '3*sin(tau*t)'}
+
+  ataque:
+    cuadros: 10
+    fps: 12
+    bucle: false
+    claves:
+      - {t: 0, pose: {}}
+      - t: 0.3
+        pose:
+          cuerpo: {sy: 0.9, sx: 1.07, rot: 6, dx: 6}
+          cabeza: {rot: 4, dy: 4}
+      - t: 0.45
+        curva: lineal
+        pose:
+          cuerpo: {sy: 1.08, sx: 0.94, rot: -9, dx: -20}
+          cabeza: {rot: -6, dx: -4}
+          bota_i: {dx: -12}
+          bota_d: {dx: -8}
+      - t: 0.7
+        pose:
+          cuerpo: {sy: 1.02, sx: 0.98, rot: -6, dx: -18}
+          cabeza: {rot: -4, dx: -3}
+          bota_i: {dx: -12}
+          bota_d: {dx: -8}
+      - {t: 1, pose: {}}
+
+  golpe:
+    cuadros: 7
+    fps: 12
+    bucle: false
+    claves:
+      - {t: 0, pose: {}}
+      - t: 0.15
+        curva: lineal
+        cara: dolor
+        pose:
+          cuerpo: {rot: 8, dx: 12, sy: 0.93, sx: 1.05}
+          cabeza: {rot: 7, dx: 3}
+      - t: 0.5
+        cara: dolor
+        pose:
+          cuerpo: {rot: 4, dx: 8, sy: 0.97, sx: 1.02}
+          cabeza: {rot: 3}
+      - {t: 1, pose: {}}

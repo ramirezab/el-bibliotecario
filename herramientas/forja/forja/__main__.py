@@ -43,7 +43,7 @@ def main(argv=None):
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8')
     ap = argparse.ArgumentParser(prog='forja')
-    ap.add_argument('orden', choices=['hoja', 'giro', 'animar', 'texto', 'paleta', 'escena', 'efecto'])
+    ap.add_argument('orden', choices=['hoja', 'giro', 'animar', 'texto', 'paleta', 'escena', 'efecto', 'recorte'])
     ap.add_argument('modelo')
     ap.add_argument('--yaw', type=float)
     ap.add_argument('--pitch', type=float)
@@ -55,6 +55,8 @@ def main(argv=None):
     ap.add_argument('--salida', default='salida')
     ap.add_argument('--objeto')
     ap.add_argument('--escala', type=int, default=3)
+    ap.add_argument('--juego', help='recorte: carpeta donde dejar la hoja de cuadros y su descripción')
+    ap.add_argument('--alto', type=int, default=170, help='recorte: alto en pixeles de cada cuadro para el juego')
     a = ap.parse_args(argv)
 
     if a.orden == 'escena':
@@ -93,6 +95,9 @@ def main(argv=None):
         colores = {tuple(px) for x in rgbas for px in x[x[..., 3] > 0][:, :3].tolist()}
         print(f'{len(rgbas)} cuadros, {len(colores)} colores. Tira: {pre}_tira_noche.png')
         return
+
+    if a.orden == 'recorte':
+        return _recorte(a)
 
     with open(a.modelo, encoding='utf-8') as f:
         estilo = (yaml.safe_load(f) or {}).get('estilo')
@@ -148,6 +153,39 @@ def main(argv=None):
     elif a.orden == 'paleta':
         vistas.muestras(m).save(pre + '_paleta.png')
         print('Paleta:', pre + '_paleta.png')
+
+
+def _recorte(a):
+    """Animación 2D por capas de un dibujo plano: GIF y tira de cada animación, y la hoja para el juego."""
+    import numpy as np
+    from . import laminas
+    from .recorte import Recorte, hoja_de_juego
+    rec = Recorte(a.modelo)
+    carpeta = os.path.join(a.salida, rec.nombre)
+    os.makedirs(carpeta, exist_ok=True)
+    anims = [a.anim] if a.anim else list(rec.animaciones)
+    for nombre in anims:
+        fr = rec.cuadros(nombre)
+        al = np.any([f[..., 3] > 8 for f in fr], axis=0)
+        ys, xs = np.where(al)
+        caja = (xs.min() - 16, ys.min() - 16, xs.max() + 16, ys.max() + 16)
+        ims = [laminas._a_alto(Image.fromarray(f, 'RGBA').crop(caja), 360) for f in fr]
+        fotos = [laminas.sobre(i, laminas.PAPEL).convert('RGB') for i in ims]
+        laminas.guardar_gif(fotos, os.path.join(carpeta, f'{nombre}.gif'), rec.animaciones[nombre].get('fps', 8))
+        tira = Image.new('RGB', (sum(i.width for i in ims) + 8 * len(ims), 360), laminas.PAPEL)
+        x = 0
+        for i in ims:
+            tira.paste(laminas.sobre(i, laminas.PAPEL).convert('RGB'), (x, 0))
+            x += i.width + 8
+        tira.save(os.path.join(carpeta, f'{nombre}_tira.png'))
+        print(f'{nombre}: {len(fr)} cuadros -> {carpeta}')
+    if a.juego:
+        hoja, meta = hoja_de_juego(rec, list(rec.animaciones), a.alto, espejo=True)
+        os.makedirs(a.juego, exist_ok=True)
+        hoja.save(os.path.join(a.juego, f'{rec.nombre}.png'), optimize=True)
+        with open(os.path.join(a.juego, f'{rec.nombre}.json'), 'w', encoding='utf-8') as f:
+            json.dump(meta, f, ensure_ascii=False)
+        print('Hoja para el juego:', os.path.join(a.juego, f'{rec.nombre}.png'), meta['celda'], meta['apoyo'])
 
 
 def _pluma(a):

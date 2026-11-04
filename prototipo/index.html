@@ -406,6 +406,51 @@ const PARCH = mk(W, H, g => {
 });
 
 // =====================================================================
+// TEO DIBUJADO A MANO (prueba): hoja de cuadros hecha con Forja (orden recorte) a partir del dibujo
+// del autor. Con ?teo=pixel en la dirección vuelve el sprite en pixel art.
+// =====================================================================
+const TEO_DIBUJO = { meta: {"celda": [109, 170], "columnas": 12, "animaciones": {"reposo": {"cuadros": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], "fps": 10, "bucle": true}, "caminar": {"cuadros": [12, 13, 14, 15, 16, 17, 18, 19], "fps": 10, "bucle": true}, "ataque": {"cuadros": [20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "fps": 12, "bucle": false}, "golpe": {"cuadros": [30, 31, 32, 33, 34, 35, 36], "fps": 12, "bucle": false}}, "apoyo": [56.2, 169.7]}, img: new Image(), listo: false, activo: !/teo=pixel/.test(location.search) };
+if (TEO_DIBUJO.activo) {
+  TEO_DIBUJO.img.onload = () => {
+    const [cw, ch] = TEO_DIBUJO.meta.celda;
+    // versión chica para siluetas, fantasmas y retratos de la barra de turnos
+    SP.teo = mk(Math.round(cw / P), Math.round(ch / P), g => {
+      g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+      g.drawImage(TEO_DIBUJO.img, 0, 0, cw, ch, 0, 0, cw / P, ch / P);
+    });
+    delete PORT.teo;
+    DEFS.teo.port = [Math.round(cw / P * 0.08), 0, Math.round(cw / P * 0.84), Math.round(ch / P * 0.42)];
+    TEO_DIBUJO.listo = true;
+  };
+  TEO_DIBUJO.img.src = 'arte/teo_dibujo.png';
+}
+const usaDibujo = u => u === teo && TEO_DIBUJO.listo;
+function setAnim(u, a) { if (u === teo) { u.anim = a; u.animT0 = now; } }
+function cuadroTeo(u) {
+  const m = TEO_DIBUJO.meta;
+  let a = m.animaciones[u.anim] || m.animaciones.reposo;
+  let i = Math.floor((now - (u.animT0 || 0)) / 1000 * a.fps);
+  if (a.bucle) i %= a.cuadros.length;
+  else if (i >= a.cuadros.length) { u.anim = 'reposo'; u.animT0 = now; a = m.animaciones.reposo; i = 0; }
+  return a.cuadros[i];
+}
+function drawTeoDibujo(u, silCol) {
+  const m = TEO_DIBUJO.meta, [cw, ch] = m.celda, [ax, ay] = m.apoyo;
+  const x = u.x + u.ox, y = u.y + u.oy;
+  if (!silCol) { ctx.save(); ctx.globalAlpha = 0.33 * u.alpha; ctx.fillStyle = '#1a0c05'; ctx.beginPath(); ctx.ellipse(u.x + u.ox, u.y + 4, cw * 0.34, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+  const k = cuadroTeo(u), sx = (k % m.columnas) * cw, sy = Math.floor(k / m.columnas) * ch;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(u.rot); ctx.scale(u.face * u.sx, u.sy); ctx.globalAlpha = u.alpha;
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+  if (silCol) ctx.drawImage(sil(SP.teo, silCol), -ax, -ay, cw, ch);
+  else {
+    ctx.drawImage(TEO_DIBUJO.img, sx, sy, cw, ch, -ax, -ay, cw, ch);
+    if (u.flash > 0.01) { ctx.globalAlpha = Math.min(1, u.flash) * u.alpha; ctx.filter = 'brightness(2.6) saturate(0.2)'; ctx.drawImage(TEO_DIBUJO.img, sx, sy, cw, ch, -ax, -ay, cw, ch); ctx.filter = 'none'; }
+    if (u.broken) { ctx.globalAlpha = 0.18 + Math.sin(now / 90) * 0.08; ctx.drawImage(sil(SP.teo, '#ff3040'), -ax, -ay, cw, ch); }
+  }
+  ctx.restore(); ctx.imageSmoothingEnabled = false;
+}
+
+// =====================================================================
 // DATOS: unidades, movimientos y encuentros
 // =====================================================================
 const DEFS = {
@@ -702,15 +747,16 @@ function onLetter(h, l, ok) {
 // =====================================================================
 // ANIMACIONES DE PERSONAJES
 // =====================================================================
-function swing(u) { u.rot = -0.25 * u.face; tween(u, { rot: 0 }, 220, 'out'); }
+function swing(u) { setAnim(u, 'ataque'); u.rot = -0.25 * u.face; tween(u, { rot: 0 }, 220, 'out'); }
 function dodgeAnim(u) {
   for (let i = 0; i < 4; i++) ghosts.push({ u, spr: curSprite(u), x: u.x + u.ox - u.face * i * 14, y: u.y + u.oy, t: 0, life: 260 + i * 50, a: 0.5 - i * 0.1 });
   u.ox = -u.face * 46; tween(u, { ox: 0 }, 360, 'out');
 }
 async function jumpAnim(u) { await tween(u, { oy: -78 }, 170, 'out'); await tween(u, { oy: 0 }, 190, 'in'); u.sy = 0.85; u.sx = 1.12; tween(u, { sy: 1, sx: 1 }, 160); }
-async function hurtAnim(u) { u.flash = 1; tween(u, { flash: 0 }, 220); u.ox = -u.face * 18; await tween(u, { ox: 0 }, 260, 'out'); }
-function moveTo(u, x, y, ms) { return tween(u, { ox: x - u.x, oy: y - u.y }, ms, 'inOut'); }
-function moveHome(u, ms = 320) { return tween(u, { ox: 0, oy: 0 }, ms, 'inOut'); }
+async function hurtAnim(u) { setAnim(u, 'golpe'); u.flash = 1; tween(u, { flash: 0 }, 220); u.ox = -u.face * 18; await tween(u, { ox: 0 }, 260, 'out'); }
+const finCaminar = u => { if (u.anim === 'caminar') setAnim(u, 'reposo'); };
+function moveTo(u, x, y, ms) { setAnim(u, 'caminar'); return tween(u, { ox: x - u.x, oy: y - u.y }, ms, 'inOut').then(() => finCaminar(u)); }
+function moveHome(u, ms = 320) { setAnim(u, 'caminar'); return tween(u, { ox: 0, oy: 0 }, ms, 'inOut').then(() => finCaminar(u)); }
 
 // =====================================================================
 // DAÑO
@@ -936,7 +982,7 @@ async function replicaPerfecta(e) {
   const cuts = [[cx - 90, cy - 80, cx + 80, cy + 70], [cx + 85, cy - 70, cx - 80, cy + 60], [cx - 110, cy + 5, cx + 115, cy - 10]];
   for (const [x1, y1, x2, y2] of cuts) {
     addStroke(slashPts(x1, y1, x2, y2, rnd(0.15, 0.3)), { w: 22, draw: 110, hold: 260, ignite: 260, fade: 380 });
-    SFX.trazo(); inkBurst(x2, y2, 14, '#141026', 7); hitStop = 3; shake(7); teo.rot = 0.18; tween(teo, { rot: 0 }, 140);
+    SFX.trazo(); inkBurst(x2, y2, 14, '#141026', 7); hitStop = 3; shake(7); setAnim(teo, 'ataque'); teo.rot = 0.18; tween(teo, { rot: 0 }, 140);
     await wait(150);
   }
   await wait(120);
@@ -1042,7 +1088,7 @@ async function actAttack(t) {
     const cx = t.x + t.ox, cy = midY(t);
     const ang = [[-60, -55, 55, 50], [60, -50, -55, 45], [-75, 0, 80, -6]][i];
     addStroke(slashPts(cx + ang[0], cy + ang[1], cx + ang[2], cy + ang[3], 0.25), { w: ok ? 16 : 10, ignite: ok ? 220 : 160, gold: ok ? '#ffcf5a' : '#c9b78a' });
-    teo.rot = 0.2; tween(teo, { rot: 0 }, 160);
+    setAnim(teo, 'ataque'); teo.rot = 0.2; tween(teo, { rot: 0 }, 160);
     SFX.trazo(); hitStop = ok ? 5 : 2; shake(ok ? 7 : 3);
     inkBurst(cx, cy, ok ? 16 : 8); if (ok) sparkBurst(cx, cy, 18);
     hitEnemy(teo, t, { pot: pots[i], kind: 'mag', elem: 'tinta', firme: ok, post: i === 2 ? 8 : 4 });
@@ -1420,7 +1466,7 @@ function updRibbon(dt) {
   }
 }
 function drawRibbon(silCol) {
-  if (!teo || !teo.chain || !teo.visible) return;
+  if (!teo || !teo.chain || !teo.visible || TEO_DIBUJO.listo) return;
   const c = teo.chain;
   ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   ctx.strokeStyle = silCol || '#7d1820'; ctx.lineWidth = 9; ctx.beginPath(); c.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.stroke();
@@ -1570,6 +1616,7 @@ function drawLanterns() {
 }
 function drawUnit(u, silCol) {
   if (!u.visible) return;
+  if (usaDibujo(u)) return drawTeoDibujo(u, silCol);
   const spr = curSprite(u); const w = spr.width * P, h = spr.height * P;
   const x = u.x + u.ox, y = u.y + u.oy;
   if (!silCol) { ctx.save(); ctx.globalAlpha = 0.33 * u.alpha; ctx.fillStyle = '#1a0c05'; ctx.beginPath(); ctx.ellipse(u.x + u.ox, u.y + 4, w * 0.34, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
@@ -1991,7 +2038,8 @@ function drawRemate(C) {
   ctx.imageSmoothingEnabled = false;
   panel(C.p1, [[20, 20], [430, 20], [360, 300], [20, 300]], () => {
     speed(200, 160, 'rgba(30,20,40,0.25)');
-    const pt = portrait('teo', [8, 3, 11, 14]); ctx.drawImage(pt, 90, 20, pt.width * 18, pt.height * 18);
+    if (TEO_DIBUJO.listo) { const [cw, ch] = TEO_DIBUJO.meta.celda; ctx.imageSmoothingEnabled = true; ctx.drawImage(TEO_DIBUJO.img, 0, 0, cw, ch * 0.5, 70, 10, cw * 2.9, ch * 0.5 * 2.9); ctx.imageSmoothingEnabled = false; }
+    else { const pt = portrait('teo', [8, 3, 11, 14]); ctx.drawImage(pt, 90, 20, pt.width * 18, pt.height * 18); }
     ctx.fillStyle = '#c8323c'; ctx.fillRect(20, 250, 400, 8);
   });
   panel(C.p2, [[450, 20], [940, 20], [940, 300], [380, 300]], () => {
