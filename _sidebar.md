@@ -1,6 +1,7 @@
 - **Inicio**
   - [Índice](00_INDICE.md)
   - [Canon maestro](01_CANON.md)
+  - [▶ Jugar el prototipo de combate](prototipo/index.html ':ignore :target=_self')
 
 - **Historia**
   - [Trama del juego](historia/Trama_del_Juego.md)

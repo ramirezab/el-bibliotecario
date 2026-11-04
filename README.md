@@ -3,6 +3,7 @@
 Biblia de diseño de **El Bibliotecario** (*The Librarian*), un RPG de fantasía con combate por turnos y defensa reactiva (la Réplica), mundo interconectado y reconstrucción de un reino partido en cinco dimensiones.
 
 - **Leer en la web:** https://ramirezab.github.io/el-bibliotecario/
+- **Jugar el prototipo de combate:** https://ramirezab.github.io/el-bibliotecario/prototipo/
 - **Empezar por:** [00_INDICE.md](00_INDICE.md) y [01_CANON.md](01_CANON.md) (fuente de verdad).
 
 | Carpeta | Contenido |

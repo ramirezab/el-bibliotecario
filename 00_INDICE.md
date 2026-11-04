@@ -84,6 +84,11 @@ Cada Pliegue incluye: atmósfera, mapa con zonas y bloqueos, bestiario, minijefe
 | [Direccion_de_Arte.md](arte/Direccion_de_Arte.md) | Estilo, resoluciones, paletas HEX, diseño de personajes, interfaz y animación |
 | [Biblia_de_Efectos_Visuales.md](arte/Biblia_de_Efectos_Visuales.md) | **La prioridad del juego.** El lenguaje "tinta que se vuelve luz", la Réplica cuadro a cuadro, las Iluminaciones como secuencias de cine, los efectos de cada jefe, el pipeline técnico y el checklist de calidad |
 
+### Prototipo jugable — `prototipo/`
+| Archivo | Contenido |
+|---|---|
+| [prototipo/index.html](prototipo/index.html ':ignore :target=_self') | **Prototipo de combate jugable en el navegador**: Teo y Pavesa contra los Comensales Huecos, un Gorgojo Excavador y Don Tragón, en el Banquete Hueco. Tiene turnos por iniciativa, PA, la Réplica completa (desviar, esquivar, saltar y refutar, con fintas), Réplica Perfecta, Postura y Ruptura, Remate Ilustrado, fases lunares, eclipse, la Iluminación "Érase una Vez" y la hoja de examen. Sin instalar nada. |
+
 ### Producción — `produccion/`
 | Archivo | Contenido |
 |---|---|
