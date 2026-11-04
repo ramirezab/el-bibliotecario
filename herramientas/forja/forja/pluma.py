@@ -436,7 +436,7 @@ class Material:
 
 
 CLAVES_PIEZA = {'nombre', 'hueso', 'forma', 'pos', 'rot', 'material', 'grupo', 'capa', 'dentro_de', 'fuera_de',
-                'debajo_de', 'encima_de',
+                'debajo_de', 'encima_de', 'por_profundidad',
                 'sin_linea', 'grosor', 'proyecta', 'recibe', 'calcas', 'trazos', 'op', 'oculta', 'espejo', 'lados',
                 'sin_silueta'}
 
@@ -615,7 +615,7 @@ class Dibujo(Esqueleto):
                     recibe=pz.get('recibe', True), calcas=pz.get('calcas', []), trazos=pz.get('trazos', []),
                     op=pz.get('op', 'union'), silueta=not pz.get('sin_silueta', False),
                     fuera_de=pz.get('fuera_de'), debajo_de=pz.get('debajo_de', []),
-                    encima_de=pz.get('encima_de', [])))
+                    encima_de=pz.get('encima_de', []), por_profundidad=pz.get('por_profundidad', [])))
         return salida
 
     def esqueleto_de(self, anim=None, cuadro=0, pose=None):
@@ -787,12 +787,15 @@ class _Proyector:
         if abertura:
             # lo que queda en la abertura de adelante se ve aunque esté dentro de la campana
             ang = np.degrees(np.arctan2(L[:, 0], L[:, 2]))
-            dentro &= ~((np.abs(ang) < abertura / 2) & (L[:, 2] > 0))
+            ang = (ang - cap['p'].get('abertura_centro', 0) + 180) % 360 - 180
+            dentro &= ~(np.abs(ang) < abertura / 2)
         return dentro
 
     # -- formas
     def _elipsoide(self, pz):
         M = self.matriz(pz)
+        if pz['fuera_de'] and self._dentro_de_campanas(pz['fuera_de'], M[:3, 3])[0]:
+            return []
         r = np.broadcast_to(np.asarray(pz['p'].get('r', 5), float), (3,)).copy()
         c = M[:3, 3]
         A = self.v.P2 @ M[:3, :3] @ np.diag(r)
@@ -893,6 +896,9 @@ class _Proyector:
             esf = [list(G[r, k]) + [radios[r, k]] for r in range(R) for k in cols]
             m = self._esferas_y_discos(pz, esf, None)
             m['prof'] = prof
+            # muestras de profundidad de la tela, para ordenar contra ella lo que esté en el mismo lugar de la pantalla
+            Pw = G[:, cols].reshape(-1, 3) * (REFLEJO if pz['lado'] == 'd' else 1) @ M[:3, :3].T + M[:3, 3]
+            m['muestras'] = (self.v.pant(Pw), self.v.prof(Pw))
             if p.get('abertura') or reverso:
                 n_loc = G[-1, 2 * i + 1] * [1, 0, 1]
                 n_loc = n_loc / max(np.linalg.norm(n_loc), 1e-9) * (REFLEJO if pz['lado'] == 'd' else 1)
@@ -1232,6 +1238,8 @@ def _armar(dib, yaw, pitch, anim, cuadro, pose, zoom, cara):
                     mat=principal.get('mat', pz['mat']), miembros=[m for m in ms if m['pieza']['op'] != 'resta'],
                     linea=pz['linea'], grosor=pz['grosor'], proyecta=pz['proyecta'], recibe=pz['recibe'],
                     silueta=pz['silueta'], hijos=[], debajo_de=pz['debajo_de'], encima_de=pz['encima_de'],
+                    por_profundidad=pz['por_profundidad'], prof0=principal['prof'],
+                    muestras=[m['muestras'] for m in ms if 'muestras' in m],
                     calcas=[c for m in ms for c in m.get('calcas', []) if c['op'] != 'resta'],
                     trazos=[t for m in ms for t in m.get('trazos', [])],
                     reves=[m['reves'] for m in ms if 'reves' in m])
@@ -1259,23 +1267,40 @@ def _armar(dib, yaw, pitch, anim, cuadro, pose, zoom, cara):
     return items, vista, cara
 
 
+def _prof_frente_a(otro, it):
+    """La profundidad de `otro` en el lugar de la pantalla donde está `it`: si es una tela, la de sus puntos más
+    cercanos en pantalla; si no, la de su centro."""
+    if not otro['muestras']:
+        return otro['prof0']
+    C = np.vstack([m[0] for m in otro['muestras']])
+    D = np.concatenate([m[1] for m in otro['muestras']])
+    b = it['camino'].getBounds()
+    d2 = ((C - [b.centerX(), b.centerY()]) ** 2).sum(1)
+    cerca = np.argsort(d2)[:4]
+    return float(D[cerca].mean())
+
+
 def _ordenar_por_reglas(items):
-    """Respeta `debajo_de` y `encima_de` de las piezas por encima de la profundidad (la parte de arriba de un
-    brazo va siempre bajo el manto que la cubre, aunque el brazo esté adelante)."""
+    """Respeta `debajo_de`, `encima_de` y `por_profundidad` de las piezas por encima del orden por capas."""
     for _ in range(4):
         cambio = False
         for it in list(items):
-            for regla, arriba in (('debajo_de', False), ('encima_de', True)):
-                for otro in it[regla]:
-                    nombres = [x['nombre'] for x in items]
-                    if otro not in nombres:
-                        continue
-                    i, j = nombres.index(it['nombre']), nombres.index(otro)
-                    if (not arriba and i > j) or (arriba and i < j):
-                        items.remove(it)
-                        j = [x['nombre'] for x in items].index(otro)
-                        items.insert(j + 1 if arriba else j, it)
-                        cambio = True
+            reglas = [(o, False) for o in it['debajo_de']] + [(o, True) for o in it['encima_de']]
+            # por_profundidad: encima si la pieza está más cerca de la cámara que el centro de la otra, debajo si no
+            # (un brazo va delante del abrigo vista de frente y detrás vista de espaldas)
+            por_nombre = {x['nombre']: x for x in items}
+            reglas += [(o, it['prof0'] > _prof_frente_a(por_nombre[o], it)) for o in it['por_profundidad']
+                       if o in por_nombre]
+            for otro, arriba in reglas:
+                nombres = [x['nombre'] for x in items]
+                if otro not in nombres:
+                    continue
+                i, j = nombres.index(it['nombre']), nombres.index(otro)
+                if (not arriba and i > j) or (arriba and i < j):
+                    items.remove(it)
+                    j = [x['nombre'] for x in items].index(otro)
+                    items.insert(j + 1 if arriba else j, it)
+                    cambio = True
         if not cambio:
             break
 

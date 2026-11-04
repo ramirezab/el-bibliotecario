@@ -90,10 +90,12 @@ def rejilla_campana(p):
 
 
 def paño_abierto(p, ang, i):
-    """El paño i cae en la abertura de adelante (no se dibuja ni se cose con sus vecinos)."""
+    """El paño i cae en la abertura (no se dibuja ni se cose con sus vecinos). La abertura mide `abertura` grados
+    y está centrada adelante, o en `abertura_centro` grados (negativo: hacia su derecha) para una capa echada
+    hacia atrás sobre un hombro."""
     abertura = p.get('abertura', 0)
-    am = ang[2 * i + 1]
-    return bool(abertura) and abs((math.degrees(am) + 180) % 360 - 180) < abertura / 2
+    am = math.degrees(ang[2 * i + 1]) - p.get('abertura_centro', 0)
+    return bool(abertura) and abs((am + 180) % 360 - 180) < abertura / 2
 
 
 class Fisica:
