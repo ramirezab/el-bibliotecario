@@ -442,12 +442,22 @@ CLAVES_PIEZA = {'nombre', 'hueso', 'forma', 'pos', 'rot', 'material', 'grupo', '
 
 
 class Dibujo(Esqueleto):
-    def __init__(self, ruta_o_dict):
+    def __init__(self, ruta_o_dict, objeto=None):
         if isinstance(ruta_o_dict, dict):
             d = ruta_o_dict
         else:
             with open(ruta_o_dict, encoding='utf-8') as f:
                 d = yaml.safe_load(f)
+        if 'objetos' in d:
+            # Biblioteca: varios objetos que comparten materiales, cámara y luz
+            if objeto not in d['objetos']:
+                raise ValueError(f'Este archivo es una biblioteca; elige un objeto: {", ".join(d["objetos"])}')
+            o = d['objetos'][objeto]
+            base = {k: v for k, v in d.items() if k != 'objetos'}
+            base.update(o)
+            base['materiales'] = {**d.get('materiales', {}), **o.get('materiales', {})}
+            base['nombre'] = f"{d.get('nombre', 'dibujo')}_{objeto}"
+            d = base
         self.d = d
         self.nombre = d.get('nombre', 'dibujo')
         self.lienzo = tuple(d.get('lienzo', [512, 640]))
@@ -466,6 +476,17 @@ class Dibujo(Esqueleto):
         self.peso_sombra = d.get('peso_sombra', 0.75)
         self.grano = d.get('grano', 0.0)
         self.linea_encima = d.get('linea_encima', False)
+        # tamano: agranda el modelo k veces sin engrosar la línea (un jefe grande con el mismo trazo que el resto)
+        k = float(d.get('tamano', 1.0))
+        self.trazo_k = 1.0 / k
+        if k != 1.0:
+            self.escala *= k
+            self.grosor /= k
+            self.grosor_silueta /= k
+            self.lienzo = (int(self.lienzo[0] * k), int(self.lienzo[1] * k))
+            self.origen = (self.origen[0] * k, self.origen[1] * k)
+            if self.contraluz:
+                self.contraluz = [self.contraluz[0], self.contraluz[1] / k, self.contraluz[2]]
         self.materiales = {n: Material(n, md, self.tinta) for n, md in d.get('materiales', {}).items()}
         self._armar_huesos(d.get('huesos', [{'nombre': 'raiz'}]))
         self._resolver_apuntes()
@@ -1176,7 +1197,7 @@ class _Proyector:
             elif len(P) == 2:
                 P = _catmull(P, 10)
             C = self.v.pant(P)
-            w = _perfil(t.get('anchos', t.get('ancho', 0.5)), len(C)) * self.v.esc
+            w = _perfil(t.get('anchos', t.get('ancho', 0.5)), len(C)) * self.v.esc * self.dib.trazo_k
             if 'guiones' in t:
                 # costura: guiones de largo a con huecos de largo b (en unidades del modelo)
                 a, b = (np.asarray(t['guiones'], float) * self.v.esc)
@@ -1416,13 +1437,17 @@ def dibujar(dib, yaw=None, pitch=None, anim=None, cuadro=0, pose=None, zoom=1.0,
         cv.restore()
 
     if dib.contraluz:
-        # luz de contorno: una línea clara del lado de la sombra, por dentro de la silueta
+        # luz de contorno: una línea clara del lado de la sombra, por dentro de la silueta. Se arma en una capa
+        # (la silueta menos la silueta corrida) para no depender de una resta de formas, que a veces falla.
         col, ancho, alfa = dib.contraluz
-        borde = _op(silueta, _mover(silueta, l2 * ancho * vista.esc), RESTA)
+        blur = ancho * vista.esc * 0.25
         cv.save()
         cv.clipPath(silueta, skia.ClipOp.kIntersect, True)
-        cv.drawPath(_mover(borde, -l2 * ws * 0.35),
-                    _pintura(col, alfa, ancho * vista.esc * 0.25, skia.BlendMode.kScreen))
+        cv.saveLayer(None, skia.Paint(BlendMode=skia.BlendMode.kScreen))
+        cv.translate(float(-l2[0] * ws * 0.35), float(-l2[1] * ws * 0.35))
+        cv.drawPath(silueta, _pintura(col, alfa, blur))
+        cv.drawPath(_mover(silueta, l2 * ancho * vista.esc), _pintura('#000000', 1.0, blur, skia.BlendMode.kDstOut))
+        cv.restore()
         cv.restore()
 
     auras = [it for it in items if it['mat'].aura]

@@ -1,0 +1,221 @@
+# Escarabajo de Sal: criatura del desierto para la demo. Caparazón oscuro con cristales de sal en el lomo,
+# ojos ámbar que brillan, cuerno, mandíbulas y seis patas. Mira hacia +Z.
+nombre: Escarabajo
+estilo: pluma
+lienzo: [760, 560]
+origen: [380, 500]
+escala: 4
+tamano: 3
+camara: {yaw: 60, pitch: 10}
+luz: [-0.55, 0.65, 0.55]
+tinta: '#120c14'
+grosor: 0.55
+grosor_silueta: 0.85
+linea_encima: true
+peso_sombra: 0.45
+sombra_proyectada: 1.2
+grano: 0.04
+contraluz: ['#ffd9a0', 0.6, 0.35]
+fondo_bruma: ['#2a2030', '#c48a55']
+
+materiales:
+  caparazon: {color: '#3a2a40', sombra: '#231829', hondo: '#160e1a', luz: '#6a5276', linea: '#0c070e', brillo: 0.45, ancho_sombra: 0.3, suave: 1.4}
+  quitina: {color: '#4a3446', sombra: '#2c1e2a', hondo: '#1a1018', luz: '#7a5a70', linea: '#0c070e', brillo: 0.3}
+  vientre: {color: '#6b4a4e', sombra: '#4a3036', linea: '#160e14'}
+  sal: {color: '#f4eefb', sombra: '#b8b0d6', hondo: '#8c84b0', luz: '#ffffff', linea: '#3a3058', brillo: 0.9, ancho_sombra: 0.35, suave: 0.6}
+  sal_rosa: {color: '#f6d6e6', sombra: '#c6a0bc', luz: '#ffffff', linea: '#4a3050', brillo: 0.8}
+  ojo: {color: '#ffb547', aura: ['#ffb547', 2.5, 0.55]}
+  pupila: {color: '#3a1600'}
+
+huesos:
+  - {nombre: raiz}
+  - {nombre: cuerpo, padre: raiz, pos: [0, 15, 0]}
+  - {nombre: cabeza, padre: cuerpo, pos: [0, 2, 15]}
+  - {nombre: mandibula, padre: cabeza, pos: [3.2, -3.0, 6.0], rot: [0, 18, 0], espejo: true}
+  - {nombre: pata1, padre: cuerpo, pos: [7.0, -2, 9], rot: [0, 30, 0], espejo: true}
+  - {nombre: pie1, padre: pata1, pos: [6, 3, 0]}
+  - {nombre: pata2, padre: cuerpo, pos: [8.5, -2, 0], rot: [0, 0, 0], espejo: true}
+  - {nombre: pie2, padre: pata2, pos: [7, 3, 0]}
+  - {nombre: pata3, padre: cuerpo, pos: [7.5, -2, -9], rot: [0, -30, 0], espejo: true}
+  - {nombre: pie3, padre: pata3, pos: [6, 3, 0]}
+
+piezas:
+  # ------------------------------------------------------------------ abdomen con élitros y cristales de sal
+  - nombre: abdomen
+    hueso: cuerpo
+    forma: elipsoide
+    pos: [0, 3, -7]
+    r: [13, 10, 17]
+    material: caparazon
+    trazos:
+      - {puntos: [[0, 13, 6], [0, 13.6, -6], [0, 9.8, -20]], anchos: [0.4, 0.7, 0.2], tono: linea}
+      - {puntos: [[-6.5, 11.5, 4], [-8.5, 10.5, -8], [-6.0, 7.5, -19]], anchos: [0, 0.4, 0], tono: hondo}
+      - {puntos: [[6.5, 11.5, 4], [8.5, 10.5, -8], [6.0, 7.5, -19]], anchos: [0, 0.4, 0], tono: hondo}
+  - nombre: vientre
+    hueso: cuerpo
+    forma: elipsoide
+    pos: [0, -2.5, -5]
+    r: [11, 6, 15]
+    material: vientre
+    capa: -2
+  - {nombre: cristal1, hueso: cuerpo, forma: casco, pos: [-3.5, 11.5, -4], rot: [-18, 0, 14], esferas: [[-1.6, 0, -1.6, 0.8], [1.6, 0, -1.6, 0.8], [1.6, 0, 1.6, 0.8], [-1.6, 0, 1.6, 0.8], [0, 9, 0, 0.15]], material: sal, capa: 1}
+  - {nombre: cristal2, hueso: cuerpo, forma: casco, pos: [2.5, 12.0, -8], rot: [-30, 0, -12], esferas: [[-1.4, 0, -1.4, 0.7], [1.4, 0, -1.4, 0.7], [1.4, 0, 1.4, 0.7], [-1.4, 0, 1.4, 0.7], [0, 7, 0, 0.15]], material: sal, capa: 1}
+  - {nombre: cristal3, hueso: cuerpo, forma: casco, pos: [-1.0, 11.0, -13], rot: [-45, 0, 6], esferas: [[-1.8, 0, -1.8, 0.8], [1.8, 0, -1.8, 0.8], [1.8, 0, 1.8, 0.8], [-1.8, 0, 1.8, 0.8], [0, 10, 0, 0.15]], material: sal_rosa, capa: 1}
+  - {nombre: cristal4, hueso: cuerpo, forma: casco, pos: [6.5, 10.5, -3], rot: [-10, 0, -32], esferas: [[-1.2, 0, -1.2, 0.6], [1.2, 0, -1.2, 0.6], [1.2, 0, 1.2, 0.6], [-1.2, 0, 1.2, 0.6], [0, 6, 0, 0.12]], material: sal, capa: 1}
+  - {nombre: cristal5, hueso: cuerpo, forma: casco, pos: [-7.5, 9.5, -9], rot: [-25, 0, 35], esferas: [[-1.3, 0, -1.3, 0.6], [1.3, 0, -1.3, 0.6], [1.3, 0, 1.3, 0.6], [-1.3, 0, 1.3, 0.6], [0, 6.5, 0, 0.12]], material: sal_rosa, capa: 1}
+  - {nombre: cristal6, hueso: cuerpo, forma: casco, pos: [4.0, 9.0, -17], rot: [-60, 0, -10], esferas: [[-1.2, 0, -1.2, 0.6], [1.2, 0, -1.2, 0.6], [1.2, 0, 1.2, 0.6], [-1.2, 0, 1.2, 0.6], [0, 6, 0, 0.12]], material: sal, capa: 1}
+
+  # ------------------------------------------------------------------ tórax, cabeza, cuerno y mandíbulas
+  - nombre: torax
+    hueso: cuerpo
+    forma: elipsoide
+    pos: [0, 4, 9]
+    r: [9.5, 7, 7]
+    material: caparazon
+    capa: 1
+    trazos:
+      - {puntos: [[-7, 8, 12], [0, 10, 14], [7, 8, 12]], anchos: [0, 0.4, 0], tono: hondo, normal: [0, 0.5, 1]}
+  - nombre: cabeza
+    hueso: cabeza
+    forma: elipsoide
+    r: [6.5, 5.5, 6.5]
+    material: quitina
+    capa: 2
+    calcas:
+      - {ovalo: [1.7, 2.1], centro: [3.2, 0.6], giro: [0, 10], material: ojo, espejo: true}
+      - {ovalo: [0.5, 1.4], centro: [3.4, 0.6], giro: [0, 10], material: pupila, espejo: true}
+      - {circulo: 0.5, centro: [2.6, 1.6], giro: [0, 10], color: '#fff6dc', brillo: true, espejo: true}
+  - nombre: cuerno
+    hueso: cabeza
+    forma: tubo
+    puntos: [[0, 3.5, 3, 2.4], [0, 8, 7, 1.6], [0, 13, 7, 0.9], [0, 16, 4, 0.2]]
+    material: quitina
+    capa: 2.5
+  - {nombre: punta_cuerno, hueso: cabeza, forma: casco, pos: [0, 14.5, 5.5], rot: [-20, 0, 0], esferas: [[-0.8, 0, -0.8, 0.4], [0.8, 0, -0.8, 0.4], [0, 0, 0.9, 0.4], [0, 4, 0, 0.1]], material: sal, capa: 2.6}
+  - nombre: mandibula
+    hueso: mandibula
+    forma: tubo
+    puntos: [[0, 0, 0, 1.5], [0.8, -0.4, 3.5, 1.1], [-0.6, -0.6, 6.5, 0.6], [-2.4, -0.4, 7.8, 0.1]]
+    material: quitina
+    capa: 2.2
+
+  # ------------------------------------------------------------------ patas (fémur hacia afuera, tibia hacia el suelo)
+  - nombre: femur1
+    hueso: pata1
+    forma: tubo
+    puntos: [[0, 0, 0, 1.9], [pie1, 0, 0, 0, 1.5]]
+    material: quitina
+    capa: -1
+  - nombre: tibia1
+    hueso: pie1
+    forma: tubo
+    puntos: [[0, 0, 0, 1.4], [3, -8, 1, 1.0], [4, -16, 2, 0.4]]
+    material: quitina
+    capa: -1
+  - nombre: femur2
+    hueso: pata2
+    forma: tubo
+    puntos: [[0, 0, 0, 1.9], [pie2, 0, 0, 0, 1.5]]
+    material: quitina
+    capa: -1
+  - nombre: tibia2
+    hueso: pie2
+    forma: tubo
+    puntos: [[0, 0, 0, 1.4], [3, -8, 0, 1.0], [4, -16, 0, 0.4]]
+    material: quitina
+    capa: -1
+  - nombre: femur3
+    hueso: pata3
+    forma: tubo
+    puntos: [[0, 0, 0, 1.9], [pie3, 0, 0, 0, 1.5]]
+    material: quitina
+    capa: -1
+  - nombre: tibia3
+    hueso: pie3
+    forma: tubo
+    puntos: [[0, 0, 0, 1.4], [3, -8, -1, 1.0], [4, -16, -2, 0.4]]
+    material: quitina
+    capa: -1
+
+animaciones:
+  reposo:
+    cuadros: 24
+    fps: 16
+    pose:
+      cuerpo: {rot: ['1.5*sin(tau*t)', 0, '0.8*sin(tau*t)'], pos: [0, '0.6*sin(tau*t)', 0]}
+      cabeza: ['3*sin(tau*t + 1.0)', '5*sin(tau*t)', 0]
+      mandibula: [0, '12*max(0, sin(2*tau*t))', 0]
+      pata1: [0, '4*sin(tau*t)', '3*sin(tau*t + 1)']
+      pata2: [0, '-3*sin(tau*t)', '2*sin(tau*t + 2)']
+      pata3: [0, '4*sin(tau*t + 0.5)', '3*sin(tau*t + 3)']
+
+  caminar:
+    cuadros: 12
+    fps: 18
+    pose:
+      cuerpo: {rot: [0, 0, '2*sin(2*tau*t)'], pos: [0, '0.8*abs(sin(2*tau*t))', 0]}
+      cabeza: [0, '4*sin(tau*t)', 0]
+      mandibula: [0, '8*max(0, sin(2*tau*t))', 0]
+      pata1.i: [0, '18*sin(tau*t)', '-8*max(0, sin(tau*t))']
+      pata2.d: [0, '18*sin(tau*t)', '8*max(0, sin(tau*t))']
+      pata3.i: [0, '18*sin(tau*t)', '-8*max(0, sin(tau*t))']
+      pata1.d: [0, '-18*sin(tau*t)', '8*max(0, -sin(tau*t))']
+      pata2.i: [0, '-18*sin(tau*t)', '-8*max(0, -sin(tau*t))']
+      pata3.d: [0, '-18*sin(tau*t)', '8*max(0, -sin(tau*t))']
+
+  ataque:
+    cuadros: 20
+    fps: 22
+    bucle: false
+    claves:
+      - {t: 0, pose: {}}
+      # se encabrita: levanta el frente, abre las mandíbulas
+      - t: 0.35
+        curva: salida
+        pose:
+          raiz: {pos: [0, 0, -4]}
+          cuerpo: {rot: [-24, 0, 0], pos: [0, 3, 0]}
+          cabeza: [-16, 0, 0]
+          mandibula: [0, 34, 0]
+          pata1: [0, 0, 26]
+      # embiste: se lanza adelante y cierra las mandíbulas
+      - t: 0.5
+        curva: entrada
+        pose:
+          raiz: {pos: [0, 0, 16]}
+          cuerpo: {rot: [12, 0, 0], pos: [0, -1, 0]}
+          cabeza: [18, 0, 0]
+          mandibula: [0, -12, 0]
+          pata1: [0, 0, -10]
+          pata3: [0, 0, 18]
+      - t: 0.62
+        curva: sobrepaso
+        pose:
+          raiz: {pos: [0, 0, 13]}
+          cuerpo: {rot: [6, 0, 0]}
+          cabeza: [8, 0, 0]
+          mandibula: [0, -8, 0]
+      - {t: 1, curva: suave, pose: {}}
+
+  golpe:
+    cuadros: 12
+    fps: 22
+    bucle: false
+    claves:
+      - {t: 0, pose: {}}
+      - t: 0.15
+        curva: lineal
+        pose:
+          raiz: {pos: [0, 0, -6]}
+          cuerpo: {rot: [-10, 0, 8], pos: [0, -1.5, 0]}
+          cabeza: [-14, 12, 0]
+          mandibula: [0, 28, 0]
+          pata1: [0, 0, 20]
+          pata2: [0, 0, 16]
+      - t: 0.45
+        curva: salida
+        pose:
+          raiz: {pos: [0, 0, -7]}
+          cuerpo: {rot: [3, 0, -3], pos: [0, -1.0, 0]}
+          cabeza: [4, -6, 0]
+      - {t: 1, curva: sobrepaso, pose: {}}

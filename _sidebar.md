@@ -1,6 +1,7 @@
 - **Inicio**
   - [Índice](00_INDICE.md)
   - [Canon maestro](01_CANON.md)
+  - [▶ Jugar la demo: El Oasis de Sal](demo/index.html ':ignore :target=_self')
   - [▶ Jugar el prototipo de combate](prototipo/index.html ':ignore :target=_self')
 
 - **Historia**

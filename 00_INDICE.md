@@ -89,6 +89,11 @@ Cada Pliegue incluye: atmósfera, mapa con zonas y bloqueos, bestiario, minijefe
 |---|---|
 | [prototipo/index.html](prototipo/index.html ':ignore :target=_self') | **Prototipo de combate jugable en el navegador**: Teo y Pavesa contra los Comensales Huecos, un Gorgojo Excavador y Don Tragón, en el Banquete Hueco. Tiene turnos por iniciativa, PA, la Réplica completa (desviar, esquivar, saltar y refutar, con fintas), Réplica Perfecta, Postura y Ruptura, Remate Ilustrado, fases lunares, eclipse, la Iluminación "Érase una Vez" y la hoja de examen. Sin instalar nada. |
 
+### Demo jugable — `demo/`
+| Archivo | Contenido |
+|---|---|
+| [demo/index.html](demo/index.html ':ignore :target=_self') | **Demo de unos 5 minutos en el Oasis de Sal**: exploración con vista cenital y movimiento en 8 direcciones, tres NPC con diálogos, páginas perdidas para recoger, una emboscada y una pelea con la Réplica contra el Escarabajo de Sal. Todo el arte está dibujado con Forja (personajes, criatura, ambiente y fondos). |
+
 ### Herramienta de arte — `herramientas/forja/`
 | Archivo | Contenido |
 |---|---|

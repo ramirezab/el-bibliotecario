@@ -97,6 +97,7 @@ A los archivos que son bibliotecas de objetos se les agrega `--objeto nombre`. C
 | `mundo/` | Casa, pino, roble, biblioteca de objetos (barril, caja, rocas, tocón, cerca, arbusto, heno) y la escena de la aldea |
 | `efectos/` | Tajo de pluma, impacto, Gota de Tinta, Réplica Perfecta, Subrayar y chispa de Pavesa |
 | `muestras/` | Imágenes de ejemplo |
+| `demo/` | Cómo se arma la demo jugable: `construir.py` dibuja todo su arte (hojas de cuadros, elementos del oasis, suelo y fondo de batalla) y `armar_html.py` une el combate del prototipo con la exploración (`exploracion.js`) |
 
 ## Cámaras
 

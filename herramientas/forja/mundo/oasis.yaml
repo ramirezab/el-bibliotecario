@@ -1,0 +1,192 @@
+# Elementos del Oasis de Sal para la demo, en el estilo de tinta. Se ven con la cámara de exploración
+# (cenital en tres cuartos). Biblioteca: python -m forja hoja mundo/oasis.yaml --objeto palmera
+nombre: Oasis
+estilo: pluma
+lienzo: [900, 900]
+origen: [450, 820]
+escala: 4
+camara: {yaw: 0, pitch: 30}
+luz: [-0.55, 0.65, 0.55]
+tinta: '#1e140c'
+grosor: 0.6
+grosor_silueta: 0.9
+linea_encima: true
+peso_sombra: 0.45
+grano: 0.04
+
+materiales:
+  tronco: {color: '#8a6744', sombra: '#5e4430', hondo: '#3e2c1e', luz: '#b08a62', linea: '#2a1c10', brillo: 0.2}
+  hoja: {color: '#5f9a3e', sombra: '#3d6a2a', hondo: '#29491c', luz: '#8cc25a', linea: '#1c3010', brillo: 0.25, ancho_sombra: 0.3}
+  datil: {color: '#c9762e', sombra: '#8a4a1c', luz: '#f0a85a', brillo: 0.5}
+  lona: {color: '#ecdcbc', sombra: '#c8b08a', hondo: '#9a845e', luz: '#fff6e2', linea: '#4a3820', ancho_sombra: 0.3}
+  lona_dentro: {color: '#6e5038', sombra: '#4a3424', linea: '#2a1c10'}
+  lona_roja: {color: '#b8473a', sombra: '#82302a', luz: '#dc6e5a', linea: '#3a1410'}
+  piedra: {color: '#cfa978', sombra: '#a07c54', hondo: '#74583a', luz: '#ecd3a6', linea: '#3e2c18', ancho_sombra: 0.32}
+  piedra_osc: {color: '#a8865e', sombra: '#7a5e40', hondo: '#54402a', luz: '#c8a67a', linea: '#2e2012'}
+  barro: {color: '#b8663a', sombra: '#86442a', hondo: '#5a2c1a', luz: '#da8a5a', linea: '#3a1a0e', brillo: 0.25}
+  madera: {color: '#9a7048', sombra: '#6a4a2e', hondo: '#46301e', luz: '#c09468', linea: '#2a1a0e', brillo: 0.15}
+  cactus: {color: '#6a9a4a', sombra: '#466e30', hondo: '#2e4c20', luz: '#94c26a', linea: '#1a2e10', brillo: 0.2}
+  seco: {color: '#a89a5a', sombra: '#7a6e3a', luz: '#cabc7a', linea: '#3a3418'}
+  junco: {color: '#7aa04a', sombra: '#527034', luz: '#a8c86a', linea: '#22340e'}
+  agua: {color: '#5cb8c4', sombra: '#3a8a9c', luz: '#c8f4f4', linea: '#1a4a58', brillo: 0.6}
+  tela_azul: {color: '#3a6e9a', sombra: '#264c70', luz: '#5a90be', linea: '#122436'}
+  sal: {color: '#f4eefb', sombra: '#b8b0d6', luz: '#ffffff', linea: '#3a3058', brillo: 0.9}
+
+objetos:
+  palmera:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - nombre: tronco
+        forma: tubo
+        puntos: [[0, 0, 0, 3.6], [2.5, 30, 0, 3.0], [7, 60, 1, 2.6], [12, 86, 2, 2.3]]
+        material: tronco
+        trazos:
+          - {puntos: [[-3.2, 12, 1.5], [0, 11, 3.8], [3.0, 12, 1.5]], ancho: 0.45, tono: hondo}
+          - {puntos: [[-2.6, 26, 1.5], [2.5, 25, 3.4], [5.0, 26, 1.5]], ancho: 0.45, tono: hondo}
+          - {puntos: [[0.0, 40, 1.5], [4.6, 39, 3.2], [7.6, 40, 1.5]], ancho: 0.45, tono: hondo}
+          - {puntos: [[2.6, 54, 1.5], [7.0, 53, 3.0], [9.6, 54, 1.5]], ancho: 0.45, tono: hondo}
+          - {puntos: [[6.0, 68, 1.5], [10.0, 67, 2.8], [12.2, 68, 1.5]], ancho: 0.45, tono: hondo}
+      - {nombre: copa, forma: elipsoide, pos: [12, 87, 2], r: [4, 3, 4], material: tronco, capa: 2}
+      - {nombre: datiles, forma: casco, pos: [12, 83, 4], esferas: [[-2, 0, 1, 1.6], [1.5, -1, 1.5, 1.6], [0, -2.5, 2.5, 1.5], [2.5, -3, 0, 1.4], [-1.5, -3.5, 0, 1.4]], material: datil, capa: 3}
+      - {nombre: hoja1, forma: cinta, pos: [12, 87, 2], puntos: [[0, 0, 0], [8, 4, 2], [17, 3, 4], [25, -4, 5], [30, -12, 5]], anchos: [1.5, 6, 7, 5, 0.5], normal: [0, 1, 0], material: hoja, capa: 4,
+         trazos: [{puntos: [[0, 0.3, 0], [8, 4.3, 2], [17, 3.3, 4], [25, -3.7, 5]], anchos: [0.5, 0.4, 0.3, 0.05], tono: hondo}]}
+      - {nombre: hoja2, forma: cinta, pos: [12, 87, 2], puntos: [[0, 0, 0], [-8, 4, 2], [-17, 3, 3], [-25, -4, 2], [-29, -12, 1]], anchos: [1.5, 6, 7, 5, 0.5], normal: [0, 1, 0], material: hoja, capa: 4,
+         trazos: [{puntos: [[0, 0.3, 0], [-8, 4.3, 2], [-17, 3.3, 3], [-25, -3.7, 2]], anchos: [0.5, 0.4, 0.3, 0.05], tono: hondo}]}
+      - {nombre: hoja3, forma: cinta, pos: [12, 87, 2], puntos: [[0, 0, 0], [3, 4, 8], [5, 3, 17], [6, -4, 25], [6, -12, 29]], anchos: [1.5, 6, 7, 5, 0.5], normal: [0, 1, 0], material: hoja, capa: 5}
+      - {nombre: hoja4, forma: cinta, pos: [12, 87, 2], puntos: [[0, 0, 0], [-2, 5, -8], [-4, 5, -17], [-5, 0, -25], [-5, -7, -29]], anchos: [1.5, 6, 7, 5, 0.5], normal: [0, 1, 0], material: hoja, capa: 1}
+      - {nombre: hoja5, forma: cinta, pos: [12, 87, 2], puntos: [[0, 0, 0], [6, 5, -6], [13, 5, -13], [19, -1, -19], [22, -8, -22]], anchos: [1.5, 6, 7, 5, 0.5], normal: [0, 1, 0], material: hoja, capa: 2}
+      - {nombre: hoja6, forma: cinta, pos: [12, 87, 2], puntos: [[0, 0, 0], [-6, 5, -6], [-13, 5, -13], [-19, -1, -19], [-22, -8, -22]], anchos: [1.5, 6, 7, 5, 0.5], normal: [0, 1, 0], material: hoja, capa: 2}
+      - {nombre: hoja7, forma: cinta, pos: [12, 87, 2], puntos: [[0, 0, 0], [-6, 4, 6], [-12, 3, 12], [-17, -3, 17], [-19, -10, 20]], anchos: [1.5, 6, 7, 5, 0.5], normal: [0, 1, 0], material: hoja, capa: 5}
+      - {nombre: hoja8, forma: cinta, pos: [12, 87, 2], puntos: [[0, 0, 0], [6, 4, 6], [12, 3, 12], [17, -3, 17], [19, -10, 20]], anchos: [1.5, 6, 7, 5, 0.5], normal: [0, 1, 0], material: hoja, capa: 5}
+
+  tienda:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - nombre: lona
+        forma: campana
+        aros: [[46, 2, 2], [36, 11, 10], [18, 24, 21], [0, 32, 28]]
+        ondas: 10
+        abertura: 50
+        reverso: lona_dentro
+        capa_atras: -6
+        caida: 1.5
+        material: lona
+        trazos:
+          - {puntos: [[-22, 18, 12], [-28, 8, 15], [-31, 0, 17]], ancho: 1.6, tono: '#b8473a', normal: [-0.8, 0.3, 0.5]}
+          - {puntos: [[22, 18, 12], [28, 8, 15], [31, 0, 17]], ancho: 1.6, tono: '#b8473a', normal: [0.8, 0.3, 0.5]}
+          - {puntos: [[-10, 36, 8], [-18, 20, 17], [-23, 4, 24]], ancho: 0.4, tono: hondo, normal: [-0.4, 0.4, 0.8]}
+          - {puntos: [[10, 36, 8], [18, 20, 17], [23, 4, 24]], ancho: 0.4, tono: hondo, normal: [0.4, 0.4, 0.8]}
+      - {nombre: palo, forma: tubo, puntos: [[0, 40, 0, 0.9], [0, 56, 0, 0.8]], material: madera, capa: 1}
+      - {nombre: banderin, forma: cinta, puntos: [[0, 55, 0], [5, 54, 1], [10, 55, 0], [14, 53, 0]], anchos: [3, 2.6, 2.0, 1.2], normal: [0, 0, 1], cola: v, material: lona_roja, capa: 2}
+
+  pozo:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - nombre: brocal
+        forma: cilindro
+        a: [0, 0, 0]
+        b: [0, 11, 0]
+        r: 12
+        material: piedra
+        trazos:
+          - {puntos: [[-12, 5.5, 1], [-8.5, 5.5, 8.5], [0, 5.5, 12.1], [8.5, 5.5, 8.5], [12, 5.5, 1]], ancho: 0.5, tono: hondo}
+          - {puntos: [[-6, 0, 10.5], [-6, 5.5, 10.5]], ancho: 0.45, tono: hondo}
+          - {puntos: [[6, 0, 10.5], [6, 5.5, 10.5]], ancho: 0.45, tono: hondo}
+          - {puntos: [[0, 5.5, 12.1], [0, 11, 12.1]], ancho: 0.45, tono: hondo}
+          - {puntos: [[-10.5, 5.5, 6], [-10.5, 11, 6]], ancho: 0.45, tono: hondo}
+          - {puntos: [[10.5, 5.5, 6], [10.5, 11, 6]], ancho: 0.45, tono: hondo}
+      - {nombre: agua, forma: lamina, pos: [0, 10.6, 0], rot: [-90, 0, 0], circulo: 9.6, material: agua, capa: 1, sin_linea: true, una_cara: true,
+         trazos: [{puntos: [[-4, 2, 0.05], [0, 3, 0.05], [3, 2, 0.05]], ancho: 0.5, tono: luz}]}
+      - {nombre: poste_i, forma: tubo, puntos: [[11, 0, 0, 1.3], [11, 34, 0, 1.2]], material: madera, capa: 2}
+      - {nombre: poste_d, forma: tubo, puntos: [[-11, 0, 0, 1.3], [-11, 34, 0, 1.2]], material: madera, capa: 2}
+      - {nombre: travesano, forma: tubo, puntos: [[-12.5, 31, 0, 1.0], [12.5, 31, 0, 1.0]], material: madera, capa: 3}
+      - {nombre: techo, forma: caja, pos: [0, 37, 0], rot: [0, 0, 0], tam: [30, 4, 16], radio: 1.5, material: lona_roja, capa: 4}
+      - {nombre: cuerda, forma: tubo, puntos: [[0, 31, 0, 0.25], [0, 20, 0, 0.25]], material: madera, capa: 3}
+      - {nombre: balde, forma: cilindro, a: [0, 16, 0], b: [0, 21, 0], ra: 2.2, rb: 2.8, material: madera, capa: 3}
+
+  vasijas:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - {nombre: vasija1, forma: elipsoide, pos: [0, 7, 0], r: [6, 7.5, 6], material: barro,
+         trazos: [{puntos: [[-5.6, 8, 2.5], [0, 7, 6.1], [5.6, 8, 2.5]], ancho: 0.8, tono: '#f2d8a8'}]}
+      - {nombre: cuello1, forma: cilindro, a: [0, 13, 0], b: [0, 16.5, 0], ra: 2.8, rb: 3.4, material: barro, capa: 1}
+      - {nombre: vasija2, forma: elipsoide, pos: [10, 5, 4], r: [4.6, 5.5, 4.6], material: barro}
+      - {nombre: cuello2, forma: cilindro, a: [10, 9.6, 4], b: [10, 12, 4], ra: 2.0, rb: 2.5, material: barro, capa: 1}
+      - {nombre: vasija3, forma: elipsoide, pos: [-8, 4.5, 6], r: [4.4, 4.8, 4.4], material: barro,
+         trazos: [{puntos: [[-12, 5, 8], [-8, 4.5, 10.4], [-4, 5, 8]], ancho: 0.6, tono: '#f2d8a8'}]}
+
+  cajas:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - {nombre: caja1, forma: caja, pos: [0, 6, 0], tam: [13, 12, 12], radio: 0.6, material: madera,
+         trazos: [{puntos: [[-6.5, 2, 6.1], [6.5, 2, 6.1]], ancho: 0.4, tono: hondo}, {puntos: [[-6.5, 10, 6.1], [6.5, 10, 6.1]], ancho: 0.4, tono: hondo}, {puntos: [[-6.5, 0, 6.1], [6.5, 12, 6.1]], ancho: 0.6, tono: hondo}]}
+      - {nombre: caja2, forma: caja, pos: [2, 16.5, -1], rot: [0, 20, 0], tam: [10, 9, 9], radio: 0.5, material: madera, capa: 1,
+         trazos: [{puntos: [[-5, 4, 4.6], [5, -4, 4.6]], ancho: 0.5, tono: hondo}]}
+      - {nombre: saco, forma: casco, pos: [-12, 0, 3], esferas: [[0, 4, 0, 4.8], [0, 9, 0, 3.6], [0, 12.5, 0, 1.4]], material: lona, capa: 0.5}
+
+  roca:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - {nombre: roca, forma: casco, esferas: [[-6, 4, 0, 5.5], [3, 6, -2, 7], [8, 3, 3, 4], [0, 2, 5, 4.5], [-2, 10, -1, 3.5]], material: piedra,
+         trazos: [{puntos: [[-1, 12, 2], [1, 7, 6], [0, 2, 9]], anchos: [0, 0.5, 0], tono: hondo}]}
+      - {nombre: piedrita, forma: casco, pos: [13, 0, 6], esferas: [[0, 1.5, 0, 2.2], [1.5, 2, 1, 1.8]], material: piedra_osc}
+
+  cactus:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - {nombre: tallo, forma: tubo, puntos: [[0, 0, 0, 4.2], [0, 18, 0, 4.0], [0, 30, 0, 3.2], [0, 33, 0, 1.5]], material: cactus,
+         trazos: [{puntos: [[-1.5, 2, 3.8], [-1.5, 30, 2.8]], anchos: [0.3, 0.3], tono: hondo}, {puntos: [[1.6, 2, 3.8], [1.6, 30, 2.8]], anchos: [0.3, 0.3], tono: hondo}]}
+      - {nombre: brazo_i, forma: tubo, puntos: [[3, 12, 0, 2.6], [9, 13, 0, 2.5], [10, 18, 0, 2.4], [10, 24, 0, 2.0], [10, 26, 0, 1.0]], material: cactus, capa: 1}
+      - {nombre: brazo_d, forma: tubo, puntos: [[-3, 17, 0, 2.4], [-8, 18, 0, 2.3], [-9, 22, 0, 2.1], [-9, 26, 0, 1.6], [-9, 27.5, 0, 0.8]], material: cactus, capa: -1}
+      - {nombre: flor, forma: elipsoide, pos: [0, 33.5, 0], r: [1.8, 1.2, 1.8], material: lona_roja, capa: 2}
+
+  arbusto:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - {nombre: mata, forma: mechones, sobre: [6, 4, 6], material: seco, lista: [
+          {en: [0, 3], dir: [0, 1, 0.1], doblez: [0.3, 0, 0], largo: 9, ancho: 1.2},
+          {en: [-3, 2], dir: [-0.6, 1, 0.2], doblez: [-0.4, -0.2, 0], largo: 8, ancho: 1.1},
+          {en: [3, 2], dir: [0.6, 1, 0.2], doblez: [0.4, -0.2, 0], largo: 8, ancho: 1.1},
+          {en: [-4, 0], dir: [-1, 0.6, 0.4], doblez: [0, -0.4, 0], largo: 7, ancho: 1.0},
+          {en: [4, 0], dir: [1, 0.6, 0.4], doblez: [0, -0.4, 0], largo: 7, ancho: 1.0},
+          {en: [0, 0], dir: [0.2, 0.8, 1], doblez: [0, -0.3, 0], largo: 7, ancho: 1.0},
+          {en: [0, 0], dir: [-0.2, 0.9, -1], doblez: [0, -0.3, 0], largo: 7, ancho: 1.0}]}
+
+  juncos:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - {nombre: junco1, forma: tubo, puntos: [[0, 0, 0, 0.7], [1, 12, 0, 0.6], [3, 20, 0, 0.2]], material: junco}
+      - {nombre: junco2, forma: tubo, puntos: [[-2, 0, 1, 0.7], [-3, 10, 1, 0.6], [-6, 16, 1, 0.2]], material: junco}
+      - {nombre: junco3, forma: tubo, puntos: [[2, 0, 2, 0.7], [3, 9, 2, 0.6], [6, 14, 2, 0.2]], material: junco}
+      - {nombre: espiga1, forma: tubo, puntos: [[1, 11, 0, 1.1], [1.5, 15, 0, 1.1]], material: madera, capa: 1}
+      - {nombre: junco4, forma: tubo, puntos: [[-1, 0, -1, 0.7], [0, 13, -1, 0.6], [-1, 22, -1, 0.2]], material: junco}
+      - {nombre: espiga2, forma: tubo, puntos: [[0, 14, -1, 1.0], [-0.3, 18, -1, 1.0]], material: madera, capa: 1}
+
+  columna:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - {nombre: base, forma: caja, pos: [0, 2.5, 0], tam: [16, 5, 16], radio: 0.8, material: piedra_osc}
+      - {nombre: fuste, forma: cilindro, a: [0, 5, 0], b: [0, 58, 0], ra: 6, rb: 5.4, material: piedra,
+         trazos: [{puntos: [[-3, 8, 5.2], [-3, 56, 4.6]], anchos: [0.3, 0.3], tono: sombra}, {puntos: [[2.5, 8, 5.4], [2.5, 56, 4.8]], anchos: [0.3, 0.3], tono: sombra},
+                  {puntos: [[-1, 40, 5.6], [1, 46, 5.4], [-0.5, 52, 5.2]], anchos: [0, 0.5, 0], tono: hondo}]}
+      - {nombre: rotura, forma: casco, pos: [0, 58, 0], esferas: [[-4, 0, -3, 1.2], [4, 0, -3, 1.2], [4, 0, 3, 1.2], [-4, 0, 3, 1.2], [-2, 6, 0, 1.0], [3, 3, 1, 1.0]], material: piedra, capa: 1}
+      - {nombre: cascote, forma: casco, pos: [11, 0, 7], esferas: [[0, 2, 0, 2.6], [3, 1.5, 1, 2.0], [-1, 1.5, 3, 1.6]], material: piedra_osc}
+
+  arco:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - {nombre: pilar_i, forma: caja, pos: [-22, 26, 0], tam: [12, 52, 12], radio: 1.0, material: piedra,
+         trazos: [{puntos: [[-28, 14, 6.1], [-16, 14, 6.1]], ancho: 0.4, tono: hondo}, {puntos: [[-28, 30, 6.1], [-16, 30, 6.1]], ancho: 0.4, tono: hondo}, {puntos: [[-28, 44, 6.1], [-16, 44, 6.1]], ancho: 0.4, tono: hondo}]}
+      - {nombre: pilar_d, forma: caja, pos: [22, 26, 0], tam: [12, 52, 12], radio: 1.0, material: piedra,
+         trazos: [{puntos: [[16, 18, 6.1], [28, 18, 6.1]], ancho: 0.4, tono: hondo}, {puntos: [[16, 34, 6.1], [28, 34, 6.1]], ancho: 0.4, tono: hondo}, {puntos: [[16, 46, 6.1], [28, 46, 6.1]], ancho: 0.4, tono: hondo}]}
+      - {nombre: dintel, forma: caja, pos: [0, 57, 0], tam: [60, 10, 14], radio: 1.2, material: piedra, capa: 1,
+         trazos: [{puntos: [[-6, 52, 7.1], [-4, 57, 7.1], [-7, 62, 7.1]], anchos: [0, 0.5, 0], tono: hondo}]}
+      - {nombre: glifo, forma: lamina, pos: [0, 57, 7.2], circulo: 3.2, agujeros: [{circulo: 2.2}], material: sal, capa: 2, sin_linea: true, una_cara: true}
+      - {nombre: cristales, forma: casco, pos: [-22, 52, 5], rot: [0, 0, 20], esferas: [[-1.5, 0, -1.5, 0.7], [1.5, 0, -1.5, 0.7], [0, 0, 1.6, 0.7], [0, 7, 0, 0.12]], material: sal, capa: 2}
+
+  bloque:
+    huesos: [{nombre: raiz}]
+    piezas:
+      - {nombre: bloque, forma: caja, pos: [0, 5, 0], rot: [0, 25, 6], tam: [22, 10, 12], radio: 1.0, material: piedra,
+         trazos: [{puntos: [[-6, 10.2, 2], [-2, 10.2, -1], [3, 10.2, 1]], anchos: [0, 0.5, 0], tono: hondo}]}
+      - {nombre: cristal, forma: casco, pos: [8, 9, 2], rot: [-20, 0, -20], esferas: [[-1.4, 0, -1.4, 0.7], [1.4, 0, -1.4, 0.7], [0, 0, 1.5, 0.7], [0, 8, 0, 0.12]], material: sal, capa: 1}
