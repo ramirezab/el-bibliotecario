@@ -435,7 +435,7 @@ class Material:
 
 
 CLAVES_PIEZA = {'nombre', 'hueso', 'forma', 'pos', 'rot', 'material', 'grupo', 'capa', 'dentro_de', 'fuera_de',
-                'sin_linea', 'grosor', 'proyecta', 'recibe', 'calcas', 'trazos', 'op', 'oculta', 'espejo',
+                'sin_linea', 'grosor', 'proyecta', 'recibe', 'calcas', 'trazos', 'op', 'oculta', 'espejo', 'lados',
                 'sin_silueta'}
 
 
@@ -588,7 +588,10 @@ class Dibujo(Esqueleto):
                 raise ValueError(f'Pieza "{nombre}": material "{pz.get("material")}" no definido.')
             hueso = pz.get('hueso', self.orden[0])
             lados = ('i', 'd') if nombre in nombres_espejados else (None,)
+            base_pz = pz
             for lado in lados:
+                # `lados: {d: {...}}` cambia algo solo de un lado (p. ej. el brazo del bastón fuera de la capa)
+                pz = {**base_pz, **(base_pz.get('lados') or {}).get(lado, {})} if lado else base_pz
                 hb = f'{hueso}.{lado}' if (lado and hueso in self.espejados) else hueso
                 if hb not in self.huesos:
                     raise ValueError(f'Pieza "{nombre}": hueso "{hueso}" no existe.')
