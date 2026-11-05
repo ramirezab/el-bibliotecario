@@ -242,3 +242,9 @@ Khar tardó siglos en volver a ser algo; los hijos de Kassar se disputaron el tr
 ---
 
 *Pasaron casi doscientos años de paz. Y la siguiente desgracia que entró en Orvalis no vino con hierro ni con eclipse: vino río arriba, despacio, y tosía.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 6 · El Castillo y la Conservación](libro/06_El_Castillo_y_la_Conservacion.md) · [Índice](libro/README.md) · [Capítulo 8 · La Herejía Verde →](libro/08_La_Herejia_Verde.md)

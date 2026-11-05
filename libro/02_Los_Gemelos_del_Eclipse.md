@@ -298,3 +298,9 @@ Las dos cosas pueden ser verdad. No habló *de* ella. Le habló *a* ella. Hay un
 ---
 
 *Dos años después de aquella noche, la asamblea de la colina le puso a Orval una corona que no quería, hecha con la corteza de su hermana.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 1 · La Rueda](libro/01_La_Rueda.md) · [Índice](libro/README.md) · [Capítulo 3 · Los Reyes Pastores →](libro/03_Los_Reyes_Pastores.md)

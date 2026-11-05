@@ -242,3 +242,9 @@ Nadie había pensado en escucharlo.
 ---
 
 *Ciento diecisiete años después de la noche de la semilla, una novicia de quince años que había entrado al Templo para no tener que remar apoyó la oreja contra el tronco y oyó que el árbol estaba cantando.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 2 · Los Gemelos del Eclipse](libro/02_Los_Gemelos_del_Eclipse.md) · [Índice](libro/README.md) · [Capítulo 4 · La Primera Floración →](libro/04_La_Primera_Floracion.md)

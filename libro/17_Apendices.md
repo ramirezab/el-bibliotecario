@@ -298,3 +298,9 @@ Se rezaba en cada eclipse, con toda la ciudad despierta y los Faroles de Vigilia
 ---
 
 *Y con esto, de verdad, se acaba el libro. Si les sobra margen, úsenlo. Para eso está.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 16 · La Última Página](libro/16_La_Ultima_Pagina.md) · [Índice](libro/README.md)

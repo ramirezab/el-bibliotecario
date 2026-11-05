@@ -281,3 +281,9 @@ Llevaba mil años cargando una página en la que solo sabía leer ocho palabras 
 ---
 
 *Antes del amanecer siguiente se fue a esperar, y dejó atrás la jaula. Lo que pasó después ya no lo cuenta él. Lo cuento yo, que estuve, y que todavía no aprendo a ser breve.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 14 · La Noche de la Quiebra](libro/14_La_Noche_de_la_Quiebra.md) · [Índice](libro/README.md) · [Capítulo 16 · La Última Página →](libro/16_La_Ultima_Pagina.md)

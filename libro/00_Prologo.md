@@ -68,3 +68,9 @@ Que su luna sea llena.
 ---
 
 *Y ahora sí, la primera página: la que cuenta cómo giraba el mundo antes de que hubiera nadie para escribirlo.*
+
+<!-- navegacion -->
+
+---
+
+[Índice](libro/README.md) · [Capítulo 1 · La Rueda →](libro/01_La_Rueda.md)

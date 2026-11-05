@@ -269,3 +269,9 @@ Osric reconstruyó el reino rama por rama, tan bien y tan rápido que le dieron 
 ---
 
 *Dieciséis años después, cinco coronas se sentaron a una misma mesa para repartirse un árbol que, según decían, había guardado la cura y no la había querido compartir.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 9 · Los Siglos Tranquilos](libro/09_Los_Siglos_Tranquilos.md) · [Índice](libro/README.md) · [Capítulo 11 · La Guerra de las Cinco Coronas →](libro/11_La_Guerra_de_las_Cinco_Coronas.md)

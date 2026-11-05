@@ -313,3 +313,9 @@ Esa frase la conocen todos los que alguna vez vieron el Mapa de la Vigilia: es l
 ---
 
 *Y amaneció el último día del reino, y en toda Orvalis solo un hombre lo sabía.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 12 · Aldemar el Justo](libro/12_Aldemar_el_Justo.md) · [Índice](libro/README.md) · [Capítulo 14 · La Noche de la Quiebra →](libro/14_La_Noche_de_la_Quiebra.md)

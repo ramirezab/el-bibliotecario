@@ -157,3 +157,9 @@ Los graneros estaban llenos. Las criptas brillaban. La Guardia del río dormía,
 ---
 
 *Nadie miraba hacia el este. No había por qué. Todavía.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 8 · La Herejía Verde](libro/08_La_Herejia_Verde.md) · [Índice](libro/README.md) · [Capítulo 10 · El Año Sin Luna →](libro/10_El_Anio_Sin_Luna.md)

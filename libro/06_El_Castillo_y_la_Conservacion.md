@@ -189,3 +189,9 @@ En el otoño del 411, la ciudad entera subió a las ramas en cada luna llena y c
 ---
 
 *Al sur, en una tienda de lona a la orilla de otro río, un hombre ciego contaba noches con los dedos y no le salía la cuenta que esperaba: le salían tres. En la página siguiente, la luna sale roja.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 5 · Imelda la Lectora](libro/05_Imelda_la_Lectora.md) · [Índice](libro/README.md) · [Capítulo 7 · La Guerra del Eclipse →](libro/07_La_Guerra_del_Eclipse.md)

@@ -275,3 +275,9 @@ En la casa sobre el agua, Irelda se secó la cara con el dorso de la mano, sin s
 ---
 
 *Lo que Irelda tejió con esos juncos, antes de que amaneciera, es la primera página de una historia que todavía no termina.*
+
+<!-- navegacion -->
+
+---
+
+[← Prólogo](libro/00_Prologo.md) · [Índice](libro/README.md) · [Capítulo 2 · Los Gemelos del Eclipse →](libro/02_Los_Gemelos_del_Eclipse.md)

@@ -267,3 +267,9 @@ La copio tal cual.
 ---
 
 *Al invierno siguiente, en la ciudad baja, la gente empezó a desaparecer.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 11 · La Guerra de las Cinco Coronas](libro/11_La_Guerra_de_las_Cinco_Coronas.md) · [Índice](libro/README.md) · [Capítulo 13 · Los Desaparecidos del Invierno →](libro/13_Los_Desaparecidos_del_Invierno.md)

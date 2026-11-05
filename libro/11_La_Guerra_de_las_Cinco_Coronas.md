@@ -213,3 +213,9 @@ Ese mismo año, con la luna nueva, la reina dio a luz una niña. Corvan había d
 ---
 
 *Lo que sigue es la historia del rey que creyó que la paz se cuidaba con paciencia, y del hermano que sabía lo que la paz había costado y no podía dejar de pagarla.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 10 · El Año Sin Luna](libro/10_El_Anio_Sin_Luna.md) · [Índice](libro/README.md) · [Capítulo 12 · Aldemar el Justo →](libro/12_Aldemar_el_Justo.md)

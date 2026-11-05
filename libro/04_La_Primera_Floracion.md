@@ -208,3 +208,9 @@ Un detalle más, que encontré tarde y no supe dónde poner. En la lista de los 
 ---
 
 *Pasó medio siglo. Las semillas siguieron cayendo en cada luna llena, los guerreros siguieron de pie en el camino, y en aquel scriptorium de la Raíz del Musgo una muchacha con tinta hasta los codos aprendió a leer los pergaminos raspados capa por capa, para corregirle las erratas a su padre. Nadie creía que eso fuera a importar.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 3 · Los Reyes Pastores](libro/03_Los_Reyes_Pastores.md) · [Índice](libro/README.md) · [Capítulo 5 · Imelda la Lectora →](libro/05_Imelda_la_Lectora.md)

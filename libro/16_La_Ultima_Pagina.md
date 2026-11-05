@@ -125,3 +125,9 @@ Que tu luna sea llena.
 ---
 
 *Aquí termina la crónica. Lo que sigue son apéndices, para quien, como yo, todavía no quiera cerrar el libro.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 15 · Mil Años Afuera](libro/15_Mil_Anios_Afuera.md) · [Índice](libro/README.md) · [Apéndices →](libro/17_Apendices.md)

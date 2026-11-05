@@ -202,3 +202,9 @@ Ramiro lo devolvió al día siguiente, a tiempo. Imelda I la Lectora había muer
 ---
 
 *La Biblioteca quedó terminada, y por encima de su cúpula el tronco siguió creciendo. Un siglo después, otro Veta subiría más arriba con una idea nueva: si el árbol podía guardar todos los libros del reino, ¿por qué no podía guardar también al rey?*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 4 · La Primera Floración](libro/04_La_Primera_Floracion.md) · [Índice](libro/README.md) · [Capítulo 6 · El Castillo y la Conservación →](libro/06_El_Castillo_y_la_Conservacion.md)

@@ -176,3 +176,9 @@ Ysolde Vantelle lo supo siempre. Y la ley que protegía el saber guardó, bajo l
 ---
 
 *Después, por fin, el reino tuvo trescientos años para olvidar que tenía miedo.*
+
+<!-- navegacion -->
+
+---
+
+[← Capítulo 7 · La Guerra del Eclipse](libro/07_La_Guerra_del_Eclipse.md) · [Índice](libro/README.md) · [Capítulo 9 · Los Siglos Tranquilos →](libro/09_Los_Siglos_Tranquilos.md)
