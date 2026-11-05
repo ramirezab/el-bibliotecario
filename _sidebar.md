@@ -16,6 +16,9 @@
   - [Textos del mundo](lore/Textos_del_Mundo.md)
   - [Ideas de expansión](lore/Ideas_de_Expansion.md)
 
+- **Libro de lore**
+  - [Mil Años bajo la Luna](libro/README.md)
+
 - **Mundo**
   - [Prólogo y viaje](mundo/Zonas_Prologo_y_Viaje.md)
   - [El árbol y la aldea](mundo/El_Arbol_y_la_Aldea.md)

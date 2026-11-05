@@ -48,6 +48,11 @@ Mil años después, **Teo**, un aprendiz de mago fracasado y obsesionado con un 
 | [Ideas_de_Expansion.md](lore/Ideas_de_Expansion.md) | Contenido posterior al final, dos expansiones, la secuela "El Lector Ciego" (el misterio de Ebrón) y un banco de ideas |
 | [Textos_del_Mundo.md](lore/Textos_del_Mundo.md) | Canciones (la canción de cuna de cinco notas, el Canto de Crecimiento), oraciones, el Credo del Gusano, mitos, la fábula de Kesh, Lecturas, inscripciones y refranes |
 
+### Libro de lore — `libro/`
+| Archivo | Contenido |
+|---|---|
+| [libro/README.md](libro/README.md) | **Mil Años bajo la Luna: Crónica del Reino de Orvalis.** El libro que se regala al completar el juego al 100 %: las épocas de Orvalis, de la Rueda a la Noche de la Quiebra y los mil años de exilio del rey, compiladas por Teo, en un estilo que mezcla el mito de Tolkien con la crónica de Martin. Contiene todos los secretos. La guía de escritura está en `libro/GUIA_DE_ESCRITURA.md`. |
+
 ### Mundo — `mundo/`
 | Archivo | Contenido |
 |---|---|
