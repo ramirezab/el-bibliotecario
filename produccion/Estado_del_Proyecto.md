@@ -41,9 +41,18 @@ pip install -r herramientas/forja/requirements.txt
 - La ropa con física y pesos: el manto debe levantarse con el brazo y quedar siempre encima del hombro. La capucha tapa el pelo; solo se ve el flequillo.
 - El protagonista actual es un caminante del desierto con capucha verde oscuro y pelo café (`herramientas/forja/personajes/caminante.yaml`). Le pareció "más o menos".
 
-## El siguiente paso: un generador local "como PixelLab"
+## El generador local "como PixelLab": Crisol
 
-El autor quiere poder hacer en local lo mismo que PixelLab: personajes, ángulos, animaciones, objetos y escenarios en pixel art de alta calidad. Antes había rechazado los modelos de generación de imágenes por inconsistentes; esta propuesta lo resuelve usando Forja como guía. Todavía no aprobó la instalación: se cambió de computadora porque la anterior tenía poco disco.
+El autor quiere poder hacer en local lo mismo que PixelLab: personajes, ángulos, animaciones, objetos y escenarios en pixel art de alta calidad. Antes había rechazado los modelos de generación de imágenes por inconsistentes; esta propuesta lo resuelve usando Forja como guía. Aprobó la instalación y ya está hecho: **`herramientas/crisol/`** (ver su README).
+
+**Qué se aprendió en las primeras pruebas (5 de noviembre de 2026):**
+- Pasarle al modelo solo los bordes de Forja no sirve: inventa los colores en cada imagen (capucha verde, café o gris según el ángulo, cara de espaldas, cara verde en unos cuadros del reposo).
+- Partir del dibujo a color de Forja (img2img) con fuerza 0,55 sí da coherencia: la capucha es verde en todos los ángulos y de espaldas no aparece cara. Con 0,4 queda casi igual a Forja; con 0,7 empieza a inventar (ojos verdes, otra bufanda).
+- La paleta común tiene que salir solo de los pixeles del personaje (k-means), no del fondo, o se pierden colores.
+- Pintar cada cuadro de una animación con el modelo hace que los detalles "hiervan": el 64 % de los pixeles cambiaba por cuadro. El arreglo es que el modelo pinte solo el cuadro clave y que los demás cuadros muevan esos mismos pixeles con el movimiento de Forja (flujo óptico). Con eso cada animación cambia por cuadro lo mismo que Forja: reposo 13 % contra 12 %, caminar 28 % contra 25 %, ataque 46 % contra 44 % y golpe 43 % contra 43 %. Las cuatro animaciones de Teo (94 cuadros) costaron 12 imágenes del modelo.
+- 96 px con 20 colores se ve más limpio que 128 px con 32, y con la cámara alejada sobra. A 64 px se pierde la cara.
+- **Lo que falta para calidad PixelLab:** la textura del manto todavía sale manchada, la cara es muy simple y el bastón se corta en algunos cuadros. El diseño sigue siendo el de Forja, que al autor no le gustó: Crisol lo pinta mejor, pero no lo rediseña. Los siguientes pasos son entrenar un LoRA propio con los sprites que el autor apruebe y probar otro diseño de personaje en Forja.
+- Con 15 GB de RAM y otros programas abiertos, la descarga a CPU de `diffusers` hacía caer el proceso. Ahora los textos se codifican una vez y el resto del modelo vive en la tarjeta de video: 19 a 36 s por imagen y 6,7 GB de video.
 
 **Cómo funcionaría:**
 1. Forja da la estructura: el modelo 3D de cada personaje con su esqueleto, en cada ángulo y cuadro.
@@ -65,6 +74,6 @@ El autor quiere poder hacer en local lo mismo que PixelLab: personajes, ángulos
 | `pixel-art-xl` | Hugging Face, `nerijs` | ~0,2 GB |
 | ControlNet de profundidad y contorno para SDXL | Hugging Face, `diffusers` | ~1–2,5 GB |
 
-**Primera prueba propuesta:** Teo (el caminante) en 8 ángulos más su animación de reposo, al lado del Teo actual, midiendo el parpadeo entre cuadros, la cantidad de colores y los pixeles sueltos. Si no convence, se desinstala.
+**Lo instalado** en esta computadora: PyTorch 2.11 con CUDA 12.8 (RTX 5050 Laptop, 8 GB), `diffusers` 0.42 y los modelos de la tabla (se usó ControlNet de contorno, la versión chica), unos 8 GB en `~/.cache/huggingface`.
 
 **Riesgos conocidos:** los modelos generales rinden peor en sprites muy chicos, los detalles pueden cambiar entre cuadros de una animación y no igualará a PixelLab el primer día. El plan B es la API de pago de PixelLab, usando Forja como guía y revisión.

@@ -1,0 +1,10 @@
+# PyTorch con CUDA va aparte, desde el índice de PyTorch (para tarjetas RTX 50xx hace falta cu128):
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+diffusers>=0.42
+transformers>=5.0
+accelerate>=1.10
+peft>=0.21
+safetensors>=0.8
+huggingface_hub>=1.0
+opencv-python>=4.8
+# y lo de Forja (../forja/requirements.txt): numpy, Pillow, PyYAML, skia-python
