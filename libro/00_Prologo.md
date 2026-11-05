@@ -19,7 +19,7 @@
 
 Debo empezar con una confesión, porque así empiezan los libros honestos y porque Rosalba me enseñó que una mentira en la primera página envenena todas las demás: yo no soy historiador.
 
-Soy un aprendiz de mago que reprobó tres veces el examen del Colegio Arcano de Kesh y que, a falta de talento, se aprendió las cosas de memoria. Crecí entre los estantes de la Biblioteca del Puerto de Merova, donde el olor de la sal se mete en las páginas y las hincha como pan. Leí *El Cuento de Orvalis* tantas veces que el lomo de mi ejemplar se rindió antes que yo. Los niños de Merova lo leen una vez, a los seis años, y lo olvidan a los siete. Yo lo leí a los seis, a los siete, a los ocho, y a los diecinueve seguía buscando en sus márgenes unas letras grises que de día no se dejaban leer.
+Soy un aprendiz de mago que reprobó tres veces el examen del Colegio Arcano de Merova y que, a falta de talento, se aprendió las cosas de memoria. Crecí entre los estantes de la Biblioteca del Puerto de Merova, donde el olor de la sal se mete en las páginas y las hincha como pan. Leí *El Cuento de Orvalis* tantas veces que el lomo de mi ejemplar se rindió antes que yo. Los niños de Merova lo leen una vez, a los seis años, y lo olvidan a los siete. Yo lo leí a los seis, a los siete, a los ocho, y a los diecinueve seguía buscando en sus márgenes unas letras grises que de día no se dejaban leer.
 
 Lo que pasó después lo saben ustedes, porque si este libro está en sus manos es que lo vivieron conmigo, paso por paso, Pliegue por Pliegue. No voy a contarlo otra vez. Bueno: lo cuento al final, brevemente, porque un cronista que se salta su propia parte es un cobarde o un vanidoso, y no sé cuál de las dos cosas sería peor.
 
@@ -41,7 +41,9 @@ Las **Páginas Perdidas**, que encontré dispersas por los Pliegues como hojas q
 
 Los papeles de quienes vivieron el final: las *Memorias* de la Archivista Ysolde Vantelle, el libro de horas de la Suma Sacerdotisa Mireya Solenne, el diario de una niña de ocho, nueve, diecisiete años, y un manojo de hojas que su autor llamó *Páginas del Gusano*. Esas últimas me costó mucho leerlas. Las leí enteras. Las cito cuando hace falta, nunca por gusto.
 
-Y por último, la fuente que más me ayudó y que más me hizo dudar: **un testigo**. Alguien que vivió los últimos cincuenta años del reino y los mil años que siguieron. Le pedí que leyera estas páginas antes de que nadie más las leyera. Lo hizo despacio, con una lupa y con una paciencia que yo no tendré nunca. A veces asintió. A veces se quedó mirando una línea mucho tiempo. Y a veces tomó la pluma y escribió en el margen, con una letra antigua que le tiembla un poco.
+Y por último, la fuente que más me ayudó y que más me hizo dudar: **un testigo**. Alguien que vivió los últimos cincuenta años del reino y los mil años que siguieron, y que fue el primero en escribir esta historia, doscientos años después de la caída, cuando todavía la recordaba entera. Ese libro suyo, copiado y recortado durante ocho siglos, se volvió el cuento para niños que yo leí en Merova.
+
+Empecé a juntar estas páginas antes del final, en las noches de la Gran Biblioteca, y él las leyó a medida que las escribía. Lo hizo despacio, con una lupa y con una paciencia que yo no tendré nunca. A veces asintió. A veces se quedó mirando una línea mucho tiempo. Y a veces tomó la pluma y escribió en el margen, con una letra antigua que le tiembla un poco. No alcanzó a leer el libro terminado. Las últimas páginas las escribí sin él, y se nota.
 
 No borré ninguna de sus notas. Las van a reconocer.
 
@@ -53,7 +55,7 @@ Las épocas antiguas, las de la Rueda y los Gemelos, las conté como se cuentan 
 
 A medida que el libro se acerca a la Noche de la Quiebra, las fuentes se vuelven más abundantes, más contradictorias y más tristes, y yo me atreví a contar algunas cosas como escenas, con palabras en boca de gente que ya no puede corregirme. Donde reconstruí una conversación, lo digo. Donde la conversación quedó escrita, la copio tal cual.
 
-En mi escuela de Kesh me enseñaron que un historiador no debe tomar partido. Lo intenté. Fracasé, como en casi todo lo de esa escuela. Hay personas en este libro a las que quiero, aunque murieron siglos antes de que yo naciera, y hay una persona a la que no sé si odio o compadezco, y que me escribió, sin saberlo, la carta más larga que alguien me haya escrito jamás. Lo verán.
+En el Colegio de Merova me enseñaron que un historiador no debe tomar partido. Lo intenté. Fracasé, como en casi todo lo de esa escuela. Hay personas en este libro a las que quiero, aunque murieron siglos antes de que yo naciera, y hay una persona a la que no sé si odio o compadezco, y que me escribió, sin saberlo, la carta más larga que alguien me haya escrito jamás. Lo verán.
 
 Una última cosa. En Orvalis se saludaba diciendo *"que tu luna sea llena"*, y se respondía *"y tu página, larga"*. Esta es una página muy larga. Perdón de antemano.
 

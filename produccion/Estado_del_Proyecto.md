@@ -11,6 +11,7 @@ Nota para seguir el trabajo en otra computadora. Si eres Claude empezando una se
 | Demo jugable del Oasis de Sal | `demo/index.html` | Exploración, 3 NPC, páginas, emboscada y pelea con la Réplica. Arte hecho con Forja |
 | Forja, la herramienta de arte | `herramientas/forja/` | Motor de pixel art, motor de tinta (pluma), física de ropa, animación por capas y exportador para el juego |
 | Referencias de arte | `arte/referencias/` | El dibujo del autor y tres capturas de inspiración |
+| Libro de lore *Mil Años bajo la Luna* | `libro/` | Completo: prólogo, 16 capítulos y apéndices, unas 83.000 palabras. Se regala al completar el juego al 100 %. Su guía de estilo está en `libro/GUIA_DE_ESCRITURA.md` |
 
 ## Cómo correr todo
 
