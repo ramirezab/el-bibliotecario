@@ -103,6 +103,7 @@ Cada Pliegue incluye: atmósfera, mapa con zonas y bloqueos, bestiario, minijefe
 | Archivo | Contenido |
 |---|---|
 | [Plan_de_Desarrollo.md](produccion/Plan_de_Desarrollo.md) | Alcance por niveles (prototipo, demo, juego completo), herramientas, arquitectura del código, hitos, orden de producción de los efectos, riesgos, lista de recortes, localización, audio y próximos pasos |
+| [Estado_del_Proyecto.md](produccion/Estado_del_Proyecto.md) | Dónde quedó el trabajo, cómo correr todo, qué se aprobó y qué se rechazó del arte, y el plan del generador local de pixel art |
 
 ### Referencias visuales
 Las tres capturas de la carpeta raíz (aldea y mazmorra en pixel art, roguelike de esqueletos y la ficha del Nigromante) son la inspiración de estilo. **No se copian.**
